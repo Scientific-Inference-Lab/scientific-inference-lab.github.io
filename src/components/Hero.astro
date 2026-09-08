@@ -1,0 +1,35 @@
+---
+import Wordmark from '../assets/wordmark.svg';
+import { site, content } from '../config';
+---
+
+<section id="top" class="relative overflow-hidden px-6 pt-32 pb-20 md:pt-40 md:pb-24">
+  {/* Layered background: soft accent glow + faint grid, both decorative */}
+  <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div
+      class="absolute top-[-18rem] left-1/2 h-[36rem] w-[52rem] -translate-x-1/2 rounded-full opacity-[0.18] blur-3xl"
+      style="background: radial-gradient(circle, var(--c-accent), transparent 68%)"
+    >
+    </div>
+    <div
+      class="absolute inset-0 opacity-[0.35]"
+      style="background-image: linear-gradient(var(--c-grid) 1px, transparent 1px), linear-gradient(90deg, var(--c-grid) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(ellipse 70% 55% at 50% 25%, #000 40%, transparent 100%);"
+    >
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-4xl text-center">
+    {/* The wordmark IS the h1: same vector logo as the header, sized up. */}
+    <h1 class="reveal mx-auto w-full max-w-2xl text-body">
+      <Wordmark aria-hidden="true" class="h-auto w-full" />
+      <span class="sr-only">{site.name}</span>
+    </h1>
+
+    <p
+      class="reveal mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-muted text-balance md:text-xl"
+    >
+      {site.affiliation}
+    </p>
+
+  </div>
+</section>

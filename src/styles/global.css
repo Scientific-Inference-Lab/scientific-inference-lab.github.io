@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+@theme {
+  /* Body text — Pretendard covers Hangul and Latin with consistent metrics. */
+  --font-sans: "Pretendard Variable", Pretendard, ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-serif: "Newsreader", ui-serif, Georgia, serif;
+  /* Display face — the lab name only, never body copy. */
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  /* Ink — near-black with a cool cast, not pure #000 */
+  --color-ink-950: oklch(0.17 0.012 265);
+  --color-ink-800: oklch(0.32 0.014 265);
+  --color-ink-600: oklch(0.52 0.013 265);
+  --color-ink-400: oklch(0.70 0.010 265);
+  --color-ink-200: oklch(0.89 0.005 265);
+  --color-ink-100: oklch(0.945 0.004 265);
+  --color-ink-50:  oklch(0.975 0.003 265);
+
+  /* Accent — deep scientific blue */
+  --color-accent-700: oklch(0.42 0.14 255);
+  --color-accent-600: oklch(0.52 0.16 255);
+  --color-accent-500: oklch(0.62 0.15 255);
+  --color-accent-100: oklch(0.93 0.04 255);
+
+  /*
+   * Semantic aliases -> Tailwind utilities (bg-surface, text-muted, border-line).
+   * Components use ONLY these, never the raw ink or accent scales, so a single
+   * token redefinition in the dark block re-themes the whole page.
+   */
+  --color-page: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-body: var(--c-text);
+  --color-muted: var(--c-text-muted);
+  --color-subtle: var(--c-text-subtle);
+  --color-line: var(--c-border);
+  --color-line-strong: var(--c-border-strong);
+  --color-chip: var(--c-chip);
+  --color-brand: var(--c-accent);
+  --color-brand-hover: var(--c-accent-hover);
+  --color-invert: var(--c-invert-bg);
+  --color-invert-fg: var(--c-invert-text);
+  --color-invert-muted: var(--c-invert-muted);
+  --color-invert-line: var(--c-invert-border);
+  --color-chip-accent: var(--c-chip-accent-bg);
+  --color-chip-accent-fg: var(--c-chip-accent-fg);
+  --color-brand-on-invert: var(--c-accent-on-invert);
+}
+
+@layer base {
+  /*
+   * Semantic colors. Light values live on bare :root; the dark block only
+   * REDEFINES them, so every rule elsewhere refers to --c-* and needs no
+   * theme-specific variant.
+   */
+  :root {
+    color-scheme: light;
+    --c-bg: var(--color-ink-50);
+    --c-surface: #fff;
+    --c-text: var(--color-ink-950);
+    --c-text-muted: var(--color-ink-600);
+    /* Used for dates, years and index numerals: real content, so it must
+       clear 4.5:1. ink-400 measured 4.02:1 on the page ground. */
+    --c-text-subtle: oklch(0.545 0.012 265);
+    --c-border: var(--color-ink-200);
+    --c-border-strong: var(--color-ink-300);
+    --c-chip: var(--color-ink-100);
+    --c-accent: var(--color-accent-600);
+    --c-accent-hover: var(--color-accent-700);
+    --c-chip-accent-bg: var(--color-accent-100);
+    --c-chip-accent-fg: var(--color-accent-700);
+    /* Accent used ON the inverted panel: always tuned for a dark ground. */
+    --c-accent-on-invert: oklch(0.84 0.10 255);
+
+    --c-invert-bg: var(--color-ink-950);
+    --c-invert-text: var(--color-ink-50);
+    --c-invert-muted: var(--color-ink-400);
+    --c-invert-border: var(--color-ink-800);
+    --c-grid: var(--color-ink-200);
+  }
+
+  /*
+   * Dark palette. Applied when the system asks for dark AND no explicit light
+   * choice is stored, or when the user has explicitly chosen dark. The two
+   * blocks share one body via :where() so the values are defined once.
+   */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+      color-scheme: dark;
+      --c-bg: oklch(0.16 0.012 265);
+      --c-surface: oklch(0.21 0.013 265);
+      --c-text: oklch(0.96 0.003 265);
+      --c-text-muted: oklch(0.72 0.011 265);
+      --c-text-subtle: oklch(0.735 0.011 265);
+      --c-border: oklch(0.29 0.013 265);
+      --c-border-strong: oklch(0.38 0.014 265);
+      --c-chip: oklch(0.26 0.013 265);
+      /*
+       * Accent is lightened well past the light-theme value: on the dark
+       * surfaces (L 0.16 to 0.23) the previous 0.72 fell below 4.5:1 for the
+       * 12px eyebrow labels and link text. 0.84 clears it with margin.
+       */
+      --c-accent: oklch(0.84 0.10 255);
+      --c-accent-hover: oklch(0.91 0.07 255);
+      /* Award chips: a solid raised surface, not a translucent accent wash. */
+      --c-chip-accent-bg: oklch(0.31 0.045 255);
+      --c-chip-accent-fg: oklch(0.90 0.07 255);
+      --c-accent-on-invert: oklch(0.84 0.10 255);
+      /* Inverted panels flip to a raised surface so they stay distinguishable. */
+      --c-invert-bg: oklch(0.23 0.014 265);
+      --c-invert-text: oklch(0.96 0.003 265);
+      --c-invert-muted: oklch(0.76 0.010 265);
+      --c-invert-border: oklch(0.34 0.014 265);
+      --c-grid: oklch(0.26 0.013 265);
+    }
+  }
+
+  :root[data-theme='dark'] {
+    color-scheme: dark;
+      --c-bg: oklch(0.16 0.012 265);
+      --c-surface: oklch(0.21 0.013 265);
+      --c-text: oklch(0.96 0.003 265);
+      --c-text-muted: oklch(0.72 0.011 265);
+      --c-text-subtle: oklch(0.735 0.011 265);
+      --c-border: oklch(0.29 0.013 265);
+      --c-border-strong: oklch(0.38 0.014 265);
+      --c-chip: oklch(0.26 0.013 265);
+      /*
+       * Accent is lightened well past the light-theme value: on the dark
+       * surfaces (L 0.16 to 0.23) the previous 0.72 fell below 4.5:1 for the
+       * 12px eyebrow labels and link text. 0.84 clears it with margin.
+       */
+      --c-accent: oklch(0.84 0.10 255);
+      --c-accent-hover: oklch(0.91 0.07 255);
+      /* Award chips: a solid raised surface, not a translucent accent wash. */
+      --c-chip-accent-bg: oklch(0.31 0.045 255);
+      --c-chip-accent-fg: oklch(0.90 0.07 255);
+      --c-accent-on-invert: oklch(0.84 0.10 255);
+      /* Inverted panels flip to a raised surface so they stay distinguishable. */
+      --c-invert-bg: oklch(0.23 0.014 265);
+      --c-invert-text: oklch(0.96 0.003 265);
+      --c-invert-muted: oklch(0.76 0.010 265);
+      --c-invert-border: oklch(0.34 0.014 265);
+      --c-grid: oklch(0.26 0.013 265);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-color: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--font-sans);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  /*
+   * Entrance animation — CSS only, no JavaScript.
+   *
+   * Content is visible by default. The animation is layered on ONLY where the
+   * browser supports scroll-driven animations (`animation-timeline: view()`),
+   * so there is no state in which content can be left stuck at opacity 0.
+   * An earlier IntersectionObserver version could hide content permanently
+   * whenever the observer didn't fire; this cannot.
+   */
+  .reveal {
+    opacity: 1;
+  }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        animation: reveal-in linear both;
+        animation-timeline: view();
+        /* Play as the element enters the viewport, finishing well before the
+           center so text isn't still fading while being read. */
+        animation-range: entry 0% cover 28%;
+      }
+    }
+  }
+
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/*
+ * Theme toggle icons. Show the icon for the theme the click will switch TO,
+ * so the control previews its own effect. Unlayered so the utility layer
+ * cannot override display.
+ */
+.theme-icon-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-icon-dark { display: block; }
+  :root:not([data-theme='light']) .theme-icon-light { display: none; }
+}
+:root[data-theme='dark'] .theme-icon-dark { display: block; }
+:root[data-theme='dark'] .theme-icon-light { display: none; }
+:root[data-theme='light'] .theme-icon-dark { display: none; }
+:root[data-theme='light'] .theme-icon-light { display: block; }
+
+/*
+ * University signature: two files, one per theme ground. Mirrors the
+ * .theme-icon-* rules so both the toggle icons and the signature respond to
+ * [data-theme] and to prefers-color-scheme in the same way.
+ */
+.signature-dark { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .signature-dark { display: block; }
+  :root:not([data-theme='light']) .signature-light { display: none; }
+}
+:root[data-theme='dark'] .signature-dark { display: block; }
+:root[data-theme='dark'] .signature-light { display: none; }
+:root[data-theme='light'] .signature-dark { display: none; }
+:root[data-theme='light'] .signature-light { display: block; }

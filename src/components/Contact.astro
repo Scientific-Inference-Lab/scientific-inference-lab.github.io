@@ -1,0 +1,108 @@
+---
+import { pi, site, joinUs, content } from '../config';
+---
+
+<section id="join" class="px-6 py-20 md:py-24">
+  {/*
+    The panel follows the theme like every other section: a raised surface on
+    the page ground, not a fixed dark block. An earlier version pinned it dark
+    in both themes, which left one black slab in an otherwise light page.
+  */}
+  <div
+    class="reveal mx-auto max-w-6xl overflow-hidden rounded-3xl border border-line bg-surface px-8 py-16 md:px-16 md:py-20"
+  >
+    <div class="space-y-12">
+      <div>
+        <p class="text-xs font-semibold tracking-[0.18em] text-brand uppercase">
+          {content.joinUs.eyebrow}
+        </p>
+        <h2
+          class="mt-3 text-3xl font-semibold tracking-[-0.02em] text-body text-balance"
+        >
+          {joinUs.heading}
+        </h2>
+        <p class="mt-4 max-w-2xl leading-relaxed text-muted text-pretty">
+          {joinUs.body}
+        </p>
+        <a
+          href={`mailto:${pi.email}`}
+          class="mt-8 inline-block rounded-full bg-invert px-6 py-3 text-sm font-medium text-invert-fg transition-transform hover:-translate-y-0.5"
+        >
+          {pi.email}
+        </a>
+      </div>
+
+      <div id="contact" class="border-t border-line pt-10">
+        <p class="text-xs font-semibold tracking-[0.18em] text-brand uppercase">
+          {content.contact.eyebrow}
+        </p>
+        <dl class="mt-5 grid gap-x-10 gap-y-5 text-sm sm:grid-cols-2 lg:grid-cols-4">
+          <div>
+            <dt class="text-muted">{content.contact.email}</dt>
+            <dd class="mt-0.5">
+              <a
+                href={`mailto:${pi.email}`}
+                class="text-body underline decoration-line underline-offset-4 transition-colors hover:decoration-current">{pi.email}</a
+              >
+            </dd>
+          </div>
+          <div>
+            <dt class="text-muted">{content.contact.phone}</dt>
+            <dd class="mt-0.5 text-body tabular-nums">{pi.phone}</dd>
+          </div>
+          <div class="sm:col-span-2">
+            <dt class="text-muted">{content.contact.address}</dt>
+            <dd class="mt-0.5 text-body text-pretty">
+              <span class="block">{pi.office}</span>
+              <span class="block">{pi.address}</span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="border-t border-line px-6 py-10 text-muted">
+  <div
+    class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 text-sm sm:flex-row"
+  >
+    <p>© {new Date().getFullYear()} {site.name}</p>
+    {/*
+      Official university signature, shown at its exact source aspect ratio and
+      never recomposed, per the brand guidelines in the project source notes.
+
+      Both files are in the DOM and CSS shows whichever suits the active theme.
+      This keys off [data-theme] as well as prefers-color-scheme, so it stays
+      correct when the in-page toggle disagrees with the OS setting — the
+      earlier <picture media> version broke in exactly that case.
+    */}
+    <a
+      href={site.universityUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={site.institution}
+      class="shrink-0 opacity-85 transition-opacity hover:opacity-100"
+    >
+      <img
+        src={site.universitySignature}
+        alt={site.institution}
+        width="1350"
+        height="340"
+        loading="lazy"
+        decoding="async"
+        class="signature-light h-auto w-[10.5rem]"
+      />
+      <img
+        src={site.universitySignatureReversed}
+        alt=""
+        aria-hidden="true"
+        width="1350"
+        height="340"
+        loading="lazy"
+        decoding="async"
+        class="signature-dark h-auto w-[10.5rem]"
+      />
+    </a>
+  </div>
+</footer>

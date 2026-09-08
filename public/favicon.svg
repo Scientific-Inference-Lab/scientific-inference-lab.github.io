@@ -1,0 +1,4 @@
+<!-- Intentionally blank: the site uses no logo mark or favicon graphic.
+     Served (rather than omitted) so browsers don't fall back to /favicon.ico
+     and log a 404 on every page load. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"></svg>

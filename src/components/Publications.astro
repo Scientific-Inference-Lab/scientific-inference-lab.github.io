@@ -1,0 +1,59 @@
+---
+import Section from './Section.astro';
+import { publications, pi, content } from '../config';
+---
+
+<Section
+  id="publications"
+  eyebrow={content.publications.eyebrow}
+  title={content.publications.title}
+>
+  <ul class="divide-y divide-line border-y border-line">
+    {
+      publications.map((pub) => (
+        <li class="reveal">
+          <a
+            href={pub.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex flex-col gap-2 py-6 transition-colors hover:bg-surface sm:flex-row sm:items-baseline sm:gap-8 sm:px-4 sm:-mx-4"
+          >
+            <span class="font-serif text-sm text-subtle tabular-nums sm:w-14 sm:shrink-0">
+              {pub.year}
+            </span>
+            <span class="grow">
+              <span class="block font-medium leading-snug text-pretty transition-colors group-hover:text-brand-hover">
+                {pub.title}
+              </span>
+              <span class="mt-1 block text-sm text-muted">
+                {pub.venue}
+                {pub.note && (
+                  <span class="ml-1.5 rounded-full bg-chip-accent px-2 py-0.5 text-[0.7rem] font-medium text-chip-accent-fg">
+                    {pub.note}
+                  </span>
+                )}
+              </span>
+            </span>
+            <span
+              class="text-subtle transition-transform group-hover:translate-x-0.5 group-hover:text-brand sm:shrink-0"
+              aria-hidden="true"
+            >
+              ↗
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="reveal mt-8">
+    <a
+      href={pi.links.scholar}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-sm font-medium text-brand transition-colors hover:text-brand-hover"
+    >
+      {content.publications.fullList} →
+    </a>
+  </div>
+</Section>

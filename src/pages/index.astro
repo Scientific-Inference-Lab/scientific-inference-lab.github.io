@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Research from '../components/Research.astro';
+import Publications from '../components/Publications.astro';
+import People from '../components/People.astro';
+import News from '../components/News.astro';
+import JoinAndContact from '../components/Contact.astro';
+import { site } from '../config';
+---
+
+<Layout title={`${site.name} | ${site.institution}`}>
+  <Header />
+  <main id="main">
+    <Hero />
+    <Research />
+    <Publications />
+    <People />
+    <News />
+    <JoinAndContact />
+  </main>
+</Layout>
