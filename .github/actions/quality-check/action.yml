@@ -1,0 +1,33 @@
+name: Build and browser QC
+description: Verify the same production artifact locally and in CI.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v5
+      with:
+        node-version-file: .nvmrc
+        cache: npm
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: pip
+        cache-dependency-path: tests/requirements-qc.txt
+    - name: Install site dependencies
+      shell: bash
+      run: npm ci
+    - name: Install browser QC dependencies
+      shell: bash
+      run: |
+        python3 -m pip install -r tests/requirements-qc.txt
+        python3 -m playwright install --with-deps chromium webkit
+    - name: Build and verify production output
+      shell: bash
+      run: npm run qc
+    - name: Preserve QC reports and screenshots
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: browser-qc
+        path: output/qc/
+        if-no-files-found: ignore
+        retention-days: 14
