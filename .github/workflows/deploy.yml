@@ -21,8 +21,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
-      - name: Build with Astro
-        uses: withastro/action@v6
+      # Settings > Pages must use GitHub Actions before a deployment can run.
+      # Do not auto-enable it or change repository visibility from CI.
+      - name: Check GitHub Pages configuration
+        uses: actions/configure-pages@v5
+      - name: Build and browser QC
+        uses: ./.github/actions/quality-check
+      - name: Upload verified site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/
 
   deploy:
     needs: build
