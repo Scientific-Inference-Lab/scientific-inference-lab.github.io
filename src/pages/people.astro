@@ -1,0 +1,15 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PeopleProfile from '../components/PeopleProfile.svelte';
+import { site } from '../lib/data/lab';
+import { loadContent } from '../lib/content';
+import { responsiveImage } from '../lib/media';
+import photo from '../lib/assets/pi.jpg';
+const { pi, publications } = await loadContent();
+const portrait = await responsiveImage(photo, pi.photoAlt, '(min-width: 1344px) 486px, (min-width: 768px) calc(40vw - 51.2px), 224px');
+---
+<SiteLayout title="People" description="YongKyung Oh, principal investigator of the Scientific Inference Lab at Pusan National University.">
+  <PageHeader eyebrow="Lab leadership" title="People" description="Meet the principal investigator and review selected recognition, experience, and education." />
+  <PeopleProfile {pi} {site} {portrait} recognition={publications.filter(p => p.recognition)} />
+</SiteLayout>

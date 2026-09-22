@@ -1,0 +1,81 @@
+---
+import { Picture } from 'astro:assets';
+import { ArrowUpRight, Mail } from '@lucide/svelte';
+import { getProfileLinks, site } from '../lib/data/lab';
+import { loadContent } from '../lib/content';
+import university from '../lib/assets/university.png';
+import SiteNavigation from '../components/SiteNavigation.astro';
+import '../lib/styles/app.css';
+interface Props { title: string; description?: string; }
+const { title, description = site.intro } = Astro.props;
+const { pi } = await loadContent();
+const [emailLocal, emailDomain] = pi.email.split('@');
+const profiles = getProfileLinks(pi.links);
+const home = Astro.url.pathname === '/';
+const canonical = new URL(Astro.url.pathname, site.url);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{home ? site.name : `${title} | ${site.name}`}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} /><link rel="icon" href="data:," />
+    <meta property="og:title" content={home ? site.name : `${title} | ${site.name}`} />
+    <meta property="og:description" content={description} /><meta property="og:type" content="website" /><meta property="og:url" content={canonical} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteNavigation pathname={Astro.url.pathname} />
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="site-footer">
+      <div class="wrap footer-body">
+        <div class="footer-grid">
+          <div class="footer-identity">
+            <a href="/" class="wordmark"><span class="wordmark-text">Scientific Inference Lab</span></a>
+            <p class="footer-affiliation">{site.department}<br />{site.institution}</p>
+          </div>
+          <div class="footer-contact">
+            <p class="footer-person"><strong>{pi.name}</strong><span>Principal Investigator</span></p>
+            <a href={`mailto:${pi.email}`} class="text-link footer-email" data-footer-email><span><span class="email-part">{emailLocal}</span><wbr /><span class="email-part">@{emailDomain}</span></span><Mail size={16} aria-hidden="true" /></a>
+            <nav aria-label="PI profiles">
+              <ul class="footer-profiles">
+                {profiles.map(profile => <li><a href={profile.href} class="text-link"><span>{profile.label}</span><ArrowUpRight size={16} aria-hidden="true" /></a></li>)}
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <a href={site.universityUrl} class="footer-university" aria-label="Pusan National University"><Picture src={university} formats={['avif','webp']} widths={[194,388]} sizes="160px" alt="Pusan National University" loading="lazy" /></a>
+          <div class="footer-meta"><span>&copy; {new Date().getFullYear()} Scientific Inference Lab</span><span>Yangsan, Republic of Korea</span></div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+<style>
+  .site-footer { background: var(--color-canvas); margin-top: 5rem; padding-block: 2.5rem 1.5rem; }
+  .footer-body { container: footer-layout / inline-size; }
+  .footer-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 2rem; align-items: start; }
+  .footer-identity,.footer-contact { min-width: 0; }
+  .footer-affiliation { margin-top: .75rem; font-size: .875rem; line-height: 1.5; text-wrap: pretty; }
+  .footer-person { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; padding-top: .625rem; }
+  .footer-person strong { font-size: 1rem; font-weight: 600; color: var(--color-ink); }
+  .footer-person > span { font-size: .875rem; color: var(--color-muted); }
+  .footer-profiles { display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; margin-top: .25rem; }
+  .footer-profiles li { min-width: 0; }
+  .footer-profiles a { min-height: 44px; max-width: 100%; gap: .5rem; font-size: 1rem; }
+  .footer-profiles a > span { min-width: 0; overflow-wrap: normal; }
+  .footer-email { max-width: 100%; margin-top: .5rem; overflow-wrap: normal; }
+  .email-part { white-space: nowrap; }
+  .footer-bottom { display: grid; grid-template-columns: minmax(0,1fr); gap: 1.25rem 2rem; border-top: 1px solid var(--color-line); padding-top: 1.25rem; margin-top: 2rem; }
+  .footer-university { display: inline-flex; align-items: center; min-height: 44px; max-width: 100%; justify-self: start; }
+  .footer-university :global(img) { width: 160px; max-width: 100%; height: auto; }
+  .footer-meta { display: flex; flex-direction: column; flex-wrap: wrap; gap: .25rem 1.5rem; min-width: 0; font-size: .875rem; line-height: 1.5; color: var(--color-muted); }
+  @container footer-layout (min-width: 40rem) {
+    .footer-grid { grid-template-columns: minmax(0,.95fr) minmax(0,1.05fr); gap: 4rem; }
+    .footer-bottom { grid-template-columns: auto minmax(0,1fr); align-items: center; }
+    .footer-meta { flex-direction: row; justify-content: space-between; align-items: center; }
+  }
+  @media (max-width: 47.99rem) { .site-footer { margin-top: 3rem; } }
+</style>

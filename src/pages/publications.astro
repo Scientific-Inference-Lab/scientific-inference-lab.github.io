@@ -1,0 +1,15 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import PublicationLibrary from '../components/PublicationLibrary.svelte';
+import { ArrowUpRight } from '@lucide/svelte';
+import { pi } from '../lib/data/lab';
+import { loadContent } from '../lib/content';
+const { publications } = await loadContent();
+---
+<SiteLayout title="Publications" description="Publications by YongKyung Oh in machine learning, time series, scientific inference, and engineering applications.">
+  <PageHeader eyebrow="Research record" title="Publications" description="Search the complete publication record by title, author, venue, year, or track.">
+    <a slot="action" href={pi.links.scholar} class="text-link">Google Scholar<ArrowUpRight size={16} aria-hidden="true" /></a>
+  </PageHeader>
+  <PublicationLibrary {publications} client:load />
+</SiteLayout>

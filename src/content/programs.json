@@ -1,0 +1,93 @@
+[
+  {
+    "id": "ai-for-science",
+    "title": "AI for Science",
+    "shortTitle": "AI for Science",
+    "question": "How can scientific knowledge, observations, and simulation help uncover mechanisms in complex systems?",
+    "summary": "Combining machine learning, scientific knowledge, and simulation to discover mechanisms and understand complex systems.",
+    "description": "Combining machine learning, scientific knowledge, and simulation to discover mechanisms and understand complex systems.",
+    "agenda": [
+      "Inverse problems and system identification",
+      "Simulation-based surrogate models",
+      "Experimental design"
+    ],
+    "related": [
+      {
+        "id": "oh_multi-view_2025",
+        "label": "Medical time series"
+      },
+      {
+        "id": "oh_modeling_2025",
+        "label": "Astronomical time series"
+      }
+    ],
+    "order": 0
+  },
+  {
+    "id": "continuous-time-modeling",
+    "title": "Continuous-Time Modeling",
+    "shortTitle": "Continuous-Time Modeling",
+    "question": "How can we learn, forecast, and simulate continuous dynamics from irregular observations?",
+    "summary": "Learning continuous dynamics from irregular observations through neural differential equations, with attention to stability and uncertainty.",
+    "description": "Learning continuous dynamics from irregular observations through neural differential equations, with attention to stability and uncertainty.",
+    "agenda": [
+      "Neural differential equations",
+      "Dynamic system identification and forecasting",
+      "Stability and uncertainty"
+    ],
+    "related": [
+      {
+        "id": "oh_flowpath_2026",
+        "label": "FlowPath"
+      },
+      {
+        "id": "oh_stable_2024",
+        "label": "Stable neural dynamics"
+      }
+    ],
+    "order": 1
+  },
+  {
+    "id": "evidence-centered-ai",
+    "title": "Evidence-Centered AI",
+    "shortTitle": "Evidence-Centered AI",
+    "question": "What comparisons and uncertainty assessments justify an AI claim?",
+    "summary": "Developing evaluation principles that align AI claims with robust comparisons, uncertainty assessment, and reproducible evidence.",
+    "description": "Developing evaluation principles that align AI claims with robust comparisons, uncertainty assessment, and reproducible evidence.",
+    "agenda": [
+      "Validity of comparisons and reproducibility",
+      "Uncertainty assessment",
+      "Distribution shifts and failure analysis"
+    ],
+    "related": [
+      {
+        "id": "oh_position_2026_accepted_in_press",
+        "label": "Evidence standards"
+      },
+      {
+        "id": "oh_silent_failures_2026_accepted_in_press",
+        "label": "Silent failures"
+      }
+    ],
+    "order": 2
+  },
+  {
+    "id": "industrial-ai-and-decision-making",
+    "aliases": ["inference-for-decision-making"],
+    "title": "Industrial AI & Decision-Making",
+    "shortTitle": "Industrial AI & Decision-Making",
+    "question": "How can machine learning, optimization, and simulation support operating decisions in industrial systems?",
+    "summary": "Connecting machine learning, optimization, and simulation to support decisions in manufacturing, logistics, and service systems.",
+    "description": "Connecting machine learning, optimization, and simulation to support decisions in manufacturing, logistics, and service systems.",
+    "agenda": [
+      "Quality, reliability, and predictive maintenance",
+      "Resource allocation",
+      "Production and operations planning"
+    ],
+    "related": [
+      { "id": "oh_predicting_2026", "label": "Traffic disruption impacts" },
+      { "id": "oh_grid-based_2024", "label": "Maritime anomaly monitoring" }
+    ],
+    "order": 3
+  }
+]

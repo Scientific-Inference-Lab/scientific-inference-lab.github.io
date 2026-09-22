@@ -1,0 +1,68 @@
+[
+  {
+    "id": "yongkyung-oh",
+    "name": "YongKyung Oh",
+    "role": "Assistant Professor",
+    "affiliation": "Data Science Major, School of BioMedical Convergence Engineering, Pusan National University",
+    "photoAlt": "YongKyung Oh speaking at a lectern",
+    "honors": [
+      {
+        "title": "Chancellor's Award for Postdoctoral Research",
+        "institution": "UCLA",
+        "year": 2025,
+        "status": "Nominee"
+      }
+    ],
+    "shortBio": "YongKyung Oh develops machine learning methods for scientific and engineering systems. Previously, he was a postdoctoral researcher at the University of California, Los Angeles.",
+    "bio": "YongKyung Oh directs the Scientific Inference Lab, which develops machine learning methods for modeling, inference, and decision making in scientific and engineering systems. Before joining Pusan National University, he was a Postdoctoral Researcher in the Medical and Imaging Informatics group at the David Geffen School of Medicine, University of California, Los Angeles, where he developed machine learning methods for healthcare.",
+    "education": [
+      {
+        "period": "2017-2023",
+        "degree": "Doctor of Philosophy in Industrial Engineering",
+        "where": "Ulsan National Institute of Science and Technology"
+      },
+      {
+        "period": "2015-2017",
+        "degree": "Master of Science in Technology and Innovation Management",
+        "where": "Ulsan National Institute of Science and Technology"
+      },
+      {
+        "period": "2011-2015",
+        "degree": "Bachelor of Science in Physics",
+        "where": "Ulsan National Institute of Science and Technology"
+      }
+    ],
+    "appointments": [
+      {
+        "period": "2023-2026",
+        "role": "Postdoctoral Researcher",
+        "where": "Medical and Imaging Informatics, David Geffen School of Medicine, University of California, Los Angeles"
+      },
+      {
+        "period": "2023-2024",
+        "role": "Postdoctoral Researcher",
+        "where": "Industry Intelligentization Institute, Ulsan National Institute of Science and Technology"
+      },
+      {
+        "period": "2020",
+        "role": "Intensive Artificial Intelligence Program",
+        "where": "Carnegie Mellon University"
+      },
+      {
+        "period": "2017",
+        "role": "Visiting Scientist",
+        "where": "General Motors Global Research and Development Center"
+      }
+    ],
+    "email": "yongkyung.oh@pusan.ac.kr",
+    "phone": "051-510-6624",
+    "office": "Office 415, Gyeongam Engineering Building",
+    "address": "49 Busandaehak-ro, Mulgeum-eup, Yangsan-si, Gyeongsangnam-do 50612, Republic of Korea",
+    "links": {
+      "scholar": "https://scholar.google.com/citations?user=YJ1L50YAAAAJ&hl=en",
+      "github": "https://github.com/yongkyung-oh",
+      "linkedin": "https://www.linkedin.com/in/yongkyung-oh",
+      "personal": "https://yongkyung-oh.github.io"
+    }
+  }
+]

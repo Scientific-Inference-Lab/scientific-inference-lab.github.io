@@ -1,0 +1,59 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+}
+
+const { eyebrow, title, description } = Astro.props;
+const hasAction = Astro.slots.has('action');
+---
+
+<header class="wrap page-head" data-page-header>
+  <div class:list={['page-head-layout', { 'has-action': hasAction }]}>
+    <div class="page-head-copy">
+      <p class="kicker page-eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      <p class="page-description">{description}</p>
+    </div>
+    {hasAction && <div class="page-head-action"><slot name="action" /></div>}
+  </div>
+</header>
+
+<style>
+  .page-head {
+    container: page-heading / inline-size;
+    padding-block: 2.75rem 2.25rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .page-head-layout { display: grid; gap: 1.25rem 2rem; align-items: end; }
+  .page-head-copy { min-width: 0; }
+  .page-eyebrow { margin-bottom: .625rem; }
+  .page-head h1 { font-size: var(--type-page-title); line-height: 1.08; }
+  .page-description {
+    max-width: 46rem;
+    margin-top: 1rem;
+    color: var(--color-body);
+    font-size: var(--type-page-lead);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+  .page-head-action { min-width: 0; justify-self: start; }
+  .page-head-action :global(.text-link) { gap: .375rem; font-size: .875rem; }
+  @container page-heading (min-width: 48rem) {
+    .page-head-layout.has-action { grid-template-columns: minmax(0,1fr) auto; }
+    .page-head-action { justify-self: end; padding-bottom: .125rem; }
+  }
+  @container page-heading (max-width: 15rem) {
+    .page-head h1 { font-size: 1.5rem; }
+    .page-description { font-size: 1rem; }
+  }
+  @container page-heading (max-width: 10rem) {
+    .page-head h1 { font-size: 1.25rem; }
+  }
+  @media (max-width: 47.99rem) {
+    .page-head { padding-block: 1.75rem 1.5rem; }
+    .page-head-layout { gap: .875rem; }
+    .page-description { margin-top: .875rem; }
+  }
+</style>

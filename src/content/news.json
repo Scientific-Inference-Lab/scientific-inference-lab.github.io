@@ -1,0 +1,32 @@
+[
+  {
+    "id": "lab-opens",
+    "date": "2026-09",
+    "category": "Lab",
+    "title": "Scientific Inference Lab opens",
+    "text": "The Scientific Inference Lab opens at Pusan National University."
+  },
+  {
+    "id": "silent-failures",
+    "date": "2026-08",
+    "category": "Publication",
+    "title": "Silent failures at KDD 2026",
+    "text": "The paper on silent failures in federated personalization appears in the KDD 2026 proceedings, Blue Sky Ideas Track.",
+    "publicationId": "silent-failures"
+  },
+  {
+    "id": "evidence-standards",
+    "date": "2026-07",
+    "category": "Publication",
+    "title": "Evidence standards at ICML 2026",
+    "text": "YongKyung Oh presented a single-author position paper on evidence standards for machine learning at ICML 2026.",
+    "publicationId": "evidence-standards"
+  },
+  {
+    "id": "nvidia-academic-grant",
+    "date": "2026-06",
+    "category": "Grant",
+    "title": "Selected for the NVIDIA Academic Grant Program",
+    "text": "The Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework project, led by YongKyung Oh with Alex Bui at UCLA Medical Imaging Informatics, was selected for the NVIDIA Academic Grant Program."
+  }
+]

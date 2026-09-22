@@ -1,0 +1,70 @@
+---
+import { Menu, X } from '@lucide/svelte';
+import { nav } from '../lib/data/navigation';
+
+interface Props { pathname: string; }
+const { pathname } = Astro.props;
+---
+<header data-site-header class="site-header">
+  <div class="wrap header-inner">
+    <a href="/" class="wordmark" aria-label="Scientific Inference Lab home" aria-current={pathname === '/' ? 'page' : undefined}>
+      <span class="wordmark-text">Scientific Inference Lab</span>
+    </a>
+    <nav aria-label="Main navigation" class="site-nav desktop-nav">
+      {nav.map(item => <a href={item.href} aria-current={pathname === item.href ? 'page' : undefined}><span class="nav-label">{item.label}</span></a>)}
+    </nav>
+    <details data-mobile-navigation class="mobile-navigation">
+      <summary class="icon-button menu-toggle" data-menu-toggle aria-label="Main navigation menu" title="Menu">
+        <span class="menu-open-icon"><Menu size={22} aria-hidden="true" /></span><span class="menu-close-icon"><X size={22} aria-hidden="true" /></span>
+      </summary>
+      <nav id="site-navigation" aria-label="Main navigation" class="site-nav mobile-nav">
+        {nav.map(item => <a href={item.href} aria-current={pathname === item.href ? 'page' : undefined}><span class="nav-label">{item.label}</span></a>)}
+      </nav>
+    </details>
+  </div>
+</header>
+
+<script>
+  const disclosure = document.querySelector<HTMLDetailsElement>('[data-mobile-navigation]');
+  const toggle = disclosure?.querySelector<HTMLElement>('[data-menu-toggle]');
+  if (disclosure && toggle) {
+    const desktop = matchMedia('(min-width: 64rem)');
+    // Leave native state intact when the script arrives after a visitor opens it.
+    desktop.addEventListener('change', () => {
+      if (desktop.matches) disclosure.open = false;
+    });
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && disclosure.open) {
+        disclosure.open = false;
+        toggle.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .site-header { background: var(--color-paper); border-bottom: 1px solid var(--color-line); }
+  .header-inner { min-height: 88px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem 1.5rem; padding-block: 14px; }
+  .wordmark-text { font-size: 24px; }
+  .site-nav { display: flex; align-items: center; gap: 2rem; }
+  .site-nav a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; line-height: 1.5; }
+  .nav-label { position: relative; padding-block: .25rem; }
+  .nav-label::after { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: var(--color-action); transform: scaleX(0); transform-origin: left; transition: transform var(--duration-state); }
+  .site-nav a:hover,.site-nav a[aria-current="page"] { color: var(--color-action); }
+  .site-nav a:hover .nav-label::after,.site-nav a[aria-current="page"] .nav-label::after { transform: scaleX(1); }
+  .mobile-navigation { display: none; }
+  .menu-toggle { list-style: none; cursor: pointer; }
+  .menu-toggle::-webkit-details-marker { display: none; }
+  .menu-close-icon { display: none; }
+  details[open] .menu-open-icon { display: none; }
+  details[open] .menu-close-icon { display: block; }
+  @media (max-width: 63.99rem) {
+    .header-inner { position: relative; display: block; min-height: 72px; padding-block: 14px; }
+    .wordmark-text { font-size: 19px; }
+    .desktop-nav { display: none; }
+    .mobile-navigation { display: block; }
+    .menu-toggle { position: absolute; top: 14px; right: 0; }
+    .mobile-nav { flex-direction: column; align-items: stretch; gap: 0; margin-top: .75rem; }
+    .mobile-nav a { min-height: 48px; padding-block: .25rem; }
+  }
+</style>

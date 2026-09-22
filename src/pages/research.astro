@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import ResearchExplorer from '../components/ResearchExplorer.svelte';
+import { loadContent } from '../lib/content';
+const { programs, publications } = await loadContent();
+const entries = programs.map(program => ({
+  ...program,
+  papers: program.related.map(r => {
+    const paper = publications.find(p => p.id === r.id)!;
+    return { id: paper.id, title: paper.title, venue: paper.venue, year: paper.year, recognition: paper.recognition, context: r.label };
+  }),
+}));
+---
+<SiteLayout title="Research" description="Scientific machine learning, continuous-time modeling, evidence-centered AI, and inference for engineering decisions.">
+  <PageHeader eyebrow="Questions, methods and evidence" title="Research" description="Four overlapping research directions. Explore their questions, related publications, and research agendas." />
+  <ResearchExplorer programs={entries} />
+</SiteLayout>
