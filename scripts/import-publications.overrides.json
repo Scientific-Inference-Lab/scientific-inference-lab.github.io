@@ -1,0 +1,56 @@
+{
+  "oh_position_2026_accepted_in_press": {
+    "aliases": ["evidence-standards"],
+    "fields": {
+      "title": "Position: State-of-the-Art Claims Require State-of-the-Art Evidence",
+      "authors": ["YongKyung Oh"],
+      "type": "Position paper",
+      "venueName": "43rd International Conference on Machine Learning (ICML 2026)",
+      "presentationStatus": "presented",
+      "bibliographyStatus": "final-metadata-pending"
+    },
+    "evidence": ["https://icml.cc/Downloads/2026", "https://icml.cc/virtual/2026/poster/67252"],
+    "reason": "PI confirmed presentation completion on 2026-09-22; the official Downloads listing confirms the program item, not attendance or final proceedings. Preserve imported acceptance separately from presented event and pending final metadata. Do not invent a final citation or a Published claim."
+  },
+  "oh_silent_failures_2026_accepted_in_press": {
+    "aliases": ["silent-failures"],
+    "fields": {
+      "title": "Silent Failures in Federated Personalization of Foundation Models",
+      "authors": ["YongKyung Oh", "Alex Bui"],
+      "type": "Blue Sky Ideas Track",
+      "status": "published",
+      "url": "https://doi.org/10.1145/3770855.3818661"
+    },
+    "evidence": ["https://api.crossref.org/works/10.1145/3770855.3818661"],
+    "reason": "Existing field-level verification in audit 14 and upstream update/REQUESTS.md confirms the published ACM record; Zotero registration remains pending."
+  },
+  "oh_survey_aware_2026_accepted_in_press": {
+    "aliases": ["survey-aware"],
+    "fields": {
+      "title": "Survey-Aware Machine Learning: A Guideline for Valid Population Health Inference based on Scoping Review",
+      "authors": ["YongKyung Oh", "Henry W Zheng", "Jeffrey Feng", "Alex A T Bui"],
+      "status": "published",
+      "url": "https://proceedings.mlr.press/v333/oh26a.html"
+    },
+    "evidence": ["https://proceedings.mlr.press/v333/oh26a.html"],
+    "reason": "Existing field-level verification in audit 14 and upstream update/REQUESTS.md confirms PMLR 333:198-220; Zotero registration remains pending."
+  },
+  "oh_flowpath_2026": {
+    "aliases": ["flowpath"],
+    "fields": {},
+    "evidence": [],
+    "reason": "Retain existing route and program fragment."
+  },
+  "oh_multi-view_2025": {
+    "aliases": ["multi-view"],
+    "fields": {"recognition": "Best Paper Award, Models and Methods Track"},
+    "evidence": [],
+    "reason": "Preserve the already verified award-track display from docs/data/verified-presentation-snapshot.ts."
+  },
+  "oh_stable_2024": {
+    "aliases": ["stable-neural-sdes"],
+    "fields": {"recognition": "Spotlight"},
+    "evidence": ["https://openreview.net/forum?id=4VIgNuQ1pY"],
+    "reason": "Preserve verified Spotlight status without importing the unsupported percentage in the CV display note."
+  }
+}
