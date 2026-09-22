@@ -1,19 +1,35 @@
 {
   "name": "scientific-inference-lab",
-  "type": "module",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "astro check"
+    "dev": "astro dev --host 127.0.0.1",
+    "check": "astro check && svelte-check --tsconfig ./tsconfig.json",
+    "build": "npm run check && astro build",
+    "preview": "astro preview --host 127.0.0.1",
+    "test": "node --test tests/site.test.mjs",
+    "qc": "node scripts/qc.mjs"
   },
   "dependencies": {
-    "astro": "^7.2.9"
+    "@astrojs/svelte": "9.0.1",
+    "@lucide/svelte": "1.43.0",
+    "astro": "7.3.2",
+    "bits-ui": "2.19.1",
+    "svelte": "5.57.0",
+    "zod": "4.5.4"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "tailwindcss": "^4.3.3"
+    "@astrojs/check": "0.9.10",
+    "@retorquere/bibtex-parser": "11.0.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "26.5.0",
+    "parse5": "8.0.1",
+    "svelte-check": "4.7.6",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3"
   }
 }

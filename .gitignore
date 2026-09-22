@@ -25,10 +25,15 @@ yarn-error.log*
 # Astro
 dist/
 .astro/
+.svelte-kit/
 
 # Playwright scratch output
 .playwright-cli/
 output/
+
+# Python test caches
+__pycache__/
+*.py[cod]
 
 # Environment / secrets
 .env
@@ -49,6 +54,8 @@ CLAUDE.md
 CLAUDE.local.md
 AGENTS.md
 KNOWLEDGE.md
+DESIGN.md
+_BOOTSTRAP_GUIDE.md
 
 # Other AI coding agents
 .cursor/
@@ -67,8 +74,15 @@ GEMINI.md
 .mcp.json
 
 # Internal notes & scratch work
+# /docs/ holds the brand and web spec drafts and the source deck — working
+# material for the site, not part of it.
+/docs/
+/_archive/
 notes/
 scratch/
+_scratch/
+tmp/
 TODO.md
 NOTES.md
 *.local.md
+*.internal.md
