@@ -24,3 +24,11 @@ contain zero Hangul codepoints. `app.css` reuses the official Latin unicode rang
 and provides no Korean-range source. Font bytes retain their embedded OFL notice.
 The distribution notice and complete upstream license are served at
 `public/licenses/pretendard.txt`.
+
+## Wordmark use
+
+The web wordmark reuses `PretendardStd-Bold.subset.6.woff2` at weight 700.
+There is no separate web font or modified subset for the name. The prior
+Newsreader 600 trial was replaced after the PI found it disconnected from the
+rest of the page. The off-site outlined SVG and generator are in
+`docs/design/brand/`.

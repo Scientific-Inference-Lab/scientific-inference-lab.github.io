@@ -35,14 +35,15 @@ const publications = defineCollection({
     presentationStatus: z.literal('presented').optional(),
     bibliographyStatus: z.literal('final-metadata-pending').optional(),
     url, codeUrl: url.optional(), links: z.array(z.object({ type: text, url })),
-    bibtex: text.nullable(), bibtexEntryType: z.enum(['article', 'inproceedings', 'misc']).nullable() }),
+    bibtex: text.nullable(), apa: text.nullable(), bibtexEntryType: z.enum(['article', 'inproceedings', 'misc']).nullable() }),
 });
 const people = defineCollection({
   loader: file('src/content/people.json'),
   schema: z.object({ name: text, role: text, affiliation: text, photoAlt: text,
     shortBio: text, bio: text, email: z.email(), phone: text, office: text,
     honors: z.array(z.object({ title: text, institution: text, year: z.number().int(), status: z.enum(['Nominee', 'Finalist', 'Award', 'Scholar']) })),
-    address: text, links: z.object({ scholar: url, github: url, linkedin: url, personal: url }),
+    grants: z.array(z.object({ title: text, sponsor: text, year: z.number().int(), role: text, project: text, principalInvestigator: text })),
+    address: text, links: z.object({ orcid: url, scholar: url, github: url, linkedin: url, personal: url }),
     education: z.array(z.object({ period: text, degree: text, where: text })),
     appointments: z.array(z.object({ period: text, role: text, where: text })) }),
 });

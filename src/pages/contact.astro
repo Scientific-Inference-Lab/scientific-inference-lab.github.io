@@ -2,14 +2,12 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import ContactPanel from '../components/ContactPanel.astro';
-import { site, joinUs } from '../lib/data/lab';
+import { site } from '../lib/data/lab';
 import { loadContent } from '../lib/content';
-import { responsiveImage } from '../lib/media';
-import signature from '../lib/assets/university.png';
+import university from '../lib/assets/university.svg';
 const { pi } = await loadContent();
-const university = await responsiveImage(signature, site.institution, '(min-width: 640px) 320px, 240px');
 ---
 <SiteLayout title="Contact" description="Contact the Scientific Inference Lab for research opportunities and collaboration.">
   <PageHeader eyebrow="Research inquiries" title="Contact" description="Contact the lab about research opportunities and collaboration." />
-  <ContactPanel {pi} {site} {joinUs} {university} />
+  <ContactPanel {pi} {site} {university} />
 </SiteLayout>

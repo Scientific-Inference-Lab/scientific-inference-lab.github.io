@@ -13,6 +13,16 @@
         "status": "Nominee"
       }
     ],
+    "grants": [
+      {
+        "title": "NVIDIA Academic Grant Program",
+        "sponsor": "NVIDIA",
+        "year": 2026,
+        "role": "Lead Scientist on the project team",
+        "project": "Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework",
+        "principalInvestigator": "Alex A. T. Bui, UCLA"
+      }
+    ],
     "shortBio": "YongKyung Oh develops machine learning methods for scientific and engineering systems. Previously, he was a postdoctoral researcher at the University of California, Los Angeles.",
     "bio": "YongKyung Oh directs the Scientific Inference Lab, which develops machine learning methods for modeling, inference, and decision making in scientific and engineering systems. Before joining Pusan National University, he was a Postdoctoral Researcher in the Medical and Imaging Informatics group at the David Geffen School of Medicine, University of California, Los Angeles, where he developed machine learning methods for healthcare.",
     "education": [
@@ -23,7 +33,7 @@
       },
       {
         "period": "2015-2017",
-        "degree": "Master of Science in Technology and Innovation Management",
+        "degree": "Master in Technology and Innovation Management",
         "where": "Ulsan National Institute of Science and Technology"
       },
       {
@@ -59,6 +69,7 @@
     "office": "Office 415, Gyeongam Engineering Building",
     "address": "49 Busandaehak-ro, Mulgeum-eup, Yangsan-si, Gyeongsangnam-do 50612, Republic of Korea",
     "links": {
+      "orcid": "https://orcid.org/0000-0002-8027-3433",
       "scholar": "https://scholar.google.com/citations?user=YJ1L50YAAAAJ&hl=en",
       "github": "https://github.com/yongkyung-oh",
       "linkedin": "https://www.linkedin.com/in/yongkyung-oh",

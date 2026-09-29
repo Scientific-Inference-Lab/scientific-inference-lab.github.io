@@ -8,8 +8,17 @@ import { responsiveImage } from '../lib/media';
 import photo from '../lib/assets/pi.jpg';
 const { pi, publications } = await loadContent();
 const portrait = await responsiveImage(photo, pi.photoAlt, '(min-width: 1344px) 486px, (min-width: 768px) calc(40vw - 51.2px), 224px');
+const selectedRecognition = [
+  { alias: 'evidence-standards', label: 'Sole-authored position paper' },
+  { alias: 'multi-view', label: 'Best Paper Award' },
+  { alias: 'stable-neural-sdes', label: 'Spotlight' },
+].map(({ alias, label }) => {
+  const publication = publications.find(item => item.id === alias || item.aliases?.includes(alias));
+  if (!publication) throw new Error(`Missing selected recognition publication: ${alias}`);
+  return { id: publication.id, venue: publication.venue, year: publication.year, label };
+});
 ---
 <SiteLayout title="People" description="YongKyung Oh, principal investigator of the Scientific Inference Lab at Pusan National University.">
   <PageHeader eyebrow="Lab leadership" title="People" description="Meet the principal investigator and review selected recognition, experience, and education." />
-  <PeopleProfile {pi} {site} {portrait} recognition={publications.filter(p => p.recognition)} />
+  <PeopleProfile {pi} {site} {portrait} recognition={selectedRecognition} />
 </SiteLayout>

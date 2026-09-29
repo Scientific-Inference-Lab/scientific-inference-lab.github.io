@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { Search, X } from '@lucide/svelte';
-  import { publicationStatusLabel, publicationType, type Publication } from '../lib/data/publications';
+  import { publicationType, type Publication } from '../lib/data/publications';
   import PublicationRecord from './PublicationRecord.svelte';
 
   let { publications }: { publications: Publication[] } = $props();
@@ -18,7 +18,7 @@
   const types = $derived([...new Set(publications.map(publicationType))].sort());
   const words = $derived(query.trim().toLowerCase().split(/\s+/).filter(Boolean));
   const matching = $derived(publications.filter((record) => {
-    const searchText = [record.title, ...record.authors, record.venue, record.venueName, publicationStatusLabel(record), publicationType(record), record.recognition ?? ''].join(' ').toLowerCase();
+    const searchText = [record.title, ...record.authors, record.venue, record.venueName, publicationType(record), record.recognition ?? ''].join(' ').toLowerCase();
     return words.every((word) => searchText.includes(word)) && (!year || String(record.year) === year) && (!type || publicationType(record) === type);
   }));
   const matchingIds = $derived(new Set(matching.map(({ id }) => id)));
@@ -128,14 +128,20 @@
   </div>
   <aside class="library-note mt-10 pt-5 text-sm text-muted" aria-label="About this publication list">
     <p class="text-muted">{publications.length} publications · {publications.filter(p => p.category === 'conference').length} conference papers · {publications.filter(p => p.category === 'journal').length} journal articles · {years.at(-1)}–{years[0]}</p>
-    <p class="mt-2 text-muted"><span class="font-semibold text-action">YongKyung Oh</span>, principal investigator, is highlighted in the author lists.</p>
+    <p class="mt-2 text-muted"><span class="font-bold text-ink">YongKyung Oh</span>, principal investigator, is highlighted in the author lists.</p>
   </aside>
 </section>
 
 <style>
   .filter-grid { grid-template-columns: minmax(0,1fr) 10rem 15rem; align-items: end; }
-  @media (max-width: 63.99rem) { .filter-grid { grid-template-columns: minmax(0,1fr) minmax(0,1.8fr); } .search-control { grid-column: 1/-1; } }
   .library-tools { container: library-filters / inline-size; border-bottom: 1px solid var(--color-line); }
+  /* A container query, not a media query: rem here follows the root text size, so
+     enlarged text moves the fixed 10rem/15rem columns to the two-row layout
+     instead of overflowing. The threshold is unchanged at default text size. */
+  @container library-filters (max-width: 63.99rem) {
+    .filter-grid { grid-template-columns: minmax(0,1fr) minmax(0,1.8fr); }
+    .search-control { grid-column: 1/-1; }
+  }
   @container library-filters (max-width: 23rem) {
     .filter-grid { grid-template-columns: minmax(0,1fr); }
     .search-control { grid-column: auto; }

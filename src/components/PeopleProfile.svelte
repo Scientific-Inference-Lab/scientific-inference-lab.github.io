@@ -1,18 +1,24 @@
 <script lang="ts">
-  import { ArrowRight, ArrowUpRight, Mail } from '@lucide/svelte';
+  import { ArrowRight, ArrowUpRight } from '@lucide/svelte';
   import { getProfileLinks } from '../lib/data/lab';
   import type { pi as personData, site as siteData } from '../lib/data/lab';
-  import type { Publication } from '../lib/data/publications';
 
   interface ResponsiveImage {
     src: string; width: number; height: number; alt: string;
     avif?: string; webp?: string; srcset?: string; sizes?: string;
   }
 
+  interface RecognitionItem {
+    id: string;
+    venue: string;
+    year: number;
+    label: string;
+  }
+
   let { pi, site, recognition, portrait }: {
     pi: typeof personData;
     site: typeof siteData;
-    recognition: Publication[];
+    recognition: RecognitionItem[];
     portrait: ResponsiveImage;
   } = $props();
 
@@ -31,14 +37,13 @@
   <div class="profile-identity min-w-0">
     <p class="kicker mb-2">Principal Investigator</p>
     <h2 id="pi-name" class="font-display font-bold">{pi.name}</h2>
-    <p class="mt-3 text-xl font-medium text-action">{pi.role}</p>
-    <p class="mt-2 leading-relaxed text-body">{site.department}</p>
-    <p class="leading-relaxed text-body">{site.institution}</p>
+    <p class="profile-role mt-3 text-xl font-medium text-ink">{pi.role}</p>
+    <p class="profile-affiliation mt-2 leading-relaxed text-body">{site.affiliation}</p>
   </div>
-  <div class="profile-actions min-w-0">
-    <a data-pi-contact href={`mailto:${pi.email}`} class="button"><Mail size={18} aria-hidden="true" />Email</a>
-  </div>
-  <p data-pi-bio class="profile-bio min-w-0 max-w-[62ch] text-lg leading-relaxed text-body">{pi.bio}</p>
+  <section class="profile-bio min-w-0" aria-labelledby="bio-heading">
+    <h3 id="bio-heading" class="bio-heading">Bio</h3>
+    <p data-pi-bio class="max-w-[62ch] text-lg leading-relaxed text-body">{pi.bio}</p>
+  </section>
   <ul class="profile-links" aria-label="YongKyung Oh's profiles">
     {#each profiles as profile}
       <li><a href={profile.href} class="text-link inline-flex min-h-11 items-center gap-2">{profile.label}<ArrowUpRight size={16} aria-hidden="true" /></a></li>
@@ -56,9 +61,9 @@
     <div class="recognition-items">
       <section class="recognition-group" aria-labelledby="personal-recognition-heading">
         <h3 id="personal-recognition-heading" class="recognition-group-title">Personal recognition</h3>
-        <ul class="grid gap-6">
+        <ul class="recognition-list">
           {#each pi.honors as honor}
-            <li class="min-w-0">
+            <li class="recognition-row">
               <p class="recognition-meta"><strong>{honor.status}</strong> · {honor.institution} · {honor.year}</p>
               <h4 class="recognition-title">{honor.title}</h4>
             </li>
@@ -67,13 +72,26 @@
       </section>
       <section class="recognition-group" aria-labelledby="paper-recognition-heading">
         <h3 id="paper-recognition-heading" class="recognition-group-title">Paper recognition</h3>
-        <ul class="recognition-list grid gap-8">
+        <ul class="recognition-list">
           {#each recognition as publication}
-            <li class="min-w-0">
+            <li class="recognition-row">
               <p class="recognition-meta">{publication.venue} · {publication.year}</p>
-              <h4 class="recognition-title">{publication.recognition}</h4>
-              <p class="recognition-kind">{publication.recognition === 'Spotlight' ? 'Presentation distinction' : 'Paper award'}</p>
-              <a href={`/publications/#${publication.id}`} class="text-link mt-3 inline-flex min-h-11 items-center gap-2">View publication<ArrowRight size={17} aria-hidden="true" /></a>
+              <h4 class="recognition-title"><a href={`/publications/#${publication.id}`} class="recognition-link">{publication.label}<ArrowRight size={17} aria-hidden="true" /></a></h4>
+            </li>
+          {/each}
+        </ul>
+      </section>
+      <section class="recognition-group" aria-labelledby="grant-recognition-heading">
+        <h3 id="grant-recognition-heading" class="recognition-group-title">Research grant</h3>
+        <ul class="recognition-list">
+          {#each pi.grants as grant}
+            <li class="recognition-row" data-grant>
+              <p class="recognition-meta">{grant.sponsor} · {grant.year}</p>
+              <div class="min-w-0">
+                <h4 class="recognition-title">{grant.title}</h4>
+                <p class="recognition-detail">{grant.role}: {grant.project}</p>
+                <p class="recognition-detail">Principal Investigator: {grant.principalInvestigator}</p>
+              </div>
             </li>
           {/each}
         </ul>
@@ -114,17 +132,20 @@
 
 <style>
   .profile-container { container: profile / inline-size; padding-top: 2.5rem; }
-  .profile-layout { display: grid; grid-template-columns: minmax(0,1fr); grid-template-areas: 'photo' 'identity' 'actions' 'bio' 'links'; gap: 1.25rem; align-items: start; }
+  .profile-layout { display: grid; grid-template-columns: minmax(0,1fr); grid-template-areas: 'photo' 'identity' 'bio' 'links'; gap: 1.25rem; align-items: start; }
   .profile-identity { grid-area: identity; container: profile-heading / inline-size; }
   #pi-name { font-size: 2.25rem; }
+  .profile-role, .profile-affiliation { text-wrap: pretty; }
   .profile-photo { grid-area: photo; width: min(14rem, 100%); }
-  .profile-actions { grid-area: actions; }
-  .profile-bio { grid-area: bio; }
+  /* PI 2026-09-29: the Email button moved out (Contact offers it); a "Bio" head
+     continues the identity block into the biography. */
+  .profile-bio { grid-area: bio; border-top: 1px solid var(--color-line); padding-top: 1.25rem; }
+  .bio-heading { margin-bottom: .75rem; font-size: 1.25rem; font-weight: 700; line-height: 1.3; color: var(--color-ink); }
   .profile-links { grid-area: links; display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; }
   .profile-links a { font-size: 1rem; }
   .profile-portrait { aspect-ratio: 1; object-fit: cover; }
   @container profile (min-width: 40rem) {
-    .profile-layout { grid-template-columns: minmax(0,2fr) minmax(0,3fr); grid-template-areas: 'photo identity' 'photo actions' 'photo bio' 'photo links'; column-gap: 4rem; }
+    .profile-layout { grid-template-columns: minmax(0,2fr) minmax(0,3fr); grid-template-areas: 'photo identity' 'photo bio' 'photo links'; column-gap: 4rem; }
     .profile-photo { width: 100%; }
   }
   @container profile-heading (min-width: 24rem) { #pi-name { font-size: 3rem; } }
@@ -140,14 +161,20 @@
   .recognition-group-title { margin-bottom: 1.25rem; font-size: 1rem; font-weight: 600; color: var(--color-muted); }
   .recognition-meta { font-size: 1rem; line-height: 1.5; color: var(--color-muted); }
   .recognition-meta strong { color: var(--color-ink); font-weight: 600; }
-  .recognition-title { max-width: 46ch; margin-top: .5rem; font-size: 1.125rem; font-weight: 700; line-height: 1.5; }
-  .recognition-kind { margin-top: .25rem; font-size: 1rem; line-height: 1.5; color: var(--color-muted); }
-  .recognition-list { grid-template-columns: minmax(0,1fr); }
+  .recognition-title { max-width: 46ch; font-size: 1.125rem; font-weight: 700; line-height: 1.5; }
+  .recognition-detail { max-width: 62ch; margin-top: .125rem; color: var(--color-body); line-height: 1.6; text-wrap: pretty; }
+  /* One item per row: venue/date, then the item; stacked on narrow containers. */
+  .recognition-list { display: grid; gap: 1.25rem; padding: 0; margin: 0; list-style: none; }
+  .recognition-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .5rem; min-width: 0; }
+  /* Inline-block keeps the arrow after the last wrapped word while meeting the 44px standalone-link target. */
+  .recognition-link { display: inline-block; min-height: 44px; padding-block: .5rem; color: var(--color-action); }
+  .recognition-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .recognition-link :global(svg) { display: inline-block; width: .9em; height: .9em; margin-left: .375rem; vertical-align: -.1em; }
   @container recognition (min-width: 40rem) {
     .recognition-layout { grid-template-columns: minmax(0,1fr) minmax(0,2fr); gap: 3rem; }
   }
-  @container recognition-items (min-width: 24rem) {
-    .recognition-list { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  @container recognition-items (min-width: 34rem) {
+    .recognition-row { grid-template-columns: 11rem minmax(0,1fr); column-gap: 1.5rem; align-items: baseline; }
   }
 
   .history-container { container: history / inline-size; }

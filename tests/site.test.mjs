@@ -150,6 +150,8 @@ test('identity is real text, lab-first, and independent of the university header
     const footer = byTag(document, 'footer');
     assert.equal(footer.length, 1, route);
     assert(content(footer[0]).includes('Pusan National University'), `${route}: missing institutional context`);
+    const universityMark = byTag(footer[0], 'img').find(image => attr(image, 'alt') === 'Pusan National University');
+    assert(universityMark && attr(universityMark, 'src')?.split('?')[0].endsWith('.svg'), `${route}: institutional signature must use the official vector asset`);
   }
   const home = byTag(documents.get('/'), 'h1')[0];
   assert.equal(content(home), 'Scientific inference for discovery and decision-making.', 'The approved purpose, not a repeated wordmark, leads Home');
@@ -170,11 +172,10 @@ test('the imported public inventory retains complete titles, author order and me
     }
     assert.deepEqual(byAttr(record, 'data-author').map(content), publication.authors, `${publication.id}: author spelling/order`);
     if (publication.presentationStatus === 'presented') {
-      assert(rendered.includes('Presented') && !rendered.includes('Accepted'), `${publication.id}: completed event must not display pending acceptance`);
-      assert(rendered.includes('Final citation pending'), `${publication.id}: citation availability remains distinct`);
+      assert(!rendered.includes('Presented') && !rendered.includes('Accepted'), `${publication.id}: workflow status must not be visitor-facing metadata`);
+      assert(!rendered.includes('Final citation pending'), `${publication.id}: citation workflow state must not be visitor-facing metadata`);
     }
-    else if (publication.status !== 'published') assert(rendered.toLowerCase().includes(publication.status), `${publication.id}: missing visible status`);
-    else assert(!/\bPublished\b/.test(rendered), `${publication.id}: redundant published status`);
+    else assert(!/\b(?:Accepted|Published|Presented|Final citation pending)\b/i.test(rendered), `${publication.id}: internal publication status must remain out of the visible record`);
     assert.equal(attr(record, 'data-year'), String(publication.year), `${publication.id}: year association missing`);
     assert.equal(byTag(record, 'a').filter(node => attr(node, 'href') === publication.url).length, 1, `${publication.id}: duplicate primary paper link`);
     for (const url of [publication.url, publication.codeUrl].filter(Boolean)) assert(byTag(record, 'a').some(node => attr(node, 'href') === url), `${publication.id}: missing source ${url}`);
@@ -185,6 +186,7 @@ test('the imported public inventory retains complete titles, author order and me
   assert.equal(facts['evidence-standards'].presentationStatus, 'presented');
   assert.equal(facts['evidence-standards'].bibliographyStatus, 'final-metadata-pending');
   assert.equal(facts['evidence-standards'].bibtex, null, 'Presentation completion must not synthesize a canonical citation');
+  assert.equal(facts['evidence-standards'].apa, null, 'Missing canonical BibTeX must not fall back to copied or reconstructed APA text');
   assert.deepEqual(facts['evidence-standards'].authors, ['YongKyung Oh']);
   assert.equal(facts['silent-failures'].status, 'published');
   assert.equal(facts['survey-aware'].status, 'published');
@@ -263,14 +265,18 @@ test('canonical publication identities and legacy fragments survive the inventor
   assert(canonical.length >= 25, 'The existing canonical citation inventory must not regress');
   for (const record of canonical) {
     assert.equal(typeof record.bibtex, 'string', `${record.id}: citation must be canonical text or explicit null`);
+    assert.equal(typeof record.apa, 'string', `${record.id}: APA must be generated for every canonical citation`);
+    assert(record.apa.length > 20 && !/[\r\n]/.test(record.apa), `${record.id}: generated APA must be one non-empty reference`);
     assert.match(record.bibtex, new RegExp(`^\\s*@(?:article|inproceedings|incollection|book|misc)\\s*\\{\\s*${record.canonicalKey}\\s*,`, 'i'), `${record.id}: malformed or mismatched canonical citation`);
     assert.equal(record.bibtex.match(/^\s*@(\w+)/)?.[1].toLowerCase(), record.bibtexEntryType, `${record.id}: preserve canonical entry type independently of display category`);
   }
   for (const id of Object.values(legacy).slice(3)) {
     const record = publications.find(record => record.id === id);
     assert.equal(record.bibtex, null, `${id}: do not substitute experimental or synthesized BibTeX for an unavailable canonical citation`);
+    assert.equal(record.apa, null, `${id}: do not copy or synthesize APA without canonical BibTeX`);
     assert.equal(byAttr(document, 'data-cite', id).length, 0, `${id}: unavailable citation must not have a Cite control`);
   }
+  assert.equal(publications.filter(record => record.apa !== null).length, canonical.length, 'APA and canonical BibTeX availability must match');
 });
 
 test('canonical citations retain the independently recorded upstream byte hashes', async () => {
@@ -306,8 +312,10 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   assert(content(people).includes('Nominee'));
   assert(!content(people).includes('Best Postdoctoral') && !content(people).includes('Finalist'));
   const expectedProfiles = [
+    ['Personal Website', pi.links.personal],
+    ['ORCID', pi.links.orcid],
     ['Google Scholar', pi.links.scholar], ['GitHub', pi.links.github],
-    ['LinkedIn', pi.links.linkedin], ['Personal website', pi.links.personal],
+    ['LinkedIn', pi.links.linkedin],
   ];
   const profileDestinations = node => byTag(node, 'a').map(a => [content(a).trim(), attr(a, 'href')]);
   const peopleProfiles = byAttr(people, 'aria-label', "YongKyung Oh's profiles")[0];
@@ -321,6 +329,31 @@ test('personal recognition and PI profiles preserve truthful types and destinati
     assert(content(footer).includes(pi.name) && content(footer).includes('Principal Investigator'), `${route}: PI ownership must be visible, not only an accessibility label`);
     assert.equal(byAttr(footer, 'aria-label', 'Footer navigation').length, 0, 'Repeated footer route navigation was removed by the PI');
     assert(!byTag(footer, 'a').some(a => ['/research/', '/publications/', '/people/', '/contact/'].includes(attr(a, 'href'))), 'No duplicate internal route list in the footer');
+  }
+  assert(content(people).includes('Data Science Major, School of BioMedical Convergence Engineering, Pusan National University'));
+  assert(content(people).includes('Master in Technology and Innovation Management'));
+  assert(!content(people).includes('Master of Science in Technology and Innovation Management'));
+  const selectedRecognition = byAttr(people, 'aria-labelledby', 'paper-recognition-heading')[0];
+  assert(selectedRecognition, 'People must retain a named paper-recognition group');
+  const selectedText = content(selectedRecognition);
+  assert(selectedText.indexOf('ICML · 2026') < selectedText.indexOf('CHIL · 2025'), 'ICML recognition must precede CHIL');
+  assert(selectedText.includes('Sole-authored position paper'));
+  for (const [route, document] of documents) {
+    assert(!/single[- ]author/i.test(content(document)), `${route}: ICML authorship uses the canonical "sole-authored" wording`);
+  }
+  assert(content(documents.get('/')).includes('sole-authored position paper'), 'Home News uses the canonical ICML authorship wording');
+  assert(selectedText.includes('Best Paper Award'));
+  assert(!selectedText.includes('Models and Methods Track') && !selectedText.includes('Paper award'), 'People uses the concise CHIL recognition label');
+  const grantGroup = byAttr(people, 'aria-labelledby', 'grant-recognition-heading')[0];
+  assert(grantGroup, 'People must list the research grant as its own recognition group');
+  const grantText = content(grantGroup);
+  assert(grantText.includes('NVIDIA Academic Grant Program') && grantText.includes('NVIDIA · 2026'));
+  assert(grantText.includes('Lead Scientist on the project team') && grantText.includes('Principal Investigator: Alex A. T. Bui, UCLA'), 'Grant role and PI follow the public-safe CV export');
+  assert(content(documents.get('/')).includes('led by YongKyung Oh'), 'Home News preserves the PI-confirmed NVIDIA project leadership');
+  for (const document of documents.values()) {
+    const footer = byTag(document, 'footer')[0];
+    assert(content(footer).includes('School of BioMedical Convergence Engineering · Pusan National University'));
+    assert(!content(footer).includes('Data Science Major'), 'Footer affiliation must omit the major');
   }
 });
 
@@ -357,10 +390,17 @@ test('research directions remain complete and generated illustrations stay out o
   const lastPanelNodes = all(panels.at(-1), node => Boolean(node.tagName));
   assert(mainNodes.indexOf(inquiry[0]) > Math.max(...lastPanelNodes.map(node => mainNodes.indexOf(node))), 'The inquiry must follow all four sections');
   const home = documents.get('/');
-  const portraitFigure = byTag(home, 'figure').find(node => attr(node, 'class')?.split(/\s+/).includes('pi-feature'));
-  assert(portraitFigure, 'Home must retain the supplied PI photograph and context');
-  const peopleActions = byTag(portraitFigure, 'a').filter(node => attr(node, 'href') === '/people/');
-  assert.equal(peopleActions.length, 1, 'The PI introduction needs one clear People action, not duplicate adjacent links');
+  // PI request 2026-09-29: Home shows no portrait; one "Meet the PI" button leads to People.
+  const homeIntro = byTag(home, 'header').find(node => attr(node, 'class')?.split(/\s+/).includes('home-intro'));
+  assert(homeIntro, 'Home must keep its introduction');
+  assert.equal(byTag(homeIntro, 'img').length + byTag(homeIntro, 'picture').length + byTag(homeIntro, 'figure').length, 0, 'Home introduction must not show a portrait');
+  const peopleActions = byTag(homeIntro, 'a').filter(node => attr(node, 'href') === '/people/');
+  assert.equal(peopleActions.length, 1, 'Home needs exactly one People action');
+  assert(attr(peopleActions[0], 'class')?.split(/\s+/).includes('button-secondary') && content(peopleActions[0]).trim() === 'Meet the PI', 'The People action is the "Meet the PI" button');
+  const contactPage = documents.get('/contact/');
+  assert(!content(byTag(contactPage, 'main')[0]).includes('We welcome inquiries'), 'Contact must not repeat the Home inquiry guidance (PI 2026-09-29)');
+  const contactEmail = all(contactPage, node => attr(node, 'class')?.split(/\s+/).includes('contact-email'))[0];
+  assert(contactEmail && byTag(contactEmail, 'wbr').length === 1, 'Contact email keeps a single preferred break point before "@"');
   const homeDirections = byAttr(home, 'aria-label', 'Research directions')[0];
   assert(homeDirections, 'Home must expose the complete research direction index');
   assert.equal(content(byTag(byTag(home, 'main')[0], 'h2')[0]), 'Research directions', 'Home should explain its directions before individual papers');
@@ -397,6 +437,24 @@ test('research directions remain complete and generated illustrations stay out o
   assert.equal(byAttr(document, 'role', 'tab').length, 0, 'Research must expose all four sections without selection');
   const notices = await readFile(path.join(root, 'dist/asset-credits.txt'), 'utf8');
   assert(!/AI-generated explanatory illustrations/i.test(notices), 'Deleted generated illustrations must not remain in the public asset record');
+});
+
+test('the official wordmark is the full name in Pretendard 700, black, from the shipped Pretendard asset', async () => {
+  for (const [route, document] of documents) {
+    const marks = all(document, node => (attr(node, 'class') ?? '').split(/\s+/).includes('wordmark-text'));
+    assert(marks.length >= 2, `${route}: header and footer wordmarks`);
+    for (const mark of marks) assert.equal(content(mark), 'Scientific Inference Lab', `${route}: wordmark is the exact full name`);
+    assert(!/\bSIL\b/.test(content(document)), `${route}: the lab name is never abbreviated`);
+  }
+  const css = (await Promise.all((await readdir(path.join(root, 'dist/_astro'))).filter(name => name.endsWith('.css')).map(name => readFile(path.join(root, 'dist/_astro', name), 'utf8')))).join('\n');
+  // PI revision 2026-09-29 (spec 001): Pretendard 700, -.018em, black; Newsreader is retired.
+  const compact = css.replace(/\s+/g, ' ').replace(/ ?([{};:,]) ?/g, '$1');
+  assert(/--font-wordmark:"?Pretendard"?/.test(compact), 'Wordmark token resolves to Pretendard');
+  assert(/\.wordmark-text\{[^}]*font:700 [^}]*var\(--font-wordmark\)[^}]*letter-spacing:-\.018em[^}]*color:#000/.test(compact), 'Wordmark is Pretendard 700 with -.018em tracking in black');
+  assert(!/Newsreader/i.test(css), 'The retired Newsreader face must not ship');
+  await assert.rejects(readFile(path.join(root, 'dist/licenses/newsreader.txt')), 'The retired Newsreader notice must not ship');
+  const licence = await readFile(path.join(root, 'dist/licenses/pretendard.txt'), 'utf8');
+  assert(licence.includes('SIL Open Font License'), 'The Pretendard licence ships with the wordmark face');
 });
 
 test('the mobile menu is a complete native disclosure before JavaScript loads', () => {
@@ -451,6 +509,13 @@ test('images include alternatives, stable dimensions and responsive raster sourc
       }
     }
   }
+});
+
+test('Contact reuses the official vector university signature without raster upscaling', () => {
+  const contact = documents.get('/contact/');
+  const marks = byTag(contact, 'img').filter(image => attr(image, 'alt') === 'Pusan National University');
+  assert(marks.length >= 2, 'Contact and its shared footer must both identify the university');
+  for (const mark of marks) assert(attr(mark, 'src')?.split('?')[0].endsWith('.svg'), 'University signature must stay vector at every display size');
 });
 
 test('the executable QC contract cannot silently succeed on a deleted suite', async () => {

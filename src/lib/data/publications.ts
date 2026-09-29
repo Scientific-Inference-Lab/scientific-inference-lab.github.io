@@ -20,16 +20,11 @@ export interface Publication {
   codeUrl?: string;
   links: { type: string; url: string }[];
   bibtex: string | null;
+  apa: string | null;
   bibtexEntryType: 'article' | 'inproceedings' | 'misc' | null;
 }
 
 export const publicationType = (publication: Publication) => publication.type;
-
-// Upstream acceptance, a completed event and a final citation are independent.
-// Keep the imported publication status; do not relabel missing metadata as published.
-export const publicationStatusLabel = (publication: Publication) =>
-  publication.presentationStatus === 'presented' ? 'Presented' :
-    publication.status === 'accepted' ? 'Accepted' : '';
 
 export function comparePublications(a: Publication, b: Publication): number {
   // Year-only citations have no within-year date; retain the source's order.

@@ -28,6 +28,7 @@
 @theme {
   --font-sans: "Pretendard", sans-serif;
   --font-display: "Pretendard", sans-serif;
+  --font-wordmark: "Pretendard", sans-serif;
   --font-weight-normal: 400;
   --font-weight-medium: 600;
   --font-weight-semibold: 600;
@@ -88,7 +89,7 @@
 
 @layer components {
   .wrap { width: min(100% - 4rem, 80rem); margin-inline: auto; }
-  .kicker { font-size: .875rem; line-height: 1.4; font-weight: 600; color: var(--color-action); }
+  .kicker { font-size: .875rem; line-height: 1.4; font-weight: 600; color: var(--color-muted); }
   .button,.button-secondary,.icon-button,.text-link {
     display: inline-flex; align-items: center; justify-content: center; gap: .625rem;
     min-height: 44px; border-radius: 4px; font-weight: 600; line-height: 1.3;
@@ -102,16 +103,16 @@
   .text-link:hover { text-decoration: underline; text-underline-offset: 4px; }
   .icon-button { width: 44px; flex-shrink: 0; padding: 10px; border: 1px solid var(--color-line); background: var(--color-paper); }
   .icon-button:hover { background: var(--color-action-soft); }
-  .is-pi { color: var(--color-action); font-weight: 600; }
+  .is-pi { color: var(--color-ink); font-weight: 700; }
   .skip-link { position: fixed; z-index: 100; top: 12px; left: 16px; padding: .75rem 1rem; color: var(--color-paper); background: var(--color-action); transform: translateY(-200%); }
   .skip-link:focus { transform: none; }
   .wordmark { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
-  .wordmark-text { white-space: nowrap; font: 600 20px/1 var(--font-display); }
+  .wordmark-text { white-space: nowrap; font: 700 20px/1 var(--font-wordmark); letter-spacing: -.018em; color: #000; font-kerning: normal; }
   .dialog-overlay { position: fixed; inset: 0; z-index: 50; background: color-mix(in srgb, var(--color-ink) 70%, transparent); backdrop-filter: blur(3px); }
   .dialog-content { position: fixed; z-index: 51; inset: 50% auto auto 50%; transform: translate(-50%,-50%); background: var(--color-paper); width: min(48rem, calc(100% - 2rem)); max-height: calc(100dvh - 2rem); overflow: auto; border-radius: 6px; padding: 1.5rem; box-shadow: 0 20px 80px color-mix(in srgb, var(--color-ink) 25%, transparent); }
   @media (max-width: 47.99rem) {
     .wrap { width: calc(100% - 2rem); }
-    .wordmark-text { font-size: 19px; }
+    .wordmark-text { font-size: 18px; }
     .wordmark { gap: 8px; }
   }
 }
