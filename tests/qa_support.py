@@ -145,6 +145,17 @@ class Evidence:
         self.report["checks"].append({"name": name, "details": details})
 
     def screenshot(self, page, name, full=True):
+        if full:
+            # Browsers refuse bitmaps over 32767 device px per side (Linux WebKit
+            # in CI enforces it; e.g. Publications at 200% text and DPR 2). Keep the
+            # evidence as the top 32000 device px and record the truncation.
+            height, ratio = page.evaluate("() => [document.documentElement.scrollHeight, window.devicePixelRatio]")
+            if height * ratio > 32000:
+                width = page.evaluate("() => document.documentElement.clientWidth")
+                page.screenshot(path=str(self.out / f"{name}.png"), full_page=True, timeout=15000,
+                                clip={"x": 0, "y": 0, "width": width, "height": int(32000 / ratio)})
+                self.report.setdefault("truncatedScreenshots", []).append({"name": name, "cssHeight": height, "dpr": ratio})
+                return
         page.screenshot(path=str(self.out / f"{name}.png"), full_page=full, timeout=15000)
 
     def finish(self, error=None):
