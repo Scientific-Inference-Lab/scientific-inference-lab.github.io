@@ -518,6 +518,75 @@ test('Contact reuses the official vector university signature without raster ups
   for (const mark of marks) assert(attr(mark, 'src')?.split('?')[0].endsWith('.svg'), 'University signature must stay vector at every display size');
 });
 
+const scriptBody = node => children(node).map(child => child.value ?? '').join('');
+const meta = (document, key) => byTag(document, 'meta').filter(node => attr(node, 'property') === key || attr(node, 'name') === key).map(node => attr(node, 'content'));
+
+test('search metadata and structured data restate the visible site', async () => {
+  const records = await json('src/content/publications.json');
+  const publicationIds = new Set(byAttr(documents.get('/publications/'), 'data-publication').map(node => attr(node, 'id')));
+  for (const [route, document] of documents) {
+    const title = content(byTag(document, 'title')[0]);
+    assert.deepEqual(meta(document, 'og:title'), [title], `${route}: og:title must equal the document title`);
+    assert.deepEqual(meta(document, 'og:url'), [origin + route], route);
+    assert.equal(meta(document, 'description').length, 1, `${route}: one meta description`);
+    const blocks = byTag(document, 'script').filter(node => attr(node, 'type') === 'application/ld+json');
+    assert.equal(blocks.length, 1, `${route}: one JSON-LD graph`);
+    const source = scriptBody(blocks[0]);
+    assert(!source.includes('</'), `${route}: JSON-LD must not contain a closing tag`);
+    assert(!/telephone|faxNumber/.test(source), `${route}: structured data must not add unpublished contact numbers`);
+    const graph = JSON.parse(source)['@graph'];
+    const node = type => graph.find(item => item['@type'] === type);
+    assert(node('WebSite') && node('ResearchOrganization') && node('CollegeOrUniversity'), `${route}: site entities`);
+    const person = node('Person');
+    const footerEmail = attr(byAttr(document, 'data-footer-email')[0], 'href');
+    assert.equal(person.email, footerEmail, `${route}: Person email must equal the visible footer address`);
+    const footerProfiles = all(byAttr(document, 'aria-label', 'PI profiles')[0], item => item.tagName === 'a').map(item => attr(item, 'href'));
+    assert.deepEqual(person.sameAs, footerProfiles, `${route}: sameAs must equal the visible profile links`);
+    const page = graph.at(-1);
+    assert.equal(page.url, origin + route, `${route}: structured page URL`);
+    assert.equal(page.name, title, `${route}: structured page name`);
+  }
+  assert.match(content(byTag(documents.get('/'), 'title')[0]), /Pusan National University/, 'Home title names the institution for search results');
+  const people = JSON.parse(scriptBody(byTag(documents.get('/people/'), 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'];
+  assert.equal(people.at(-1)['@type'], 'ProfilePage');
+  assert.equal(people.find(item => item['@type'] === 'Person').image, meta(documents.get('/people/'), 'og:image')[0], 'People image must be the visible portrait');
+  const collection = JSON.parse(scriptBody(byTag(documents.get('/publications/'), 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'].at(-1);
+  const items = collection.mainEntity.itemListElement.map(entry => entry.item);
+  assert.equal(items.length, records.length, 'Every publication is described once');
+  for (const item of items) {
+    const id = item['@id'].split('#')[1];
+    assert(publicationIds.has(id), `${id}: structured article must target a visible record`);
+    const record = records.find(entry => entry.id === id);
+    assert.equal(item.name, record.title, `${id}: title`);
+    assert.equal(item.datePublished === undefined, record.status !== 'published', `${id}: only published records carry a publication date`);
+  }
+});
+
+test('Google Analytics loads only on the production host', () => {
+  for (const [route, document] of documents) {
+    const loaders = byTag(document, 'script').filter(node => scriptBody(node).includes('G-H8EZQ381WH'));
+    assert.equal(loaders.length, 1, `${route}: one GA4 loader`);
+    const body = scriptBody(loaders[0]);
+    assert(body.startsWith(`if (location.hostname === "${new URL(origin).hostname}") {`) && body.trim().endsWith('}'), `${route}: GA4 must be gated to the production host`);
+    assert(!byTag(document, 'script').some(node => (attr(node, 'src') ?? '').includes('googletagmanager')), `${route}: no static third-party script request`);
+  }
+});
+
+test('sitemap, robots and llms.txt describe exactly the public routes', async () => {
+  const sitemap = await readFile(path.join(root, 'dist/sitemap.xml'), 'utf8');
+  assert.deepEqual([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(match => match[1]), routes.map(route => origin + route));
+  assert.match(await readFile(path.join(root, 'dist/robots.txt'), 'utf8'), new RegExp(`^Sitemap: ${origin}/sitemap\\.xml$`, 'm'));
+  const llms = await readFile(path.join(root, 'dist/llms.txt'), 'utf8');
+  assert(llms.startsWith('# Scientific Inference Lab\n'), 'llms.txt starts with the site name');
+  for (const route of routes) assert(llms.includes(`](${origin}${route})`), `llms.txt lacks ${route}`);
+  const links = [...llms.matchAll(/\]\((https:\/\/scientific-inference-lab\.github\.io\/[^)]*#[^)]+)\)/g)].map(match => new URL(match[1]));
+  for (const link of links) {
+    const document = documents.get(link.pathname);
+    assert(document && byAttr(document, 'id', link.hash.slice(1)).length, `llms.txt: missing fragment ${link.href}`);
+  }
+  for (const record of await json('src/content/publications.json')) assert(llms.includes(`[${record.title}](${origin}/publications/#${record.id})`), `llms.txt lacks ${record.id}`);
+});
+
 test('the executable QC contract cannot silently succeed on a deleted suite', async () => {
   const packageJson = await json('package.json');
   assert(packageJson.scripts.test.includes('tests/site.test.mjs'), 'Name the test entry explicitly so deletion is fatal');
