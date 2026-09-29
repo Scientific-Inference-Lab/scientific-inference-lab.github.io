@@ -64,7 +64,8 @@ def script_fallbacks(browser, evidence):
             before_h1 = page.locator("main h1").bounding_box()["y"]
             before_header = page.locator("[data-site-header]").bounding_box()["height"]
             before_publications = page.locator("[data-publication]").evaluate_all("els => els.map(el => ({id:el.dataset.publication, top:el.getBoundingClientRect().top}))")
-            external_scripts = page.locator('script[src]').count()
+            # First-party module scripts only; the production GA4 loader is third-party.
+            external_scripts = page.locator('script[src]').evaluate_all("els => els.filter(el => new URL(el.src).origin === location.origin).length")
             if external_scripts:
                 assert injected, "The script fault injection did not intercept any first-party script"
             else:

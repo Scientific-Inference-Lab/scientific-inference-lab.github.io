@@ -1,6 +1,7 @@
 """Shared browser evidence helpers; the caller owns the served build."""
 
 import argparse
+import re
 import json
 from contextlib import contextmanager
 from datetime import datetime, timezone
@@ -12,6 +13,10 @@ from playwright.sync_api import expect, sync_playwright
 ROUTES = ["/", "/research/", "/publications/", "/people/", "/contact/"]
 WIDTHS = [320, 390, 768, 1024, 1440]
 LAB_NAME = "Scientific Inference Lab"
+
+
+ANALYTICS_ID = "G-H8EZQ381WH"
+ANALYTICS = re.compile(r"^https://([a-z0-9-]+\.)*(googletagmanager\.com|google-analytics\.com|analytics\.google\.com)/")
 
 
 def program_records():
@@ -120,6 +125,19 @@ class Evidence:
             if request.resource_type == "image" and request.failure == "net::ERR_ABORTED":
                 page._qa_image_failures.append(entry)
 
+        # The production host loads GA4. QC must never reach Google: every
+        # context sets GA's documented opt-out flag and answers Google requests
+        # with an empty response. Both are context-wide so tabs opened by the
+        # page are covered; a live run once sent a hit from such a tab when
+        # only a network stub was present.
+        def analytics_stub(request_route):
+            self.report.setdefault("stubbedAnalytics", []).append(request_route.request.url)
+            request_route.fulfill(status=200, body="", content_type="application/javascript")
+
+        if not getattr(page.context, "_qa_analytics_stub", False):
+            page.context._qa_analytics_stub = True
+            page.context.add_init_script(f"window['ga-disable-{ANALYTICS_ID}'] = true;")
+            page.context.route(ANALYTICS, analytics_stub)
         page.on("pageerror", page_error)
         page.on("console", console_error)
         page.on("requestfailed", failed_request)
