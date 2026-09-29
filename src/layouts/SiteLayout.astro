@@ -4,24 +4,53 @@ import { getProfileLinks, site } from '../lib/data/lab';
 import { loadContent } from '../lib/content';
 import university from '../lib/assets/university.svg';
 import SiteNavigation from '../components/SiteNavigation.astro';
+import { analytics, jsonLd, structuredData, type PageKind } from '../lib/seo';
 import '../lib/styles/app.css';
-interface Props { title: string; description?: string; }
-const { title, description = site.intro } = Astro.props;
-const { pi } = await loadContent();
+interface Props { title: string; description?: string; image?: string; }
+const { title, description = site.intro, image } = Astro.props;
+const content = await loadContent();
+const { pi } = content;
 const [emailLocal, emailDomain] = pi.email.split('@');
 const profiles = getProfileLinks(pi.links);
 const home = Astro.url.pathname === '/';
 const canonical = new URL(Astro.url.pathname, site.url);
+const documentTitle = home ? `${site.name} | ${site.institution}` : `${title} | ${site.name}`;
+const kinds: Record<string, PageKind> = { '/': 'home', '/research/': 'research', '/publications/': 'publications', '/people/': 'people', '/contact/': 'contact' };
+const kind = kinds[Astro.url.pathname];
+if (!kind) throw new Error(`No structured-data kind for ${Astro.url.pathname}`);
+const imageUrl = image ? new URL(image, site.url).href : undefined;
+// GA4 (PI 2026-09-29) runs only on the production host, so local QC, previews
+// and dev servers send nothing to Google.
+const analyticsLoader = `if (location.hostname === ${JSON.stringify(analytics.hostname)}) {
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', ${JSON.stringify(analytics.id)});
+  const tag = document.createElement('script');
+  tag.async = true;
+  tag.src = 'https://www.googletagmanager.com/gtag/js?id=${analytics.id}';
+  document.head.appendChild(tag);
+}`;
+const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTitle, description }, content, kind === 'people' ? imageUrl : undefined);
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{home ? site.name : `${title} | ${site.name}`}</title>
+    <title>{documentTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} /><link rel="icon" href="data:," />
-    <meta property="og:title" content={home ? site.name : `${title} | ${site.name}`} />
-    <meta property="og:description" content={description} /><meta property="og:type" content="website" /><meta property="og:url" content={canonical} />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+    <link rel="alternate" type="text/markdown" href="/llms.txt" title="Site summary for language models" />
+    <meta name="author" content={pi.name} />
+    <meta property="og:site_name" content={site.name} /><meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={documentTitle} />
+    <meta property="og:description" content={description} /><meta property="og:type" content={kind === 'people' ? 'profile' : 'website'} /><meta property="og:url" content={canonical} />
+    {imageUrl && <meta property="og:image" content={imageUrl} />}
+    {imageUrl && <meta property="og:image:alt" content={pi.photoAlt} />}
+    <meta name="twitter:card" content="summary" />
+    <script is:inline type="application/ld+json" set:html={jsonLd(graph)} />
+    <script is:inline set:html={analyticsLoader} />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
