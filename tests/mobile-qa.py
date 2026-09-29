@@ -5,7 +5,7 @@ from qa_support import (PROGRAMS, ROUTES, WIDTHS, arguments, control_targets, ge
 
 def run(browser, evidence):
     for width in WIDTHS:
-        for scale in [100, 200]:
+        for scale in [100, 150, 200]:  # 150 guards the intermediate-scale reflow band (lessons 16, 18)
             context = browser.new_context(viewport={"width": width, "height": 900},
                                           is_mobile=True, has_touch=True, device_scale_factor=2)
             context.add_init_script(f"document.addEventListener('DOMContentLoaded', () => document.documentElement.style.fontSize = '{scale}%')")
@@ -24,12 +24,19 @@ def run(browser, evidence):
                     evidence.check('research labels retain whole words', {'route': route, 'width': width,
                         'rootTextPercent': scale, **research_label_words(page), **research_navigation(page)})
                 if route == '/':
-                    portrait = page.locator('.pi-feature img').evaluate('''img => {
-                      const box = img.getBoundingClientRect();
-                      return {width: box.width, height: box.height, sourceRatio: img.naturalWidth / img.naturalHeight};
+                    # PI request 2026-09-29: Home carries no portrait; a "Meet the PI" button replaces it.
+                    intro = page.locator('.home-intro').evaluate('''el => {
+                      const button = [...el.querySelectorAll('a')].find(a => a.getAttribute('href') === '/people/');
+                      const box = button?.getBoundingClientRect();
+                      return {images: el.querySelectorAll('img, picture, figure').length, label: button?.innerText.trim(),
+                              isButton: !!button?.classList.contains('button-secondary'), height: box?.height, right: box?.right,
+                              viewport: document.documentElement.clientWidth};
                     }''')
-                    assert abs(portrait['width'] / portrait['height'] - portrait['sourceRatio']) < .01, 'Home must show the supplied photograph at its original ratio'
-                    assert portrait['width'] >= 150, 'Home photograph must remain recognizable, not return to the rejected 96px thumbnail'
+                    assert intro['images'] == 0, f'Home intro must not show a portrait: {intro}'
+                    assert intro['label'] == 'Meet the PI' and intro['isButton'], intro
+                    assert intro['height'] >= 44 and intro['right'] <= intro['viewport'] + 1, intro
+                    whole_words(page, '.home-actions a')
+                    evidence.check('Home PI button replaces the portrait', {'width': width, 'rootTextPercent': scale, **intro})
                 if route == '/research/':
                     whole_words(page, '.program-panel h2,.research-context,.approach-details')
                 if route == "/contact/":
@@ -68,7 +75,7 @@ def run(browser, evidence):
                     evidence.check("compact menu", {"route": route, "width": width, "rootTextPercent": scale})
             context.close()
 
-    for scale in [100, 200]:
+    for scale in [100, 150, 200]:  # 150 guards the intermediate-scale reflow band (lessons 16, 18)
         context = browser.new_context(viewport={"width": 320, "height": 900})
         context.add_init_script(f"document.addEventListener('DOMContentLoaded', () => document.documentElement.style.fontSize = '{scale}%')")
         page = evidence.watch(context.new_page())

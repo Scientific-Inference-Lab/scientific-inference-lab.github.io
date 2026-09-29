@@ -36,17 +36,11 @@
           {/each}
           <header class="direction-heading">
             <h2 id={program.id + '-heading'}>{program.title}</h2>
+            <p class="research-question" data-research-question>{program.question}</p>
             <p class="program-summary">{program.summary}</p>
           </header>
 
-          <p class="research-question" data-research-question>{program.question}</p>
-
           <div class="direction-detail">
-            <section class="research-agenda" aria-labelledby={'agenda-' + program.id}>
-              <h3 id={'agenda-' + program.id}>Research agenda</h3>
-              <ul>{#each program.agenda ?? [] as topic}<li>{topic}</li>{/each}</ul>
-            </section>
-
             <section class="current-work" aria-labelledby={'work-' + program.id}>
               <h3 id={'work-' + program.id}>Related publications</h3>
               <ul class="related-papers">
@@ -66,7 +60,10 @@
                 {/each}
               </ul>
             </section>
-
+            <section class="research-agenda" aria-labelledby={'agenda-' + program.id}>
+              <h3 id={'agenda-' + program.id}>Research agenda</h3>
+              <ul>{#each program.agenda ?? [] as topic}<li>{topic}</li>{/each}</ul>
+            </section>
           </div>
 
         </section>
@@ -94,8 +91,8 @@
   .program-panel + .program-panel { border-top: 1px solid var(--color-line); padding-top: 2.5rem; margin-top: 2.5rem; }
   .program-alias { position: absolute; top: 0; scroll-margin-top: 0; }
   .program-panel h2 { max-width: 30ch; font-size: 2.125rem; line-height: 1.15; }
-  .program-summary { max-width: 65ch; margin-top: .875rem; color: var(--color-muted); font-size: 1.0625rem; line-height: 1.6; }
-  .research-question { max-width: 52ch; margin-top: 1.5rem; color: var(--color-ink); font-size: 1.375rem; line-height: 1.45; }
+  .program-summary { max-width: 65ch; margin-top: 1rem; color: var(--color-muted); font-size: 1.0625rem; line-height: 1.6; text-wrap: pretty; }
+  .research-question { max-width: 60ch; margin-top: 1rem; color: var(--color-ink); font-size: 1.375rem; line-height: 1.45; text-wrap: balance; }
   .direction-detail { display: grid; gap: 1.75rem; margin-top: 2rem; }
   .current-work, .research-agenda { min-width: 0; }
   .direction-detail h3 { font-size: 1rem; line-height: 1.4; }

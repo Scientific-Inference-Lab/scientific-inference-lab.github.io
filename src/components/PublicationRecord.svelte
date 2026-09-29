@@ -3,7 +3,7 @@
   import { Dialog } from 'bits-ui';
   import { Award, Code, Copy, Download, Quote, X } from '@lucide/svelte';
   import { pi } from '../lib/data/lab';
-  import { publicationType, publicationStatusLabel, type Publication } from '../lib/data/publications';
+  import { publicationType, type Publication } from '../lib/data/publications';
   import { citationFor } from '../lib/data/citations';
 
   let { publication, hidden = false, citable = true, showYear = false }: {
@@ -16,10 +16,11 @@
   let ready = $state(false);
   let open = $state(false);
   let copyStatus = $state('');
+  let apaField: HTMLTextAreaElement | undefined = $state();
   let citationField: HTMLTextAreaElement | undefined = $state();
   let citationTrigger: HTMLButtonElement | null = $state(null);
   const citation = $derived(citationFor(publication));
-  const download = $derived(citation ? `data:application/x-bibtex;charset=utf-8,${encodeURIComponent(citation)}` : undefined);
+  const download = $derived(citation ? `data:application/x-bibtex;charset=utf-8,${encodeURIComponent(citation.bibtex)}` : undefined);
   const extraLinks = $derived(publication.links.filter(link => link.url !== publication.url && link.url !== publication.codeUrl));
   const linkLabels: Record<string, string> = { paper: 'Paper', arxiv: 'arXiv', doi: 'DOI', code: 'Code', project: 'Project', slide: 'Slides', slides: 'Slides', poster: 'Poster', video: 'Video', data: 'Data', webpage: 'Project', workshop: 'Workshop', news: 'News' };
 
@@ -34,14 +35,13 @@
 
   onMount(() => { ready = true; });
 
-  async function copyCitation() {
-    if (!citation) return;
+  async function copyCitation(value: string, label: 'APA 7' | 'BibTeX', field?: HTMLTextAreaElement) {
     try {
-      await navigator.clipboard.writeText(citation);
-      copyStatus = 'BibTeX copied.';
+      await navigator.clipboard.writeText(value);
+      copyStatus = `${label} copied.`;
     } catch {
-      citationField?.focus();
-      citationField?.select();
+      field?.focus();
+      field?.select();
       copyStatus = 'Clipboard unavailable. The citation is selected for copying.';
     }
   }
@@ -64,10 +64,8 @@
     </p>
     <div class="publication-meta flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
       <span data-publication-venue class="font-medium text-body">{publication.venue}</span>
-      <span data-publication-type class="rounded-sm bg-action-soft px-1.5 font-medium text-action">{publicationType(publication)}</span>
+      <span data-publication-type class="rounded-sm bg-canvas px-1.5 font-medium text-muted">{publicationType(publication)}</span>
       {#if showYear}<span data-publication-year class="text-muted">{publication.year}</span>{/if}
-      {#if publicationStatusLabel(publication)}<span data-publication-status class="text-muted">{publicationStatusLabel(publication)}</span>{/if}
-      {#if publication.bibliographyStatus === 'final-metadata-pending'}<span data-bibliography-status class="text-muted" title="Final proceedings metadata and a canonical citation have not yet been verified.">Final citation pending</span>{/if}
       {#if publication.recognition}
         <span data-publication-recognition class="inline-flex max-w-full items-center gap-1.5 font-medium text-recognition"><Award size={14} class="shrink-0" aria-hidden="true" />{publication.recognition}</span>
       {/if}
@@ -84,10 +82,13 @@
                 <Dialog.Close data-close-citation class="icon-button" aria-label="Close citation" title="Close citation"><X size={20} aria-hidden="true" /></Dialog.Close>
               </div>
               <Dialog.Description data-citation-title class="mt-5 leading-relaxed text-body">{publication.title}</Dialog.Description>
+              <label for={`apa-${publication.id}`} class="mt-6 mb-2 block text-sm font-medium">APA 7</label>
+              <textarea id={`apa-${publication.id}`} data-apa-citation bind:this={apaField} value={citation.apa} readonly rows="5" spellcheck="false" class="citation-text w-full resize-y rounded-sm border bg-canvas p-4 text-sm leading-relaxed"></textarea>
               <label for={`citation-${publication.id}`} class="mt-6 mb-2 block text-sm font-medium">BibTeX</label>
-              <textarea id={`citation-${publication.id}`} data-citation-text bind:this={citationField} value={citation} readonly rows="10" spellcheck="false" class="citation-text w-full resize-y rounded-sm border bg-canvas p-4 font-mono text-sm leading-relaxed"></textarea>
+              <textarea id={`citation-${publication.id}`} data-citation-text bind:this={citationField} value={citation.bibtex} readonly rows="10" spellcheck="false" class="citation-text w-full resize-y rounded-sm border bg-canvas p-4 font-mono text-sm leading-relaxed"></textarea>
               <div class="citation-actions mt-5 flex flex-wrap gap-3">
-                <button type="button" data-copy-citation onclick={copyCitation} class="button"><Copy size={17} aria-hidden="true" />Copy BibTeX</button>
+                <button type="button" data-copy-apa onclick={() => copyCitation(citation.apa, 'APA 7', apaField)} class="button"><Copy size={17} aria-hidden="true" />Copy APA 7</button>
+                <button type="button" data-copy-citation onclick={() => copyCitation(citation.bibtex, 'BibTeX', citationField)} class="button-secondary"><Copy size={17} aria-hidden="true" />Copy BibTeX</button>
                 <a data-download-citation href={download} download={`${publication.id}.bib`} class="button-secondary"><Download size={17} aria-hidden="true" />Download</a>
               </div>
               <p data-citation-status role="status" class="mt-3 min-h-6 text-sm text-muted">{copyStatus}</p>
@@ -109,7 +110,7 @@
   .publication-meta > span { min-width: 0; }
   [data-publication-type] { padding-block: .125rem; }
   .publication-meta :global(.publication-link) { min-width: 1.5rem; min-height: 1.5rem; gap: .25rem; }
-  .is-pi { color: var(--color-action); font-weight: 600; }
+  .is-pi { color: var(--color-ink); font-weight: 700; }
   .citation-text { border-color: color-mix(in srgb, var(--color-ink) 25%, transparent); }
   :global(.citation-dialog) { container: citation-shell / inline-size; padding: min(2rem, 5vw); }
   @container citation-shell (max-width: 16rem) {

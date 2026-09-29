@@ -1,9 +1,17 @@
 Scientific Inference Lab - asset notices
 
 YongKyung Oh portrait: supplied by YongKyung Oh for his laboratory website.
-Pusan National University signature: supplied institutional identity asset;
-used to identify the affiliation, not as the laboratory's brand.
-The laboratory name is set as live text; no new symbol is presented as its logo.
+Pusan National University signature: official institutional AI asset downloaded
+from https://www.pusan.ac.kr/kor/CMS/Contents/Contents.do?mCode=MN154 and converted
+without redrawing to an outlined SVG for lossless web display. The source AI
+defines the mark only in process colours (C100 M70 Y0 K0; C100 M0 Y90 K0); the
+SVG fills use the university's published screen values for those colours,
+#005BAA and #00A651, from
+https://www.pusan.ac.kr/kor/CMS/Contents/Contents.do?mCode=MN156. The
+university's stated usage restrictions apply. It identifies affiliation and is not the lab's
+brand.
+The laboratory name is set as live text in Pretendard Bold, using the same font
+family as the site. No symbol is presented as its logo.
 
 Pretendard: official Pretendard Std v1.3.9 Latin subsets, weights 400, 600 and
 700, by Kil Hyung-jin. Distributed unchanged under SIL Open Font License 1.1;

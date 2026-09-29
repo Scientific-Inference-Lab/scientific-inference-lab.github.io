@@ -3,8 +3,11 @@ import people from '../../content/people.json';
 export const site = {
   name: 'Scientific Inference Lab',
   institution: 'Pusan National University',
+  major: 'Data Science Major',
+  school: 'School of BioMedical Convergence Engineering',
   department: 'Data Science Major, School of BioMedical Convergence Engineering',
   affiliation: 'Data Science Major, School of BioMedical Convergence Engineering, Pusan National University',
+  footerAffiliation: 'School of BioMedical Convergence Engineering · Pusan National University',
   universityUrl: 'https://www.pusan.ac.kr/eng/Main.do',
   url: 'https://scientific-inference-lab.github.io',
   founded: '2026-09-01',
@@ -18,10 +21,11 @@ export const pi = people[0];
 // People and the shared footer name and order the same verified destinations.
 export function getProfileLinks(links: typeof pi.links) {
   return [
+    { label: 'Personal Website', href: links.personal },
+    { label: 'ORCID', href: links.orcid },
     { label: 'Google Scholar', href: links.scholar },
     { label: 'GitHub', href: links.github },
     { label: 'LinkedIn', href: links.linkedin },
-    { label: 'Personal website', href: links.personal },
   ];
 }
 

@@ -1,9 +1,8 @@
 ---
-import { Picture } from 'astro:assets';
 import { ArrowUpRight, Mail } from '@lucide/svelte';
 import { getProfileLinks, site } from '../lib/data/lab';
 import { loadContent } from '../lib/content';
-import university from '../lib/assets/university.png';
+import university from '../lib/assets/university.svg';
 import SiteNavigation from '../components/SiteNavigation.astro';
 import '../lib/styles/app.css';
 interface Props { title: string; description?: string; }
@@ -33,7 +32,7 @@ const canonical = new URL(Astro.url.pathname, site.url);
         <div class="footer-grid">
           <div class="footer-identity">
             <a href="/" class="wordmark"><span class="wordmark-text">Scientific Inference Lab</span></a>
-            <p class="footer-affiliation">{site.department}<br />{site.institution}</p>
+            <p class="footer-affiliation">{site.footerAffiliation}</p>
           </div>
           <div class="footer-contact">
             <p class="footer-person"><strong>{pi.name}</strong><span>Principal Investigator</span></p>
@@ -46,7 +45,7 @@ const canonical = new URL(Astro.url.pathname, site.url);
           </div>
         </div>
         <div class="footer-bottom">
-          <a href={site.universityUrl} class="footer-university" aria-label="Pusan National University"><Picture src={university} formats={['avif','webp']} widths={[194,388]} sizes="160px" alt="Pusan National University" loading="lazy" /></a>
+          <a href={site.universityUrl} class="footer-university" aria-label="Pusan National University"><img src={university.src} width={university.width} height={university.height} alt="Pusan National University" loading="lazy" /></a>
           <div class="footer-meta"><span>&copy; {new Date().getFullYear()} Scientific Inference Lab</span><span>Yangsan, Republic of Korea</span></div>
         </div>
       </div>
@@ -66,8 +65,12 @@ const canonical = new URL(Astro.url.pathname, site.url);
   .footer-profiles li { min-width: 0; }
   .footer-profiles a { min-height: 44px; max-width: 100%; gap: .5rem; font-size: 1rem; }
   .footer-profiles a > span { min-width: 0; overflow-wrap: normal; }
-  .footer-email { max-width: 100%; margin-top: .5rem; overflow-wrap: normal; }
-  .email-part { white-space: nowrap; }
+  /* The address stays on one line whenever the column allows (body size, never
+     shrunk). If it cannot fit, it breaks first at the <wbr> before "@", and
+     inside a part only as a last resort, so neither the text nor the icon leaves
+     the footer column. */
+  .footer-email { max-width: 100%; margin-top: .5rem; overflow-wrap: anywhere; }
+  .footer-email > span { min-width: 0; }
   .footer-bottom { display: grid; grid-template-columns: minmax(0,1fr); gap: 1.25rem 2rem; border-top: 1px solid var(--color-line); padding-top: 1.25rem; margin-top: 2rem; }
   .footer-university { display: inline-flex; align-items: center; min-height: 44px; max-width: 100%; justify-self: start; }
   .footer-university :global(img) { width: 160px; max-width: 100%; height: auto; }

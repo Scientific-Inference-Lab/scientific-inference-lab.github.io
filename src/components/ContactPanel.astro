@@ -1,16 +1,15 @@
 ---
 import { ArrowRight, ArrowUpRight, Mail, MapPin, Phone } from '@lucide/svelte';
-import type { pi as personData, site as siteData, joinUs as inquiryData } from '../lib/data/lab';
-import type { responsiveImage } from '../lib/media';
+import type { ImageMetadata } from 'astro';
+import type { pi as personData, site as siteData } from '../lib/data/lab';
 import CopyEmail from './CopyEmail.svelte';
 
 interface Props {
   pi: typeof personData;
   site: typeof siteData;
-  joinUs: typeof inquiryData;
-  university: Awaited<ReturnType<typeof responsiveImage>>;
+  university: ImageMetadata;
 }
-const { pi, site, joinUs, university } = Astro.props;
+const { pi, site, university } = Astro.props;
 const [emailLocal, emailDomain] = pi.email.split('@');
 ---
 <section class="contact-primary" aria-labelledby="inquiries-heading">
@@ -21,15 +20,14 @@ const [emailLocal, emailDomain] = pi.email.split('@');
         <h2 id="inquiries-heading" class="font-semibold">{pi.name}</h2>
         <p class="text-muted">Principal Investigator</p>
       </div>
-      <div class="contact-actions mt-4 grid items-center gap-x-3 gap-y-2">
+      <div class="contact-actions mt-4">
         <a href={`mailto:${pi.email}`} class="button"><Mail size={18} aria-hidden="true" /><span>Send an email</span></a>
         <CopyEmail email={pi.email} client:load />
       </div>
     </div>
     <div class="contact-opportunities min-w-0">
       <h2 class="text-xl font-bold">Discuss your interests</h2>
-      <p class="mt-3 leading-relaxed text-body">{joinUs.body}</p>
-      <ul class="inquiry-links mt-4" aria-label="Email inquiry topics">
+      <ul class="inquiry-links mt-3" aria-label="Email inquiry topics">
         <li><a href={`mailto:${pi.email}?subject=${encodeURIComponent('Research opportunities')}`} class="text-link inquiry-link" aria-label="Email about research opportunities">Email about research opportunities<Mail size={17} aria-hidden="true" /></a></li>
         <li><a href={`mailto:${pi.email}?subject=${encodeURIComponent('Research collaboration')}`} class="text-link inquiry-link" aria-label="Email about research collaboration">Email about collaboration<Mail size={17} aria-hidden="true" /></a></li>
       </ul>
@@ -58,11 +56,7 @@ const [emailLocal, emailDomain] = pi.email.split('@');
   </div>
   <div class="min-w-0 md:pt-2">
     <a href={site.universityUrl} class="inline-block max-w-full" aria-label="Pusan National University website">
-      <picture>
-        {university.avif && <source type="image/avif" srcset={university.avif} sizes={university.sizes} />}
-        {university.webp && <source type="image/webp" srcset={university.webp} sizes={university.sizes} />}
-        <img src={university.src} srcset={university.srcset} sizes={university.sizes} width={university.width} height={university.height} alt={university.alt} loading="lazy" class="h-auto w-full max-w-80 object-contain" />
-      </picture>
+      <img src={university.src} width={university.width} height={university.height} alt={site.institution} loading="lazy" class="h-auto w-full max-w-80 object-contain" />
     </a>
     <p class="mt-5 max-w-sm leading-relaxed text-body">{site.department}</p>
     <a href={site.universityUrl} class="text-link mt-4 inline-flex min-h-11 items-center gap-2">University website<ArrowUpRight size={17} aria-hidden="true" /></a>
@@ -72,11 +66,19 @@ const [emailLocal, emailDomain] = pi.email.split('@');
 <style>
   .contact-primary { container: contact-panel / inline-size; padding-block: 2.5rem; }
   .contact-identity { container-type: inline-size; }
-  .contact-email { max-width: 100%; min-height: 44px; overflow-wrap: normal; font-size: 1.5rem; line-height: 1.4; }
-  .contact-email span { white-space: nowrap; }
+  /* Keep the address on one line where possible (PI, 2026-09-29): the display size
+     follows the column (the address is ~12.9em wide, so 7.4cqi fits with margin)
+     between the body-size floor (1rem, which still follows the user's text
+     enlargement) and the design size. Only when even
+     the floor cannot fit (tiny viewports or enlarged text, which must not be
+     suppressed) does it break, first at the <wbr> before "@", and inside a part
+     only as a last resort, so it never overflows its column. */
+  .contact-email { max-width: 100%; min-height: 44px; overflow-wrap: anywhere; font-size: clamp(1rem, 7.4cqi, 1.5rem); line-height: 1.4; }
   .contact-email:hover { text-decoration: underline; text-underline-offset: .15em; }
   .contact-person h2, .contact-person p { font-size: 1rem; line-height: 1.5; }
-  .contact-actions { grid-template-columns: minmax(0, max-content) minmax(44px, 1fr); }
+  /* Wrapping flex row: Send and the labelled Copy button stack whenever they do not fit, at any text scale. */
+  .contact-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
+  .contact-actions > :global(*) { max-width: 100%; }
   .contact-actions > .button { overflow-wrap: normal; }
   .contact-opportunities { max-width: 42rem; }
   .inquiry-links { display: grid; gap: .25rem; }
@@ -84,12 +86,13 @@ const [emailLocal, emailDomain] = pi.email.split('@');
   .contact-location { border-top: 1px solid var(--color-line); }
   @container contact-panel (min-width: 60rem) {
     .contact-layout { grid-template-columns: minmax(0,3fr) minmax(0,2fr); gap: 4rem; }
-    .contact-email { font-size: 1.75rem; }
+    .contact-email { font-size: clamp(1rem, 7.4cqi, 1.75rem); }
   }
   @container (max-width: 12rem) {
-    .contact-email { font-size: 1.125rem; }
-    .contact-actions { grid-template-columns: minmax(0,1fr); justify-items: start; }
     .contact-actions > .button { width: 100%; }
+    /* Narrow relative to the text size: trim side padding so the labelled Copy
+       button still fits at 2.5× text on 260px viewports. */
+    .contact-actions :global(.button-secondary) { padding-inline: .75rem; }
   }
   @media (max-width: 47.99rem) { .contact-primary { padding-block: 2rem; } }
 </style>

@@ -24,12 +24,16 @@
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
+    "@citation-js/core": "0.8.2",
+    "@citation-js/plugin-bibtex": "0.8.2",
+    "@citation-js/plugin-csl": "0.8.2",
     "@retorquere/bibtex-parser": "11.0.0",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "26.5.0",
     "parse5": "8.0.1",
     "svelte-check": "4.7.6",
     "tailwindcss": "4.3.3",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "yaml": "2.9.0"
   }
 }

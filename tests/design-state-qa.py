@@ -205,16 +205,19 @@ def run(browser, evidence):
         context = browser.new_context(viewport={"width": width, "height": 844})
         page = evidence.watch(context.new_page())
         visit(page, evidence.args.base, "/people/")
+        # PI 2026-09-29: no Email button on People (Contact offers it); a "Bio" head leads into the biography.
+        assert page.locator("[data-pi-contact]").count() == 0, "People must not repeat the Contact email button"
         name = page.locator("#pi-name").bounding_box()
-        contact = page.locator("[data-pi-contact]").bounding_box()
+        head = page.locator("#bio-heading").bounding_box()
         bio = page.locator("[data-pi-bio]").bounding_box()
-        assert name and contact and bio
-        assert name["y"] + name["height"] <= bio["y"], {"name": name, "bio": bio}
-        assert contact["y"] + contact["height"] <= bio["y"], {"contact": contact, "bio": bio}
-        assert name["y"] < 844 and contact["y"] < 844, "Mobile identity and contact must precede the long biography"
+        assert name and head and bio
+        assert name["y"] + name["height"] <= head["y"], {"name": name, "bioHeading": head}
+        assert head["y"] + head["height"] <= bio["y"], {"bioHeading": head, "bio": bio}
+        assert page.locator("#bio-heading").inner_text().strip() == "Bio"
+        assert name["y"] < 844, "Mobile identity must precede the long biography"
         geometry(page, width)
         evidence.screenshot(page, f"people-{width}-identity-first", full=False)
-        evidence.check("mobile PI identity and contact before biography", {"width": width, "name": name, "contact": contact, "bio": bio})
+        evidence.check("mobile PI identity, Bio head, then biography", {"width": width, "name": name, "bioHeading": head, "bio": bio})
         context.close()
     for width, height in [(320, 568), (390, 667), (1440, 800)]:
         context = browser.new_context(viewport={"width": width, "height": height})
@@ -261,8 +264,15 @@ def run(browser, evidence):
             visit(page, evidence.args.base, route)
             images = media(page)
             raster = [item for item in images if not item["src"].split("?")[0].endswith(".svg")]
-            assert raster and all(item["srcset"] for item in raster), raster
-            evidence.check("responsive image sources", {"route": route, "DPR": ratio, "images": raster})
+            vector = [item for item in images if item["src"].split("?")[0].endswith(".svg")]
+            assert vector, {"route": route, "images": images}
+            assert all(item["srcset"] for item in raster), raster
+            if route == "/people/":
+                assert raster, {"route": route, "images": images}
+            if route == "/":
+                # PI request 2026-09-29: the Home portrait was replaced by a "Meet the PI" button.
+                assert not raster, {"route": route, "images": images}
+            evidence.check("responsive image sources", {"route": route, "DPR": ratio, "raster": raster, "vector": vector})
         context.close()
 
     context = browser.new_context(viewport={"width": 1440, "height": 1000})

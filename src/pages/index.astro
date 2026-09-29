@@ -1,12 +1,10 @@
 ---
-import { Picture } from 'astro:assets';
 import { ArrowRight } from '@lucide/svelte';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import HomeResearch from '../components/HomeResearch.svelte';
 import { loadContent } from '../lib/content';
 import { site, joinUs } from '../lib/data/lab';
-import portrait from '../lib/assets/pi.jpg';
-const { pi, programs, news } = await loadContent();
+const { programs, news } = await loadContent();
 const topics = programs.map(({ id, title, summary }) => ({ id, title, summary }));
 ---
 <SiteLayout title={site.name}>
@@ -17,20 +15,9 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
       <p class="home-introduction">{site.intro}</p>
       <div class="home-actions">
         <a class="button" href="/research/">Explore research <ArrowRight size={18} aria-hidden="true" /></a>
-        <a class="text-link" href="/contact/">Contact <ArrowRight size={17} aria-hidden="true" /></a>
+        <a class="button-secondary" href="/people/">Meet the PI <ArrowRight size={18} aria-hidden="true" /></a>
       </div>
     </div>
-    <figure class="pi-feature">
-      <div class="pi-photo">
-        <Picture src={portrait} formats={['avif','webp']} widths={[176,240,288,352,480,576]} sizes="(min-width: 1280px) 288px, (min-width: 768px) 240px, 176px" alt={pi.photoAlt} loading="eager" />
-      </div>
-      <figcaption class="pi-caption">
-        <strong>{pi.name}</strong>
-        <span>Principal Investigator</span>
-        <span>{site.institution}</span>
-        <a class="text-link" href="/people/">Meet the PI <ArrowRight size={17} aria-hidden="true" /></a>
-      </figcaption>
-    </figure>
     </div>
   </header>
 
@@ -56,17 +43,14 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   .home-intro { container: home-intro / inline-size; padding-block: 2.75rem 0; }
   .intro-layout { display: grid; grid-template-columns: minmax(0,1fr); align-items: start; gap: 2rem; }
   .intro-copy { min-width: 0; }
-  .home-title { font-size: 2.125rem; line-height: 1.12; text-wrap: wrap; }
-  .home-introduction { margin-top: 1.25rem; font-size: 1.0625rem; line-height: 1.65; text-wrap: pretty; }
+  /* Balanced lines: the full-width title would otherwise end a line after the
+     hyphen of "decision-making". No phrase-level break or nowrap is forced. */
+  .home-title { font-size: 2.125rem; line-height: 1.12; text-wrap: balance; }
+  /* Without the former photo column the title spans the page width; only the
+     paragraph keeps a reading measure. */
+  .home-introduction { max-width: 46rem; margin-top: 1.25rem; font-size: 1.0625rem; line-height: 1.65; text-wrap: pretty; }
   .home-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.5rem; margin-top: 1.5rem; }
   .home-actions a { max-width: 100%; }
-  .pi-feature { display: grid; grid-template-columns: minmax(0,1fr); gap: 1rem; align-items: center; min-width: 0; margin: 0; }
-  .pi-photo { width: 176px; max-width: 100%; }
-  .pi-feature :global(img) { width: 100%; height: auto; }
-  .pi-caption { min-width: 0; }
-  .pi-caption strong { display: block; font-size: 1.125rem; font-weight: 600; line-height: 1.35; }
-  .pi-caption span { display: block; margin-top: .2rem; font-size: .875rem; color: var(--color-muted); }
-  .pi-caption a { margin-top: .375rem; font-size: .875rem; }
   .news-band { container: home-news / inline-size; border-block: 1px solid var(--color-line); padding-block: 3.5rem; }
   .news-layout { display: grid; grid-template-columns: minmax(0,1fr); gap: 2rem; }
   .news-heading h2 { font-size: 2rem; line-height: 1.2; }
@@ -76,7 +60,7 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   .news-item:first-child { padding-top: 0; }
   .news-item:last-child { border: 0; padding-bottom: 0; }
   .news-meta { display: flex; flex-wrap: wrap; gap: .375rem .75rem; font-size: .8125rem; color: var(--color-muted); }
-  .news-meta span { color: var(--color-action); font-weight: 600; }
+  .news-meta span { font-weight: 600; }
   .news-item h3 { font-size: 1.125rem; line-height: 1.4; }
   .news-item a { display: block; min-height: 44px; padding-block: .375rem; }
   .news-item a :global(svg) { display: inline-block; vertical-align: middle; margin-left: .35rem; color: var(--color-action); }
@@ -85,23 +69,15 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   .inquiry { container: home-inquiry / inline-size; padding-top: 3.5rem; }
   .inquiry-layout { display: grid; grid-template-columns: minmax(0,1fr); gap: 1.5rem; align-items: center; }
   .inquiry h2 { font-size: 1.75rem; line-height: 1.25; }
-  .inquiry p { margin-top: 1rem; max-width: 62ch; }
+  .inquiry p { margin-top: 1rem; max-width: 70ch; text-wrap: pretty; }
   .inquiry .button { justify-self: start; max-width: 100%; }
-  @container home-intro (min-width: 22rem) {
-    .pi-feature { grid-template-columns: 176px minmax(0,1fr); gap: 1.5rem; }
-  }
   @container home-intro (min-width: 44rem) {
-    .intro-layout { grid-template-columns: minmax(0,1fr) 240px; gap: 2rem; }
     .home-title { font-size: 2.75rem; }
-    .pi-feature { display: block; }
-    .pi-photo { width: 100%; }
-    .pi-caption { margin-top: 1rem; }
   }
   @container home-intro (min-width: 60rem) {
     .home-introduction { font-size: 1.125rem; }
   }
   @container home-intro (min-width: 76rem) {
-    .intro-layout { grid-template-columns: minmax(0,1fr) 288px; gap: 3rem; }
     .home-title { font-size: 3.5rem; }
   }
   @container home-news (min-width: 60rem) {

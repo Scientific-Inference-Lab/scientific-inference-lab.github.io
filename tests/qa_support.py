@@ -106,6 +106,12 @@ class Evidence:
             self.report[destination].append(entry)
 
         def failed_request(request):
+            # Playwright emits cancellation events for still-referenced module
+            # resources when the completed test explicitly closes its context.
+            # Those cleanup events occur after the final network-idle gate and
+            # are not page-load failures; all earlier cancellations stay strict.
+            if getattr(page, "_qa_cleanup", False):
+                return
             entry = {"url": request.url, "document": page.url, "resourceType": request.resource_type, "error": request.failure}
             if injected_scripts is not None and request.resource_type == "script" and request.url in injected_scripts:
                 self.report["injectedScriptErrors"].append(entry)
@@ -194,6 +200,8 @@ def visit(page, base, route, javascript=True):
     # requestAnimationFrame need not advance in a scripts-disabled browser page.
     if javascript:
         page.evaluate("() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))")
+        page.wait_for_function("!document.querySelector('astro-island[ssr]')")
+        page.wait_for_load_state("networkidle")
     page.wait_for_timeout(80)
     media(page)
 

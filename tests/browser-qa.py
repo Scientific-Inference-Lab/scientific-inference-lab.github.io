@@ -98,6 +98,9 @@ def research(page, evidence):
     expect(terminal).to_have_count(1)
     terminal.click()
     page.wait_for_url(evidence.args.base.rstrip('/') + '/contact/')
+    # Let Contact's islands finish importing; leaving mid-import records cancelled scripts.
+    page.wait_for_function("!document.querySelector('astro-island[ssr]')")
+    page.wait_for_load_state('networkidle')
     page.go_back(wait_until='networkidle')
     anchored_program(page, PROGRAMS[-1])
     evidence.check('terminal Research inquiry', 'one Contact destination after the four sections; browser Back restores the Research fragment')
@@ -157,6 +160,21 @@ def inner_page_headers(page, evidence):
         evidence.check("shared inner-page heading system", {"width": width, "measurements": measurements})
 
 
+def home_inquiry_measure(page, evidence, width):
+    paragraph = page.locator('.inquiry p')
+    result = paragraph.evaluate('''el => {
+      const node=el.firstChild, text=node.textContent;
+      const wordTop = word => {
+        const start=text.indexOf(word), range=document.createRange();
+        range.setStart(node,start); range.setEnd(node,start+word.length);
+        return range.getBoundingClientRect().top;
+      };
+      return {machine:wordTop('machine'), learning:wordTop('learning'), maxWidth:getComputedStyle(el).maxWidth};
+    }''')
+    assert abs(result['machine'] - result['learning']) < 1, {'width': width, **result}
+    evidence.check('Home inquiry preserves the machine learning phrase', {'width': width, **result})
+
+
 def publications(page, context, evidence):
     records = publication_records()
     flowpath = next(record for record in records if record["title"].startswith("FlowPath:"))
@@ -164,6 +182,11 @@ def publications(page, context, evidence):
     year_matches = [record for record in records if record["year"] == 2024]
     position_matches = [record for record in records if record.get("type") == "Position paper"]
     assert year_matches and position_matches, "The verified inventory must include the regression's year and type"
+    visit(page, evidence.args.base, "/publications/")
+    visible_metadata = " ".join(page.locator("[data-publication]").all_inner_texts())
+    assert not any(label in visible_metadata for label in ["Final citation pending", "Presented", "Accepted", "Published"])
+    assert page.locator("[data-publication-status],[data-bibliography-status]").count() == 0
+    evidence.check("publication workflow metadata remains internal", "Presented, acceptance and citation-pending labels are absent from rendered records")
     for width, text_percent in [(390, 100), (1440, 100), (320, 200)]:
         page.set_viewport_size({'width': width, 'height': 900})
         visit(page, evidence.args.base, f'/publications/#{flowpath["id"]}')
@@ -182,7 +205,7 @@ def publications(page, context, evidence):
         whole_words(page, '[data-citation-dialog] h2,[data-citation-title]')
         evidence.screenshot(page, f'citation-opening-{width}-{text_percent}', full=False)
         page.locator('[data-download-citation]').scroll_into_view_if_needed()
-        whole_words(page, '[data-copy-citation],[data-download-citation]')
+        whole_words(page, '[data-copy-apa],[data-copy-citation],[data-download-citation]')
         evidence.screenshot(page, f'citation-actions-{width}-{text_percent}', full=False)
         page.keyboard.press('Escape')
         evidence.check('citation stays inside viewport throughout opening with whole-word title', {'width': width, 'textPercent': text_percent, 'frames': frames})
@@ -285,6 +308,8 @@ def publications(page, context, evidence):
     canonical = [record for record in records if record.get("bibtex") is not None]
     unavailable = [record for record in records if record.get("bibtex") is None]
     assert len(canonical) >= 25 and len(unavailable) >= 3
+    assert all(bool(record.get("apa")) for record in canonical)
+    assert all(record.get("apa") is None for record in unavailable)
     assert page.locator("[data-cite]:visible").count() == len(canonical)
     for record in unavailable:
         assert page.locator(f'[data-cite="{record["id"]}"]').count() == 0, record["id"]
@@ -293,6 +318,7 @@ def publications(page, context, evidence):
         trigger.click()
         dialog = page.locator("[data-citation-dialog]")
         expect(dialog).to_be_visible(timeout=3000)
+        assert page.locator("[data-apa-citation]").input_value() == record["apa"], record["id"]
         assert page.locator("[data-citation-text]").input_value() == record["bibtex"], record["id"]
         assert page.locator("[data-download-citation]").evaluate("el => decodeURIComponent(el.href.slice(el.href.indexOf(',') + 1))") == record["bibtex"], record["id"]
         page.locator("[data-close-citation]").click()
@@ -312,6 +338,12 @@ def publications(page, context, evidence):
     dialog = page.locator("[data-citation-dialog]")
     expect(dialog).to_be_visible(timeout=3000)
     assert dialog.get_attribute("role") == "dialog"
+    apa = page.locator("[data-apa-citation]").input_value()
+    assert apa == flowpath["apa"], "APA must come from the committed canonical-BibTeX derivative"
+    page.locator("[data-copy-apa]").click()
+    actual = page.evaluate("navigator.clipboard.readText()" if evidence.args.engine == "chromium" else "window.__qaClipboard")
+    assert actual == apa
+    assert "apa 7 copied" in page.locator("[data-citation-status]").inner_text().lower()
     content = page.locator("[data-citation-text]").input_value()
     assert content == flowpath["bibtex"], "Citation must preserve canonical upstream text, not synthesize display fields"
     page.locator("[data-copy-citation]").click()
@@ -331,7 +363,7 @@ def publications(page, context, evidence):
     page.keyboard.press("Escape")
     expect(dialog).to_be_hidden(timeout=3000)
     expect(cite).to_be_focused(timeout=3000)
-    evidence.check("publication citation", "exact copy/readback, BibTeX download, denied-copy selected-text fallback, Escape and restored focus")
+    evidence.check("publication citation", "generated APA and exact BibTeX copy/readback, BibTeX download, denied-copy selected-text fallback, Escape and restored focus")
 
     visit(page, evidence.args.base, "/contact/")
     if evidence.args.engine == "webkit":
@@ -344,6 +376,7 @@ def publications(page, context, evidence):
     page.locator("[data-copy-email]").click()
     assert "unavailable" in page.locator("[data-copy-status]").inner_text().lower()
     assert page.locator('a[href="mailto:yongkyung.oh@pusan.ac.kr"]').count() > 0
+    page.wait_for_load_state("networkidle")
     evidence.check("contact copy", "success, denied-permission feedback and mailto fallback")
 
 
@@ -360,11 +393,16 @@ def run(browser, evidence):
             identities(page)
             images = media(page)
             control_targets(page)
+            if route == "/contact/":
+                expect(page.locator("[data-copy-email]")).to_be_enabled(timeout=3000)
+            if route == "/" and width >= 768:
+                home_inquiry_measure(page, evidence, width)
             evidence.screenshot(page, f"{route.strip('/') or 'home'}-{width}")
             evidence.check("route and media", {"route": route, "width": width, "images": images})
     page.set_viewport_size({"width": 1440, "height": 1000})
     research(page, evidence)
     publications(page, context, evidence)
+    page._qa_cleanup = True
     context.close()
 
 
