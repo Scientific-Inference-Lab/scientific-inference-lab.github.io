@@ -355,6 +355,8 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   // PI-approved review 2026-10-01: the NRF fellowship is the PI's earlier award, marked as such.
   assert(nrf.includes('Postdoctoral Fellowship for Overseas Research') && nrf.includes('National Research Foundation of Korea (NRF) · 2024-2025'));
   assert(nrf.includes('Role: Principal Investigator') && nrf.includes('Research title: Approach to Detect Distribution Shifts Over Time'));
+  // PI decision 2026-10-01 (audit 58 E4): the certified title is quoted verbatim.
+  assert(nrf.includes('Evaluate Model Trustworthy with Retraining in Longitudinal Medical Data') && !nrf.includes('Trustworthiness'), 'NRF title must match the certificate');
   assert.equal((nrf.match(/Principal Investigator/g) ?? []).length, 1, 'The fellowship states the PI role once, as the CV does');
   assert(nrf.includes('before joining Pusan National University'), 'The fellowship must read as the PI\'s past award, not current lab funding');
   const grantAll = content(grantGroup);
