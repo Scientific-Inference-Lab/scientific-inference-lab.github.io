@@ -9,7 +9,7 @@
   <div class="overview-layout">
     <div class="overview-intro">
       <h2>Research directions</h2>
-      <p>Four overlapping directions connect our research.</p>
+      <p>Overlapping directions connect our research.</p>
     </div>
     <div class="direction-list">
       {#each programs as program}

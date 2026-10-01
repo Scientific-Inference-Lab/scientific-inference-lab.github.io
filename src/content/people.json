@@ -20,7 +20,19 @@
         "year": 2026,
         "role": "Lead Scientist on the project team",
         "project": "Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework",
-        "principalInvestigator": "Alex A. T. Bui, UCLA"
+        "principalInvestigator": "Alex A. T. Bui, UCLA",
+        "period": "2026",
+        "projectLabel": "Project"
+      },
+      {
+        "title": "Postdoctoral Fellowship for Overseas Research (Nurturing Next-generation Researchers)",
+        "sponsor": "National Research Foundation of Korea (NRF)",
+        "year": 2024,
+        "period": "2024-2025",
+        "role": "Principal Investigator",
+        "project": "Approach to Detect Distribution Shifts Over Time and Evaluate Model Trustworthiness with Retraining in Longitudinal Medical Data",
+        "context": "Postdoctoral fellowship held at UCLA before joining Pusan National University",
+        "projectLabel": "Research title"
       }
     ],
     "shortBio": "YongKyung Oh develops machine learning methods for scientific and engineering systems. Previously, he was a postdoctoral researcher at the University of California, Los Angeles.",

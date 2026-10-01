@@ -345,10 +345,21 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   assert(selectedText.includes('Best Paper Award'));
   assert(!selectedText.includes('Models and Methods Track') && !selectedText.includes('Paper award'), 'People uses the concise CHIL recognition label');
   const grantGroup = byAttr(people, 'aria-labelledby', 'grant-recognition-heading')[0];
-  assert(grantGroup, 'People must list the research grant as its own recognition group');
-  const grantText = content(grantGroup);
-  assert(grantText.includes('NVIDIA Academic Grant Program') && grantText.includes('NVIDIA · 2026'));
-  assert(grantText.includes('Lead Scientist on the project team') && grantText.includes('Principal Investigator: Alex A. T. Bui, UCLA'), 'Grant role and PI follow the public-safe CV export');
+  assert(grantGroup, 'People must list grants and fellowships as their own recognition group');
+  assert.equal(content(byTag(grantGroup, 'h3')[0]), 'Grants and fellowships');
+  const grantRows = byAttr(grantGroup, 'data-grant');
+  assert.equal(grantRows.length, 2, 'People lists the NVIDIA grant and the NRF fellowship, and no training programme or unverified record');
+  const [nvidia, nrf] = grantRows.map(content);
+  assert(nvidia.includes('NVIDIA Academic Grant Program') && nvidia.includes('NVIDIA · 2026'));
+  assert(nvidia.includes('Role: Lead Scientist on the project team') && nvidia.includes('Project: Neural SDE-Augmented') && nvidia.includes('Principal Investigator: Alex A. T. Bui, UCLA'), 'Grant role, project and PI follow the public-safe CV export');
+  // PI-approved review 2026-10-01: the NRF fellowship is the PI's earlier award, marked as such.
+  assert(nrf.includes('Postdoctoral Fellowship for Overseas Research') && nrf.includes('National Research Foundation of Korea (NRF) · 2024-2025'));
+  assert(nrf.includes('Role: Principal Investigator') && nrf.includes('Research title: Approach to Detect Distribution Shifts Over Time'));
+  assert.equal((nrf.match(/Principal Investigator/g) ?? []).length, 1, 'The fellowship states the PI role once, as the CV does');
+  assert(nrf.includes('before joining Pusan National University'), 'The fellowship must read as the PI\'s past award, not current lab funding');
+  const grantAll = content(grantGroup);
+  for (const excluded of ['UniStar', 'Carnegie Mellon', 'IITP', 'Catalyst', 'KRW', 'USD']) assert(!grantAll.includes(excluded), `${excluded}: training programmes, amounts and unverified records stay off People`);
+  assert(!routes.includes('/grants/') && !(documents.has('/grants/')), 'No separate Grants route');
   assert(content(documents.get('/')).includes('led by YongKyung Oh'), 'Home News preserves the PI-confirmed NVIDIA project leadership');
   for (const document of documents.values()) {
     const footer = byTag(document, 'footer')[0];
@@ -558,7 +569,11 @@ test('search metadata and structured data restate the visible site', async () =>
     assert(publicationIds.has(id), `${id}: structured article must target a visible record`);
     const record = records.find(entry => entry.id === id);
     assert.equal(item.name, record.title, `${id}: title`);
-    assert.equal(item.datePublished === undefined, record.status !== 'published', `${id}: only published records carry a publication date`);
+    // Audit 60: a CV presentation month is not a publication date.
+    const bibtexYear = record.bibtex?.match(/\byear\s*=\s*\{?(\d{4})\}?/i)?.[1];
+    const expected = record.status !== 'published' ? undefined : record.dateSource === 'canonical' ? record.date : bibtexYear;
+    assert.equal(item.datePublished, expected, `${id}: datePublished must come from a bibliographic source`);
+    if (record.dateSource === 'cv-presentation' && record.date) assert.notEqual(item.datePublished, record.date, `${id}: presentation month emitted as publication date`);
   }
 });
 
@@ -578,6 +593,7 @@ test('sitemap, robots and llms.txt describe exactly the public routes', async ()
   assert.match(await readFile(path.join(root, 'dist/robots.txt'), 'utf8'), new RegExp(`^Sitemap: ${origin}/sitemap\\.xml$`, 'm'));
   const llms = await readFile(path.join(root, 'dist/llms.txt'), 'utf8');
   assert(llms.startsWith('# Scientific Inference Lab\n'), 'llms.txt starts with the site name');
+  assert(!/with citations/i.test(llms), 'llms.txt must not promise citations that some records lack');
   for (const route of routes) assert(llms.includes(`](${origin}${route})`), `llms.txt lacks ${route}`);
   const links = [...llms.matchAll(/\]\((https:\/\/scientific-inference-lab\.github\.io\/[^)]*#[^)]+)\)/g)].map(match => new URL(match[1]));
   for (const link of links) {

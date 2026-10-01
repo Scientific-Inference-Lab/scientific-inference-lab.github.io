@@ -1,7 +1,8 @@
 <script lang="ts">
   import { ArrowRight, ArrowUpRight } from '@lucide/svelte';
   import { getProfileLinks } from '../lib/data/lab';
-  import type { pi as personData, site as siteData } from '../lib/data/lab';
+  import type { site as siteData } from '../lib/data/lab';
+  import type { loadContent } from '../lib/content';
 
   interface ResponsiveImage {
     src: string; width: number; height: number; alt: string;
@@ -16,7 +17,7 @@
   }
 
   let { pi, site, recognition, portrait }: {
-    pi: typeof personData;
+    pi: Awaited<ReturnType<typeof loadContent>>['pi'];
     site: typeof siteData;
     recognition: RecognitionItem[];
     portrait: ResponsiveImage;
@@ -82,15 +83,17 @@
         </ul>
       </section>
       <section class="recognition-group" aria-labelledby="grant-recognition-heading">
-        <h3 id="grant-recognition-heading" class="recognition-group-title">Research grant</h3>
+        <h3 id="grant-recognition-heading" class="recognition-group-title">Grants and fellowships</h3>
         <ul class="recognition-list">
           {#each pi.grants as grant}
             <li class="recognition-row" data-grant>
-              <p class="recognition-meta">{grant.sponsor} · {grant.year}</p>
+              <p class="recognition-meta">{grant.sponsor} · {grant.period}</p>
               <div class="min-w-0">
                 <h4 class="recognition-title">{grant.title}</h4>
-                <p class="recognition-detail">{grant.role}: {grant.project}</p>
-                <p class="recognition-detail">Principal Investigator: {grant.principalInvestigator}</p>
+                <p class="recognition-detail">Role: {grant.role}</p>
+                <p class="recognition-detail">{grant.projectLabel}: {grant.project}</p>
+                {#if grant.principalInvestigator}<p class="recognition-detail">Principal Investigator: {grant.principalInvestigator}</p>{/if}
+                {#if grant.context}<p class="recognition-detail">{grant.context}</p>{/if}
               </div>
             </li>
           {/each}

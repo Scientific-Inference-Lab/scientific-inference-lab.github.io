@@ -28,8 +28,18 @@ function postalAddress(pi: Content['pi']) {
 
 const doi = (publication: Publication) => publication.bibtex?.match(/\bdoi\s*=\s*\{([^}]+)\}/i)?.[1];
 
+// Audit 60: only a bibliographic date is a publication date. A canonical date
+// is used as is; a CV presentation month is never emitted, and falls back to
+// an explicit canonical BibTeX year when one exists.
+function publicationDate(publication: Publication) {
+  if (publication.status !== 'published') return undefined;
+  if (publication.dateSource === 'canonical') return publication.date;
+  return publication.bibtex?.match(/\byear\s*=\s*\{?(\d{4})\}?/i)?.[1];
+}
+
 function article(publication: Publication, pi: Content['pi']) {
   const identifier = doi(publication);
+  const published = publicationDate(publication);
   return {
     '@type': 'ScholarlyArticle',
     '@id': url(`/publications/#${publication.id}`),
@@ -37,7 +47,7 @@ function article(publication: Publication, pi: Content['pi']) {
     name: publication.title,
     author: publication.authors.map(name => name === pi.name ? { '@id': ids.pi } : { '@type': 'Person', name }),
     isPartOf: { '@type': publication.category === 'journal' ? 'Periodical' : 'CreativeWork', name: publication.venueName, alternateName: publication.venue },
-    ...(publication.status === 'published' ? { datePublished: publication.date ?? String(publication.year) } : {}),
+    ...(published ? { datePublished: published } : {}),
     url: publication.url,
     ...(identifier ? { sameAs: `https://doi.org/${identifier}` } : {}),
     ...(publication.codeUrl ? { codeRepository: publication.codeUrl } : {}),
