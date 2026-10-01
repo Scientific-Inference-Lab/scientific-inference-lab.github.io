@@ -1,11 +1,12 @@
 ---
 import { ArrowRight, ArrowUpRight, Mail, MapPin, Phone } from '@lucide/svelte';
 import type { ImageMetadata } from 'astro';
-import type { pi as personData, site as siteData } from '../lib/data/lab';
+import type { site as siteData } from '../lib/data/lab';
+import type { loadContent } from '../lib/content';
 import CopyEmail from './CopyEmail.svelte';
 
 interface Props {
-  pi: typeof personData;
+  pi: Awaited<ReturnType<typeof loadContent>>['pi'];
   site: typeof siteData;
   university: ImageMetadata;
 }
