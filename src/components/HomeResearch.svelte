@@ -36,8 +36,10 @@
   .direction a span { min-width: 0; }
   .direction a :global(svg) { color: var(--color-action); }
   .direction a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .2em; }
-  .direction p { margin-top: .625rem; max-width: 48ch; font-size: 1rem; line-height: 1.65; }
-  @container home-directions (min-width: 42rem) {
+  .direction p { margin-top: .625rem; font-size: 1rem; line-height: 1.65; }
+  /* Two columns only once a direction title fits on one line beside its arrow
+     (audit 63: at 44rem the titles wrapped as labels). */
+  @container home-directions (min-width: 48rem) {
     .direction-list { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2.5rem 3rem; }
   }
   @container home-directions (min-width: 66rem) {

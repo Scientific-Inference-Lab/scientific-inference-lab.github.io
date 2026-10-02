@@ -37,16 +37,16 @@ const [emailLocal, emailDomain] = pi.email.split('@');
   </div>
 </section>
 
-<section class="wrap contact-location grid gap-10 py-10 sm:py-14 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] md:gap-16" aria-labelledby="location-heading">
+<section class="wrap contact-location grid gap-10 py-10 sm:py-14 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-16" aria-labelledby="location-heading">
   <div class="min-w-0">
     <p class="kicker">Yangsan campus</p>
     <h2 id="location-heading" class="text-3xl font-bold">Location</h2>
-    <address class="mt-7 grid gap-6 not-italic">
+    <address class="mt-7 grid grid-cols-[minmax(0,1fr)] gap-6 not-italic">
       <div class="flex gap-4">
         <MapPin size={21} class="mt-1 shrink-0 text-action" aria-hidden="true" />
-        <div>
+        <div class="min-w-0">
           <p class="text-lg font-semibold">{pi.office}</p>
-          <p class="mt-2 max-w-xl leading-relaxed text-body">{pi.address}</p>
+          <p class="mt-2 leading-relaxed text-body">{pi.address}</p>
         </div>
       </div>
       <div class="flex items-center gap-4">
@@ -55,11 +55,11 @@ const [emailLocal, emailDomain] = pi.email.split('@');
       </div>
     </address>
   </div>
-  <div class="min-w-0 md:pt-2">
+  <div class="min-w-0 lg:pt-2">
     <a href={site.universityUrl} class="inline-block max-w-full" aria-label="Pusan National University website">
       <img src={university.src} width={university.width} height={university.height} alt={site.institution} loading="lazy" class="h-auto w-full max-w-80 object-contain" />
     </a>
-    <p class="mt-5 max-w-sm leading-relaxed text-body">{site.department}</p>
+    <p class="mt-5 leading-relaxed text-body">{site.department}</p>
     <a href={site.universityUrl} class="text-link mt-4 inline-flex min-h-11 items-center gap-2">University website<ArrowUpRight size={17} aria-hidden="true" /></a>
   </div>
 </section>
@@ -81,7 +81,7 @@ const [emailLocal, emailDomain] = pi.email.split('@');
   .contact-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .75rem; }
   .contact-actions > :global(*) { max-width: 100%; }
   .contact-actions > .button { overflow-wrap: normal; }
-  .contact-opportunities { max-width: 42rem; }
+  .contact-opportunities { max-width: var(--measure-prose); }
   .inquiry-links { display: grid; gap: .25rem; }
   .inquiry-link { justify-content: space-between; width: 100%; min-height: 44px; gap: 1rem; padding-block: .5rem; }
   .contact-location { border-top: 1px solid var(--color-line); }

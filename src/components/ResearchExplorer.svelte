@@ -2,6 +2,7 @@
   import { ArrowRight } from '@lucide/svelte';
   import type { Program } from '$lib/data/lab';
   import type { Publication } from '$lib/data/publications';
+  import LinkedTitle from './LinkedTitle.svelte';
 
   type Entry = Program & {
     papers: (Pick<Publication, 'id' | 'title' | 'venue' | 'year' | 'recognition'> & { context: string })[];
@@ -37,7 +38,6 @@
           <header class="direction-heading">
             <h2 id={program.id + '-heading'}>{program.title}</h2>
             <p class="research-question" data-research-question>{program.question}</p>
-            <p class="program-summary">{program.summary}</p>
           </header>
 
           <div class="direction-detail">
@@ -48,9 +48,7 @@
                   <li data-featured-evidence={paperIndex === 0 ? '' : undefined}>
                     <p class="paper-context">{paper.context}</p>
                     <h4>
-                      <a class="paper-title" href={'/publications/#' + paper.id}>
-                        <span>{paper.title}</span><ArrowRight size={16} />
-                      </a>
+                      <a class="paper-title" href={'/publications/#' + paper.id}><LinkedTitle title={paper.title} /></a>
                     </h4>
                     <p class="paper-meta">
                       <span>{paper.venue} {paper.year}</span>
@@ -90,9 +88,9 @@
   .program-panel { position: relative; min-width: 0; scroll-margin-top: 0; }
   .program-panel + .program-panel { border-top: 1px solid var(--color-line); padding-top: 2.5rem; margin-top: 2.5rem; }
   .program-alias { position: absolute; top: 0; scroll-margin-top: 0; }
-  .program-panel h2 { max-width: 30ch; font-size: 2.125rem; line-height: 1.15; }
-  .program-summary { max-width: 65ch; margin-top: 1rem; color: var(--color-muted); font-size: 1.0625rem; line-height: 1.6; text-wrap: pretty; }
-  .research-question { max-width: 60ch; margin-top: 1rem; color: var(--color-ink); font-size: 1.375rem; line-height: 1.45; text-wrap: balance; }
+  .direction-heading { max-width: var(--measure-prose); }
+  .program-panel h2 { font-size: 2.125rem; line-height: 1.15; }
+  .research-question { margin-top: 1rem; color: var(--color-ink); font-size: 1.375rem; line-height: 1.45; }
   .direction-detail { display: grid; gap: 1.75rem; margin-top: 2rem; }
   .current-work, .research-agenda { min-width: 0; }
   .direction-detail h3 { font-size: 1rem; line-height: 1.4; }
@@ -101,9 +99,9 @@
   .related-papers li + li { border-top: 1px solid var(--color-line); }
   .paper-context { color: var(--color-muted); font-size: .8125rem; line-height: 1.5; }
   .related-papers h4 { margin-top: .25rem; font-size: 1.0625rem; line-height: 1.4; }
-  .paper-title { display: flex; align-items: baseline; justify-content: space-between; gap: .875rem; min-height: 44px; padding-block: .25rem; }
-  .paper-title:hover { color: var(--color-action); }
-  .paper-title:hover span { text-decoration: underline; text-underline-offset: 3px; }
+  /* Audit 66: the → travels with the title's last word (LinkedTitle), so balanced lines keep it beside the text at every width. */
+  .paper-title { display: block; min-height: 44px; padding-block: .25rem; }
+  .paper-title:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: 3px; }
   .paper-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: .375rem .625rem; margin-top: .125rem; font-size: .8125rem; color: var(--color-muted); line-height: 1.5; }
   .recognition { max-width: 100%; padding: .125rem .375rem; color: var(--color-recognition); background: var(--color-recognition-soft); border-radius: 2px; font-size: .75rem; }
   .research-agenda { align-self: start; border-top: 2px solid var(--color-line); padding-top: 1rem; }
@@ -126,17 +124,14 @@
   @container program-content (max-width: 35rem) {
     .program-panel h2 { font-size: 1.875rem; }
     .research-question { font-size: 1.25rem; }
-    .program-summary { font-size: 1rem; }
     .direction-detail { margin-top: 1.5rem; }
     .program-panel + .program-panel { margin-top: 2rem; padding-top: 2rem; }
   }
   @container program-content (max-width: 16rem) {
     .program-panel h2 { font-size: 1.625rem; }
     .related-papers h4 { font-size: 1rem; }
-    .paper-title :global(svg) { display: none; }
   }
   @container program-content (max-width: 10rem) {
     .program-panel h2 { font-size: 1.25rem; }
-    .paper-title { gap: .375rem; }
   }
 </style>

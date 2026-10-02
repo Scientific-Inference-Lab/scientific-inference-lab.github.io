@@ -7,10 +7,101 @@
     "photoAlt": "YongKyung Oh speaking at a lectern",
     "honors": [
       {
-        "title": "Chancellor's Award for Postdoctoral Research",
-        "institution": "UCLA",
+        "cvLabel": "H01",
+        "title": "CIRTL Scholar",
+        "organizer": "Center for the Integration of Research, Teaching and Learning (CIRTL), UCLA",
+        "month": "March",
+        "year": 2026
+      },
+      {
+        "cvLabel": "H02",
+        "title": "Chancellor's Award for Postdoctoral Research Nominee",
+        "organizer": "UCLA",
+        "month": "November",
+        "year": 2025
+      }
+    ],
+    "awards": [
+      {
+        "cvLabel": "HR01",
+        "title": "Energy Analytics Challenge Finalist",
+        "paper": "Transform-First Forecasting for County-Level Power Outages",
+        "organizer": "Energy Systems Division (ESD), Institute of Industrial and Systems Engineers (IISE) Annual Conference & Expo",
+        "month": "May",
+        "year": 2026
+      },
+      {
+        "cvLabel": "HR02",
+        "title": "Best Paper Award",
+        "paper": "Multi-View Contrastive Learning for Robust Domain Adaptation in Medical Time Series Analysis",
+        "organizer": "Models & Methods Track, The Sixth Conference on Health, Inference, and Learning (CHIL)",
+        "month": "June",
+        "year": 2025
+      },
+      {
+        "cvLabel": "HR03",
+        "title": "Best Paper Competition Finalist",
+        "paper": "Multi-scale Transformer for Long-term Time Series Forecasting",
+        "organizer": "Data Analytics and Information Systems (DAIS) Division, IISE Annual Conference & Expo",
+        "month": "May",
         "year": 2025,
-        "status": "Nominee"
+        "note": "Recognized as a finalist for three consecutive years: 2023, 2024, and 2025."
+      },
+      {
+        "cvLabel": "HR04",
+        "title": "Best Paper Competition Finalist",
+        "paper": "Neural CDE-Flow for Irregular Time Series: Integrating Neural Controlled Differential Equations and Neural Flow for Comprehensive Irregularly Sampled Time Series Analysis",
+        "organizer": "Data Analytics and Information Systems (DAIS) Division, IISE Annual Conference & Expo",
+        "month": "May",
+        "year": 2024
+      },
+      {
+        "cvLabel": "HR05",
+        "title": "Best Paper Award",
+        "paper": "Flow-based Neural Differential Equations for Time Series Analysis",
+        "organizer": "Korea Computer Congress (KCC), Korean Institute of Information Scientists and Engineers (KIISE)",
+        "month": "June",
+        "year": 2023
+      },
+      {
+        "cvLabel": "HR06",
+        "title": "Best Oral Presentation Award",
+        "paper": "Heterogeneous Model Fusion for Enhanced Sensor-Based Human Activity Recognition",
+        "organizer": "AI Division, Korea Computer Congress (KCC), KIISE",
+        "month": "June",
+        "year": 2023
+      },
+      {
+        "cvLabel": "HR07",
+        "title": "Best Paper Competition Finalist",
+        "paper": "Neural Stochastic Differential Equations Based on the Ornstein-Uhlenbeck Process",
+        "organizer": "Data Analytics and Information Systems (DAIS) Division, IISE Annual Conference & Expo",
+        "month": "May",
+        "year": 2023
+      },
+      {
+        "cvLabel": "HR08",
+        "title": "Best Paper Award",
+        "paper": "Logistics Anomaly Detection with Maritime Big Data: A Bootstrap Approach",
+        "organizer": "Logistics & Supply Chain (LSC) Division, IISE Annual Conference & Expo",
+        "month": "May",
+        "year": 2021
+      },
+      {
+        "cvLabel": "HR09",
+        "title": "Encouragement Award",
+        "paper": "Strategies for Building a Startup Ecosystem for Port Smartization",
+        "organizer": "Graduate Student Academic Paper Competition, Ulsan Development Institute",
+        "month": "December",
+        "year": 2019
+      },
+      {
+        "cvLabel": "HR10",
+        "title": "Excellence Award",
+        "paper": "Suggestion for Smart Port in Industry 4.0",
+        "organizer": "International Conference on Maritime, Academic Paper Competition, Dongseo University & Ministry of Maritime Affairs and Fisheries",
+        "month": "November",
+        "year": 2019
       }
     ],
     "grants": [
@@ -33,9 +124,125 @@
         "project": "Approach to Detect Distribution Shifts Over Time and Evaluate Model Trustworthy with Retraining in Longitudinal Medical Data",
         "context": "Postdoctoral fellowship held at UCLA before joining Pusan National University",
         "projectLabel": "Research title"
+      },
+      {
+        "title": "Biomedical UniStar Training Program",
+        "sponsor": "Korea Health Industry Development Institute (KHIDI)",
+        "year": 2023,
+        "period": "2023-2024",
+        "role": "Researcher & Trainee",
+        "description": "Selective program supporting collaborative research between UNIST and the UCLA David Geffen School of Medicine."
+      },
+      {
+        "title": "Intensive Program in Artificial Intelligence (High-Potential Individuals Global Training Program)",
+        "sponsor": "Institute for Information & Communication Technology Planning & Evaluation (IITP)",
+        "year": 2020,
+        "period": "2020",
+        "role": "Researcher & Trainee",
+        "description": "Competitive, fully funded program for intensive training at Carnegie Mellon University (CMU)."
       }
     ],
-    "shortBio": "YongKyung Oh develops machine learning methods for scientific and engineering systems. Previously, he was a postdoctoral researcher at the University of California, Los Angeles.",
+    "patents": [
+      {
+        "cvLabel": "PT02",
+        "title": "Encoding apparatus and method for converting time series data into images",
+        "filings": [
+          {
+            "office": "KR",
+            "number": "10-2754134",
+            "status": "granted",
+            "date": "January 8, 2025"
+          }
+        ]
+      },
+      {
+        "cvLabel": "PT01",
+        "title": "Apparatus and method for human activity recognition through hybrid fusion of dynamic and static data",
+        "filings": [
+          {
+            "office": "KR",
+            "number": "10-2024-0033382",
+            "status": "applied",
+            "date": "March 8, 2024"
+          }
+        ]
+      },
+      {
+        "cvLabel": "PT03",
+        "title": "Method, computer device, and computer program to predict road congestion propagation using pattern matching",
+        "filings": [
+          {
+            "office": "KR",
+            "number": "10-2608343",
+            "status": "granted",
+            "date": "November 27, 2023"
+          },
+          {
+            "office": "JP",
+            "number": "7453296",
+            "status": "granted",
+            "date": "March 11, 2024"
+          }
+        ],
+        "jointApplicants": "Naver Corp. and UNIST"
+      },
+      {
+        "cvLabel": "PT04",
+        "title": "Method, computer device, and computer program to predict propagation delay time of road congestion using transfer entropy",
+        "filings": [
+          {
+            "office": "KR",
+            "number": "10-2604575",
+            "status": "granted",
+            "date": "November 16, 2023"
+          },
+          {
+            "office": "JP",
+            "number": "7453297",
+            "status": "granted",
+            "date": "March 11, 2024"
+          }
+        ],
+        "jointApplicants": "Naver Corp. and UNIST"
+      },
+      {
+        "cvLabel": "PT05",
+        "title": "Method of anomaly detection of vessels applying Bayesian bootstrap",
+        "filings": [
+          {
+            "office": "KR",
+            "number": "10-2534357",
+            "status": "granted",
+            "date": "May 16, 2023"
+          }
+        ]
+      },
+      {
+        "cvLabel": "PT06",
+        "title": "Sensor drift compensation for mixed gas classification in E-nose system",
+        "filings": [
+          {
+            "office": "KR",
+            "number": "10-2364019",
+            "status": "granted",
+            "date": "February 14, 2022"
+          }
+        ]
+      },
+      {
+        "cvLabel": "PT07",
+        "title": "Method and apparatus for determining delay possibility of shipment",
+        "filings": [
+          {
+            "office": "KR",
+            "number": "10-2250354",
+            "status": "granted",
+            "date": "May 4, 2021"
+          }
+        ]
+      }
+    ],
+    "shortBio": "YongKyung Oh develops machine learning methods for scientific and engineering systems. He was previously a postdoctoral researcher at UCLA and UNIST.",
     "bio": "YongKyung Oh directs the Scientific Inference Lab, which develops machine learning methods for modeling, inference, and decision making in scientific and engineering systems. Before joining Pusan National University, he was a Postdoctoral Researcher in the Medical and Imaging Informatics group at the David Geffen School of Medicine, University of California, Los Angeles, where he developed machine learning methods for healthcare.",
     "education": [
       {
@@ -67,7 +274,7 @@
       },
       {
         "period": "2020",
-        "role": "Intensive Artificial Intelligence Program",
+        "role": "Intensive AI Program (High-Potential Individuals Global Training Program)",
         "where": "Carnegie Mellon University"
       },
       {

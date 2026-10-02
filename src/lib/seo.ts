@@ -3,7 +3,7 @@ import type { loadContent } from './content';
 import type { Publication } from './data/publications';
 
 type Content = Awaited<ReturnType<typeof loadContent>>;
-export type PageKind = 'home' | 'research' | 'publications' | 'teaching' | 'people' | 'contact';
+export type PageKind = 'home' | 'research' | 'publications' | 'teaching' | 'people' | 'profile' | 'contact';
 
 // Google Analytics 4 measurement ID supplied by the PI (2026-09-29).
 export const analytics = { id: 'G-H8EZQ381WH', hostname: new URL(site.url).hostname } as const;
@@ -14,6 +14,7 @@ const ids = {
   lab: url('/#organization'),
   university: url('/#university'),
   school: url('/#school'),
+  // Kept stable: the course sites reference it. It resolves to #pi on /people/.
   pi: url('/people/#pi'),
 };
 
@@ -74,8 +75,12 @@ function course(entry: Content['courses'][number]) {
 // (no telephone number, no names absent from the pages).
 export function structuredData(kind: PageKind, page: { path: string; title: string; description: string }, content: Content, image?: string) {
   const { pi, programs, publications, courses } = content;
+  // The prospective-student card is a page placeholder, not a person.
+  const members = content.members.filter(member => !member.placeholder);
+  const memberRef = (id: string) => ({ '@id': url(`/people/#member-${id}`) });
+  const profilePath = '/people/yongkyung-oh/';
   const topics = programs.map(program => program.title);
-  const pageTypes: Record<PageKind, string> = { home: 'WebPage', research: 'WebPage', publications: 'CollectionPage', teaching: 'CollectionPage', people: 'ProfilePage', contact: 'ContactPage' };
+  const pageTypes: Record<PageKind, string> = { home: 'WebPage', research: 'WebPage', publications: 'CollectionPage', teaching: 'CollectionPage', people: 'CollectionPage', profile: 'ProfilePage', contact: 'ContactPage' };
   const webpage = {
     '@type': pageTypes[kind],
     '@id': url(`${page.path}#webpage`),
@@ -84,8 +89,9 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
     description: page.description,
     inLanguage: 'en',
     isPartOf: { '@id': ids.website },
-    about: { '@id': kind === 'people' ? ids.pi : ids.lab },
-    ...(kind === 'people' ? { mainEntity: { '@id': ids.pi } } : {}),
+    about: { '@id': kind === 'profile' ? ids.pi : ids.lab },
+    ...(kind === 'profile' ? { mainEntity: { '@id': ids.pi } } : {}),
+    ...(kind === 'people' ? { mainEntity: { '@type': 'ItemList', numberOfItems: members.length + 1, itemListElement: [ids.pi, ...members.map(member => url(`/people/#member-${member.id}`))].map((id, index) => ({ '@type': 'ListItem', position: index + 1, item: { '@id': id } })) } } : {}),
     ...(kind === 'teaching' ? { mainEntity: { '@type': 'ItemList', numberOfItems: courses.length, itemListElement: courses.map((entry, index) => ({ '@type': 'ListItem', position: index + 1, item: course(entry) })) } } : {}),
     ...(kind === 'publications' ? { mainEntity: { '@type': 'ItemList', numberOfItems: publications.length, itemListElement: publications.map((publication, index) => ({ '@type': 'ListItem', position: index + 1, item: article(publication, pi) })) } } : {}),
   };
@@ -104,7 +110,7 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
         address: postalAddress(pi),
         knowsAbout: topics,
         founder: { '@id': ids.pi },
-        member: { '@id': ids.pi },
+        member: [{ '@id': ids.pi }, ...members.map(member => memberRef(member.id))],
         parentOrganization: { '@id': ids.school },
       },
       { '@type': 'Organization', '@id': ids.school, name: site.school, parentOrganization: { '@id': ids.university } },
@@ -113,17 +119,27 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
         '@type': 'Person',
         '@id': ids.pi,
         name: pi.name,
-        url: url('/people/'),
+        url: url(profilePath),
         jobTitle: pi.role,
         description: pi.shortBio,
         email: `mailto:${pi.email}`,
         worksFor: [{ '@id': ids.lab }, { '@id': ids.university }],
         affiliation: { '@id': ids.school },
         alumniOf: [...new Set(pi.education.map(entry => entry.where))].map(name => ({ '@type': 'CollegeOrUniversity', name })),
+        award: [...pi.honors, ...pi.awards].map(item => `${item.title}, ${item.organizer}, ${item.year}`),
         knowsAbout: topics,
         sameAs: getProfileLinks(pi.links).map(profile => profile.href),
         ...(image ? { image } : {}),
       },
+      ...members.map(member => ({
+        '@type': 'Person',
+        '@id': url(`/people/#member-${member.id}`),
+        name: member.name,
+        jobTitle: member.role,
+        memberOf: { '@id': ids.lab },
+        ...(member.summary ? { description: member.summary } : {}),
+        ...(member.links ? { sameAs: Object.values(member.links).filter(Boolean) } : {}),
+      })),
       webpage,
     ],
   };

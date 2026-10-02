@@ -10,7 +10,12 @@ from urllib.parse import urlparse
 
 from playwright.sync_api import expect, sync_playwright
 
-ROUTES = ["/", "/research/", "/publications/", "/teaching/", "/people/", "/contact/"]
+PROFILE_ROUTE = "/people/yongkyung-oh/"
+# Profile follows Team (site order). Ending a width pass on the responsive portrait made WebKit cancel the
+# larger candidate it requests when the next pass resizes the viewport.
+ROUTES = ["/", "/people/", PROFILE_ROUTE, "/research/", "/publications/", "/teaching/", "/contact/"]
+# Routes that appear in the main navigation (the PI profile is reached from /people/).
+NAV_ROUTES = [route for route in ROUTES[1:] if route != PROFILE_ROUTE]
 WIDTHS = [320, 390, 768, 1024, 1440]
 LAB_NAME = "Scientific Inference Lab"
 
@@ -391,7 +396,7 @@ def fallback_content(page):
     if was_open is False:
         set_menu_open(page, True)
     assert navigation(page).is_visible()
-    assert navigation(page).locator("a").count() == len(ROUTES) - 1
+    assert navigation(page).locator("a").count() == len(NAV_ROUTES)
     if was_open is False:
         set_menu_open(page, False)
     route = urlparse(page.url).path
@@ -496,4 +501,52 @@ def contrast(page):
     assert result["pairs"], "No rendered text color pairs measured"
     failures = [pair for pair in result["pairs"] if pair["ratio"] + .015 < pair["required"]]
     assert not failures, failures
+    return result
+
+
+# Audit 63 D7. Baseline one-word last lines (7 routes x 5 widths) before the line-break rules; reported, not gated.
+LINE_BREAK_BASELINE = {"chromium": 53, "webkit": 50}
+
+
+def line_breaks(page):
+    """Rendered line endings of leaf text blocks. Fails only on horizontal overflow and on a break
+    inside a letter run (outside the email/URL elements allowed to break anywhere); reports one-word
+    last lines, wrapped labels and the least-filled non-final line of multi-line paragraphs."""
+    result = page.evaluate(r"""() => {
+      const out={overflow:document.documentElement.scrollWidth-innerWidth, letterSplits:[], orphans:[], labels:[], fill:[]};
+      const range=document.createRange();
+      const blockish=c=>!['inline','inline-block','inline-flex','contents','none'].includes(getComputedStyle(c).display);
+      for (const el of document.querySelectorAll('main p, main li, main h1, main h2, main h3, main h4, main dd, main dt, main summary, footer p, footer li')) {
+        if ([...el.children].some(blockish)) continue;
+        const cs=getComputedStyle(el); if (cs.display==='none'||cs.visibility==='hidden'||!el.getClientRects().length) continue;
+        const words=[]; const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT); let node;
+        while (node=walker.nextNode()) {
+          const anywhere=getComputedStyle(node.parentElement).overflowWrap==='anywhere';
+          for (const m of node.textContent.matchAll(/\S+/g)) {
+            range.setStart(node,m.index); range.setEnd(node,m.index+m[0].length);
+            const rects=[...range.getClientRects()].filter(r=>r.width>0); if (!rects.length) continue;
+            // A word split at its hyphen belongs to the line holding its tail.
+            words.push({w:m[0], top:rects[rects.length-1].top, right:Math.max(...rects.map(r=>r.right))});
+            if (anywhere) continue;
+            for (const run of m[0].matchAll(/[A-Za-z0-9]+/g)) {
+              range.setStart(node,m.index+run.index); range.setEnd(node,m.index+run.index+run[0].length);
+              if (new Set([...range.getClientRects()].filter(r=>r.width>0).map(r=>Math.round(r.top))).size>1) out.letterSplits.push(run[0]);
+            }
+          }
+        }
+        if (words.length<2) continue;
+        const lines=[]; let cur=null;
+        for (const x of words) { if (!cur||Math.abs(x.top-cur.top)>4) { cur={top:x.top,ws:[],right:x.right}; lines.push(cur); } cur.ws.push(x.w); cur.right=Math.max(cur.right,x.right); }
+        if (lines.length<2) continue;
+        const box=el.getBoundingClientRect(), text=lines.map(l=>l.ws.join(' '));
+        if (lines.at(-1).ws.length===1) out.orphans.push(text.slice(-2).join(' / ').slice(-70));
+        if (/^(H[1-4]|SUMMARY|DT)$/.test(el.tagName) && text.join(' ').length<=40) out.labels.push(text.join(' / '));
+        if (el.tagName==='P') out.fill.push(Math.min(...lines.slice(0,-1).map(l=>(l.right-box.left)/box.width)));
+      }
+      return out;
+    }""")
+    assert result["overflow"] <= 0, result
+    assert not result["letterSplits"], result["letterSplits"]
+    fill = result.pop("fill")
+    result["minFill"] = round(min(fill), 2) if fill else None
     return result

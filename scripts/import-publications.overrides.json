@@ -1,56 +1,88 @@
 {
-  "oh_position_2026_accepted_in_press": {
-    "aliases": ["evidence-standards"],
+  "oh_position_2026": {
+    "aliases": [
+      "evidence-standards"
+    ],
     "fields": {
       "title": "Position: State-of-the-Art Claims Require State-of-the-Art Evidence",
-      "authors": ["YongKyung Oh"],
       "type": "Position paper",
       "venueName": "43rd International Conference on Machine Learning (ICML 2026)",
-      "presentationStatus": "presented",
-      "bibliographyStatus": "final-metadata-pending"
+      "presentationStatus": "presented"
     },
-    "evidence": ["https://icml.cc/Downloads/2026", "https://icml.cc/virtual/2026/poster/67252"],
-    "reason": "PI confirmed presentation completion on 2026-09-22; the official Downloads listing confirms the program item, not attendance or final proceedings. Preserve imported acceptance separately from presented event and pending final metadata. Do not invent a final citation or a Published claim."
+    "evidence": [
+      "https://icml.cc/Downloads/2026",
+      "https://icml.cc/virtual/2026/poster/67252"
+    ],
+    "reason": "PI confirmed presentation completion on 2026-09-22; the official Downloads listing confirms the program item, not attendance or final proceedings. Preserve imported acceptance separately from presented event and pending final metadata. Do not invent a final citation or a Published claim. | 2026-10-02: promoted to the Zotero publication record in the Achivement A1 sync; authors, status and URL now come from the record (BibTeX authors, owner name normalized), so those overrides were removed. Aliases and display fields kept."
   },
-  "oh_silent_failures_2026_accepted_in_press": {
-    "aliases": ["silent-failures"],
+  "oh_silent_2026": {
+    "aliases": [
+      "silent-failures"
+    ],
     "fields": {
       "title": "Silent Failures in Federated Personalization of Foundation Models",
-      "authors": ["YongKyung Oh", "Alex Bui"],
-      "type": "Blue Sky Ideas Track",
-      "status": "published",
-      "url": "https://doi.org/10.1145/3770855.3818661"
+      "type": "Blue Sky Ideas Track"
     },
-    "evidence": ["https://api.crossref.org/works/10.1145/3770855.3818661"],
-    "reason": "Existing field-level verification in audit 14 and upstream update/REQUESTS.md confirms the published ACM record; Zotero registration remains pending."
+    "evidence": [
+      "https://api.crossref.org/works/10.1145/3770855.3818661"
+    ],
+    "reason": "Existing field-level verification in audit 14 and upstream update/REQUESTS.md confirms the published ACM record; Zotero registration remains pending. | 2026-10-02: promoted to the Zotero publication record in the Achivement A1 sync; authors, status and URL now come from the record (BibTeX authors, owner name normalized), so those overrides were removed. Aliases and display fields kept."
   },
-  "oh_survey_aware_2026_accepted_in_press": {
-    "aliases": ["survey-aware"],
+  "oh_survey-aware_2026": {
+    "aliases": [
+      "survey-aware"
+    ],
     "fields": {
-      "title": "Survey-Aware Machine Learning: A Guideline for Valid Population Health Inference based on Scoping Review",
-      "authors": ["YongKyung Oh", "Henry W Zheng", "Jeffrey Feng", "Alex A T Bui"],
-      "status": "published",
-      "url": "https://proceedings.mlr.press/v333/oh26a.html"
+      "title": "Survey-Aware Machine Learning: A Guideline for Valid Population Health Inference based on Scoping Review"
     },
-    "evidence": ["https://proceedings.mlr.press/v333/oh26a.html"],
-    "reason": "Existing field-level verification in audit 14 and upstream update/REQUESTS.md confirms PMLR 333:198-220; Zotero registration remains pending."
+    "evidence": [
+      "https://proceedings.mlr.press/v333/oh26a.html"
+    ],
+    "reason": "Existing field-level verification in audit 14 and upstream update/REQUESTS.md confirms PMLR 333:198-220; Zotero registration remains pending. | 2026-10-02: promoted to the Zotero publication record in the Achivement A1 sync; authors, status and URL now come from the record (BibTeX authors, owner name normalized), so those overrides were removed. Aliases and display fields kept."
   },
   "oh_flowpath_2026": {
-    "aliases": ["flowpath"],
-    "fields": {},
-    "evidence": [],
-    "reason": "Retain existing route and program fragment."
+    "aliases": [
+      "flowpath"
+    ],
+    "fields": {
+      "title": "FlowPath: Learning Data-Driven Manifolds with Invertible Flows for Robust Irregularly-sampled Time Series Classification"
+    },
+    "evidence": [
+      "https://api.crossref.org/works/10.1609/aaai.v40i29.39643"
+    ],
+    "reason": "Retain existing route and program fragment. | 2026-10-02: display title aligned to the published version (owner: \"출판본 기준으로 정합\")."
   },
   "oh_multi-view_2025": {
-    "aliases": ["multi-view"],
-    "fields": {"recognition": "Best Paper Award, Models and Methods Track"},
+    "aliases": [
+      "multi-view"
+    ],
+    "fields": {
+      "recognition": "Best Paper Award, Models and Methods Track"
+    },
     "evidence": [],
     "reason": "Preserve the already verified award-track display from docs/data/verified-presentation-snapshot.ts."
   },
   "oh_stable_2024": {
-    "aliases": ["stable-neural-sdes"],
-    "fields": {"recognition": "Spotlight"},
-    "evidence": ["https://openreview.net/forum?id=4VIgNuQ1pY"],
-    "reason": "Preserve verified Spotlight status without importing the unsupported percentage in the CV display note."
+    "aliases": [
+      "stable-neural-sdes"
+    ],
+    "fields": {
+      "recognition": "Spotlight",
+      "title": "Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data"
+    },
+    "evidence": [
+      "https://openreview.net/forum?id=4VIgNuQ1pY",
+      "Published ICLR 2024 paper title page (Achivement papers/oh_stable_2024/oh_stable_2024.pdf); the Zotero title carries a stray trailing period"
+    ],
+    "reason": "Preserve verified Spotlight status without importing the unsupported percentage in the CV display note. | 2026-10-02: display title aligned to the published version (owner: \"출판본 기준으로 정합\")."
+  },
+  "lee_continuum_2026": {
+    "fields": {
+      "title": "Continuum Dropout for Neural Differential Equations"
+    },
+    "evidence": [
+      "https://api.crossref.org/works/10.1609/aaai.v40i27.39442"
+    ],
+    "reason": "2026-10-02: display title aligned to the published version (owner: \"출판본 기준으로 정합\")."
   }
 }

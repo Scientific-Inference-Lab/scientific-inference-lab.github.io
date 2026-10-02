@@ -1,8 +1,8 @@
 from urllib.parse import urlparse, parse_qs
 from playwright.sync_api import expect
 
-from qa_support import (PROGRAMS, ROUTES, arguments, control_targets, geometry,
-                        identities, keyboard_focus, link_tab_key, media, publication_records,
+from qa_support import (LINE_BREAK_BASELINE, PROGRAMS, ROUTES, WIDTHS, arguments, control_targets, geometry,
+                        identities, keyboard_focus, line_breaks, link_tab_key, media, publication_records,
                         program_heading_in_view, program_records, readable, whole_words, session, visit)
 
 
@@ -126,7 +126,8 @@ def inner_page_headers(page, evidence):
         "/research/": "Research",
         "/publications/": "Publications",
         "/teaching/": "Teaching",
-        "/people/": "People",
+        "/people/": "Team",
+        "/people/yongkyung-oh/": "YongKyung Oh",
         "/contact/": "Contact",
     }
     for width in [390, 1440]:
@@ -138,7 +139,7 @@ def inner_page_headers(page, evidence):
             expect(header).to_have_count(1)
             expect(header.locator("h1")).to_have_text(title)
             expect(header.locator(".kicker")).to_have_count(1)
-            expect(header.locator(".page-description")).to_have_count(0 if route in ["/people/", "/contact/"] else 1)
+            expect(header.locator(".page-description")).to_have_count(0 if route in ["/people/", "/people/yongkyung-oh/", "/contact/"] else 1)
             measurements.append(header.evaluate("""element => {
               const heading = element.querySelector('h1');
               const headingStyle = getComputedStyle(heading);
@@ -308,7 +309,8 @@ def publications(page, context, evidence):
 
     canonical = [record for record in records if record.get("bibtex") is not None]
     unavailable = [record for record in records if record.get("bibtex") is None]
-    assert len(canonical) >= 25 and len(unavailable) >= 3
+    # Since the Zotero sync (2026-10-02) every record has a canonical citation; a record without one still gets no Cite.
+    assert len(canonical) >= 25 and len(canonical) + len(unavailable) == len(records)
     assert all(bool(record.get("apa")) for record in canonical)
     assert all(record.get("apa") is None for record in unavailable)
     assert page.locator("[data-cite]:visible").count() == len(canonical)
@@ -381,6 +383,23 @@ def publications(page, context, evidence):
     evidence.check("contact copy", "success, denied-permission feedback and mailto fallback")
 
 
+def line_endings(page, evidence):
+    """Audit 63 D7: every route at the five review widths, after fonts load."""
+    pages = []
+    for width in sorted(WIDTHS, reverse=True):
+        page.set_viewport_size({"width": width, "height": 900})
+        for route in ROUTES:
+            visit(page, evidence.args.base, route)
+            pages.append({"route": route, "width": width, **line_breaks(page)})
+    orphans = sum(len(item["orphans"]) for item in pages)
+    engine = evidence.report["engine"]
+    evidence.check("line endings: no overflow or letter-level split", {
+        "oneWordLastLines": orphans, "baseline": LINE_BREAK_BASELINE.get(engine),
+        "wrappedLabels": sum(len(item["labels"]) for item in pages),
+        "minFill": min((item["minFill"] for item in pages if item["minFill"] is not None), default=None),
+        "pages": [item for item in pages if item["orphans"] or item["labels"]]})
+
+
 def run(browser, evidence):
     context = browser.new_context(viewport={"width": 1440, "height": 1000}, accept_downloads=True)
     page = evidence.watch(context.new_page())
@@ -400,6 +419,7 @@ def run(browser, evidence):
                 home_inquiry_measure(page, evidence, width)
             evidence.screenshot(page, f"{route.strip('/') or 'home'}-{width}")
             evidence.check("route and media", {"route": route, "width": width, "images": images})
+    line_endings(page, evidence)
     page.set_viewport_size({"width": 1440, "height": 1000})
     research(page, evidence)
     publications(page, context, evidence)

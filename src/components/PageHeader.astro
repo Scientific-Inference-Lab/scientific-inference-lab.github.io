@@ -5,9 +5,11 @@ interface Props {
   /* Substantive orientation only; omit it rather than describe the page
      itself (PI 2026-10-02: no meta copy). */
   description?: string;
+  /* Lets a page label its content by the h1 (e.g. the PI profile's name). */
+  titleId?: string;
 }
 
-const { eyebrow, title, description } = Astro.props;
+const { eyebrow, title, description, titleId } = Astro.props;
 const hasAction = Astro.slots.has('action');
 ---
 
@@ -15,7 +17,7 @@ const hasAction = Astro.slots.has('action');
   <div class:list={['page-head-layout', { 'has-action': hasAction }]}>
     <div class="page-head-copy">
       <p class="kicker page-eyebrow">{eyebrow}</p>
-      <h1>{title}</h1>
+      <h1 id={titleId}>{title}</h1>
       {description && <p class="page-description">{description}</p>}
     </div>
     {hasAction && <div class="page-head-action"><slot name="action" /></div>}
@@ -31,14 +33,13 @@ const hasAction = Astro.slots.has('action');
   .page-head-layout { display: grid; gap: 1.25rem 2rem; align-items: end; }
   .page-head-copy { min-width: 0; }
   .page-eyebrow { margin-bottom: .625rem; }
-  .page-head h1 { font-size: var(--type-page-title); line-height: 1.08; }
+  .page-head h1 { font-size: min(var(--type-page-title), 16cqi); line-height: 1.08; }
   .page-description {
-    max-width: 56rem;
+    max-width: var(--measure-section);
     margin-top: 1rem;
     color: var(--color-body);
     font-size: var(--type-page-lead);
     line-height: 1.6;
-    text-wrap: pretty;
   }
   .page-head-action { min-width: 0; justify-self: start; }
   .page-head-action :global(.text-link) { gap: .375rem; font-size: .875rem; }

@@ -1,0 +1,35 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PiCard from '../../components/PiCard.astro';
+import MemberCard from '../../components/MemberCard.astro';
+import { site } from '../../lib/data/lab';
+import { loadContent } from '../../lib/content';
+import { responsiveImage } from '../../lib/media';
+import photo from '../../lib/assets/pi.jpg';
+const { pi, members } = await loadContent();
+const portrait = await responsiveImage(photo, pi.photoAlt, '(min-width: 768px) 192px, 192px');
+// Real students first; the prospective-student placeholder (PI request) stays last.
+const students = members.filter(member => member.role !== 'Alumni').sort((a, b) => Number(Boolean(a.placeholder)) - Number(Boolean(b.placeholder)));
+const alumni = members.filter(member => member.role === 'Alumni');
+const sections = [{ id: 'students', title: 'Students', items: students }, { id: 'alumni', title: 'Alumni', items: alumni }].filter(section => section.items.length > 0);
+---
+<SiteLayout title="Team" description="Members of the Scientific Inference Lab at Pusan National University, led by principal investigator YongKyung Oh." image={portrait.src}>
+  <PageHeader eyebrow="Lab members" title="Team" />
+  <PiCard {pi} {site} {portrait} />
+  {sections.map(section => (
+    <section class="wrap member-section" aria-labelledby={`${section.id}-heading`}>
+      <h2 id={`${section.id}-heading`} class="member-heading font-bold">{section.title}</h2>
+      <ul class="member-list">{section.items.map(member => <MemberCard {member} />)}</ul>
+    </section>
+  ))}
+  <div class="pb-8"></div>
+</SiteLayout>
+
+<style>
+  .member-section { container: member-section / inline-size; padding-top: 3rem; }
+  .member-heading { margin-bottom: 1rem; font-size: 1.875rem; }
+  @container member-section (max-width: 12rem) { .member-heading { font-size: 1.5rem; } }
+  @container member-section (max-width: 9rem) { .member-heading { font-size: 1.25rem; } }
+  .member-list { padding: 0; margin: 0; list-style: none; }
+</style>

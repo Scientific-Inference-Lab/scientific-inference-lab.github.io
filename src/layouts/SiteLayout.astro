@@ -15,7 +15,7 @@ const profiles = getProfileLinks(pi.links);
 const home = Astro.url.pathname === '/';
 const canonical = new URL(Astro.url.pathname, site.url);
 const documentTitle = home ? `${site.name} | ${site.institution}` : `${title} | ${site.name}`;
-const kinds: Record<string, PageKind> = { '/': 'home', '/research/': 'research', '/publications/': 'publications', '/teaching/': 'teaching', '/people/': 'people', '/contact/': 'contact' };
+const kinds: Record<string, PageKind> = { '/': 'home', '/research/': 'research', '/publications/': 'publications', '/teaching/': 'teaching', '/people/': 'people', '/people/yongkyung-oh/': 'profile', '/contact/': 'contact' };
 const kind = kinds[Astro.url.pathname];
 if (!kind) throw new Error(`No structured-data kind for ${Astro.url.pathname}`);
 const imageUrl = image ? new URL(image, site.url).href : undefined;
@@ -31,7 +31,7 @@ const analyticsLoader = `if (location.hostname === ${JSON.stringify(analytics.ho
   tag.src = 'https://www.googletagmanager.com/gtag/js?id=${analytics.id}';
   document.head.appendChild(tag);
 }`;
-const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTitle, description }, content, kind === 'people' ? imageUrl : undefined);
+const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTitle, description }, content, kind === 'people' || kind === 'profile' ? imageUrl : undefined);
 ---
 <!doctype html>
 <html lang="en">
@@ -44,7 +44,7 @@ const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTi
     <meta name="author" content={pi.name} />
     <meta property="og:site_name" content={site.name} /><meta property="og:locale" content="en_US" />
     <meta property="og:title" content={documentTitle} />
-    <meta property="og:description" content={description} /><meta property="og:type" content={kind === 'people' ? 'profile' : 'website'} /><meta property="og:url" content={canonical} />
+    <meta property="og:description" content={description} /><meta property="og:type" content={kind === 'profile' ? 'profile' : 'website'} /><meta property="og:url" content={canonical} />
     {imageUrl && <meta property="og:image" content={imageUrl} />}
     {imageUrl && <meta property="og:image:alt" content={pi.photoAlt} />}
     <meta name="twitter:card" content="summary" />
@@ -85,7 +85,7 @@ const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTi
   .footer-body { container: footer-layout / inline-size; }
   .footer-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 2rem; align-items: start; }
   .footer-identity,.footer-contact { min-width: 0; }
-  .footer-affiliation { margin-top: .75rem; font-size: .875rem; line-height: 1.5; text-wrap: pretty; }
+  .footer-affiliation { margin-top: .75rem; font-size: .875rem; line-height: 1.5; }
   .footer-person { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; padding-top: .625rem; }
   .footer-person strong { font-size: 1rem; font-weight: 600; color: var(--color-ink); }
   .footer-person > span { font-size: .875rem; color: var(--color-muted); }

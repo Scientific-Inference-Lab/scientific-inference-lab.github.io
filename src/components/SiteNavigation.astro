@@ -4,6 +4,7 @@ import { nav } from '../lib/data/navigation';
 
 interface Props { pathname: string; }
 const { pathname } = Astro.props;
+const current = (href: string) => (href === '/people/' ? pathname.startsWith(href) : pathname === href) ? 'page' : undefined;
 ---
 <header data-site-header class="site-header">
   <div class="wrap header-inner">
@@ -11,14 +12,14 @@ const { pathname } = Astro.props;
       <span class="wordmark-text">Scientific Inference Lab</span>
     </a>
     <nav aria-label="Main navigation" class="site-nav desktop-nav">
-      {nav.map(item => <a href={item.href} aria-current={pathname === item.href ? 'page' : undefined}><span class="nav-label">{item.label}</span></a>)}
+      {nav.map(item => <a href={item.href} aria-current={current(item.href)}><span class="nav-label">{item.label}</span></a>)}
     </nav>
     <details data-mobile-navigation class="mobile-navigation">
       <summary class="icon-button menu-toggle" data-menu-toggle aria-label="Main navigation menu" title="Menu">
         <span class="menu-open-icon"><Menu size={22} aria-hidden="true" /></span><span class="menu-close-icon"><X size={22} aria-hidden="true" /></span>
       </summary>
       <nav id="site-navigation" aria-label="Main navigation" class="site-nav mobile-nav">
-        {nav.map(item => <a href={item.href} aria-current={pathname === item.href ? 'page' : undefined}><span class="nav-label">{item.label}</span></a>)}
+        {nav.map(item => <a href={item.href} aria-current={current(item.href)}><span class="nav-label">{item.label}</span></a>)}
       </nav>
     </details>
   </div>
@@ -49,7 +50,7 @@ const { pathname } = Astro.props;
   /* Five routes (Teaching, 2026-10-01): labels never break inside a word; at
      enlarged text the desktop row wraps whole labels instead. */
   .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2rem; }
-  .site-nav a { min-height: 44px; display: inline-flex; align-items: center; font-weight: 600; line-height: 1.5; }
+  .site-nav a { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; font-weight: 600; line-height: 1.5; }
   .nav-label { position: relative; padding-block: .25rem; white-space: nowrap; }
   .nav-label::after { content: ""; position: absolute; inset: auto 0 0; height: 2px; background: var(--color-action); transform: scaleX(0); transform-origin: left; transition: transform var(--duration-state); }
   .site-nav a:hover,.site-nav a[aria-current="page"] { color: var(--color-action); }

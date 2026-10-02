@@ -1,4 +1,4 @@
-from qa_support import (PROGRAMS, ROUTES, WIDTHS, arguments, control_targets, geometry,
+from qa_support import (NAV_ROUTES, PROGRAMS, ROUTES, WIDTHS, arguments, control_targets, geometry,
                         fallback_content, identities, media, menu_is_open,
                         navigation, readable, whole_words, research_label_words, research_navigation, program_heading_in_view, session, visit)
 
@@ -25,9 +25,9 @@ def run(browser, evidence):
                     evidence.check('research labels retain whole words', {'route': route, 'width': width,
                         'rootTextPercent': scale, **research_label_words(page), **research_navigation(page)})
                 if route == '/':
-                    # PI request 2026-09-29: Home carries no portrait; a "Meet the PI" button replaces it.
+                    # PI request 2026-09-29: Home carries no portrait; a "Meet the PI" button replaces it (PI 2026-10-02: to the profile).
                     intro = page.locator('.home-intro').evaluate('''el => {
-                      const button = [...el.querySelectorAll('a')].find(a => a.getAttribute('href') === '/people/');
+                      const button = [...el.querySelectorAll('a')].find(a => a.getAttribute('href') === '/people/yongkyung-oh/');
                       const box = button?.getBoundingClientRect();
                       return {images: el.querySelectorAll('img, picture, figure').length, label: button?.innerText.trim(),
                               isButton: !!button?.classList.contains('button-secondary'), height: box?.height, right: box?.right,
@@ -62,12 +62,12 @@ def run(browser, evidence):
                     geometry(page, width)
                     control_targets(page)
                     nav = navigation(page)
-                    assert nav.is_visible() and nav.locator("a:visible").count() == len(ROUTES) - 1
+                    assert nav.is_visible() and nav.locator("a:visible").count() == len(NAV_ROUTES)
                     header = page.locator('[data-site-header]').bounding_box()
                     main = page.locator('main').bounding_box()
                     assert main['y'] >= header['y'] + header['height'] - 1, 'Open menu must reflow content, not cover its opening'
                     if route != '/':
-                        assert nav.locator('a[aria-current="page"]').get_attribute('href') == route
+                        assert nav.locator('a[aria-current="page"]').get_attribute('href') == ('/people/' if route.startswith('/people/') else route)
                     if route == "/" and width == 320:
                         evidence.screenshot(page, f"menu-{width}-text{scale}")
                     page.keyboard.press("Escape")
@@ -94,7 +94,7 @@ def run(browser, evidence):
     context = browser.new_context(viewport={"width": 390, "height": 844}, is_mobile=True, has_touch=True)
     page = evidence.watch(context.new_page())
     visit(page, evidence.args.base, "/")
-    for route in ROUTES[1:]:
+    for route in NAV_ROUTES:
         toggle = page.locator("[data-menu-toggle]")
         toggle.tap()
         navigation(page).locator(f'a[href="{route}"]').tap()

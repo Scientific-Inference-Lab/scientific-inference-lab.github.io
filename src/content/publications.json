@@ -1,7 +1,7 @@
 [
   {
-    "id": "oh_silent_failures_2026_accepted_in_press",
-    "canonicalKey": "oh_silent_failures_2026_accepted_in_press",
+    "id": "oh_silent_2026",
+    "canonicalKey": "oh_silent_2026",
     "aliases": [
       "silent-failures"
     ],
@@ -11,10 +11,10 @@
       "Alex Bui"
     ],
     "venue": "KDD",
-    "venueName": "Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD 2026)",
+    "venueName": "Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.2",
     "year": 2026,
-    "date": "2026-08",
-    "dateSource": "cv-presentation",
+    "date": "2026-08-08",
+    "dateSource": "canonical",
     "upstreamOrder": 0,
     "category": "conference",
     "status": "published",
@@ -35,13 +35,13 @@
         "url": "https://github.com/yongkyung-oh/FedFMP"
       }
     ],
-    "bibtex": null,
-    "apa": null,
-    "bibtexEntryType": null
+    "bibtex": "@inproceedings{oh_silent_2026,\n\tauthor       = {Oh, YongKyung and Bui, Alex},\n\ttitle        = {Silent Failures in Federated Personalization of Foundation Models},\n\tbooktitle    = {Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.2},\n\tpages        = {13199–13206},\n\tpublisher    = {Association for Computing Machinery},\n\taddress      = {New York, NY, USA},\n\tyear         = 2026,\n\tdoi          = {10.1145/3770855.3818661},\n\tdate         = {2026-08-08 August 8, 2026},\n}\n",
+    "apa": "Oh, Y., & Bui, A. (2026). Silent Failures in Federated Personalization of Foundation Models. Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining V.2, 13199–13206. https://doi.org/10.1145/3770855.3818661",
+    "bibtexEntryType": "inproceedings"
   },
   {
-    "id": "oh_position_2026_accepted_in_press",
-    "canonicalKey": "oh_position_2026_accepted_in_press",
+    "id": "oh_position_2026",
+    "canonicalKey": "oh_position_2026",
     "aliases": [
       "evidence-standards"
     ],
@@ -49,20 +49,23 @@
     "authors": [
       "YongKyung Oh"
     ],
-    "venue": "ICML",
+    "venue": "Proceedings of the 43rd International Conference on Machine Learning",
     "venueName": "43rd International Conference on Machine Learning (ICML 2026)",
     "year": 2026,
-    "date": "2026-07",
-    "dateSource": "cv-presentation",
+    "date": "2026-07-06",
+    "dateSource": "canonical",
     "upstreamOrder": 1,
     "category": "conference",
-    "status": "accepted",
+    "status": "published",
     "presentationStatus": "presented",
-    "bibliographyStatus": "final-metadata-pending",
     "type": "Position paper",
-    "url": "https://arxiv.org/abs/2605.17273",
+    "url": "https://proceedings.mlr.press/v306/oh26d.html",
     "codeUrl": "https://github.com/yongkyung-oh/SOTA",
     "links": [
+      {
+        "type": "paper",
+        "url": "https://proceedings.mlr.press/v306/oh26d.html"
+      },
       {
         "type": "arxiv",
         "url": "https://arxiv.org/abs/2605.17273"
@@ -76,13 +79,13 @@
         "url": "https://github.com/yongkyung-oh/benchmark-fragility"
       }
     ],
-    "bibtex": null,
-    "apa": null,
-    "bibtexEntryType": null
+    "bibtex": "@inproceedings{oh_position_2026,\n\tauthor       = {Oh, Yongkyung},\n\ttitle        = {Position: State-of-the-Art Claims Require State-of-the-Art Evidence},\n\tbooktitle    = {Proceedings of the 43rd International Conference on Machine Learning},\n\tvolume       = 306,\n\tpages        = {171583–171601},\n\tpublisher    = {PMLR},\n\tyear         = 2026,\n\tdate         = {2026-07-06 2026-07-06},\n}\n",
+    "apa": "Oh, Y. (2026). Position: State-of-the-Art Claims Require State-of-the-Art Evidence. Proceedings of the 43rd International Conference on Machine Learning, 306, 171583–171601.",
+    "bibtexEntryType": "inproceedings"
   },
   {
-    "id": "oh_survey_aware_2026_accepted_in_press",
-    "canonicalKey": "oh_survey_aware_2026_accepted_in_press",
+    "id": "oh_survey-aware_2026",
+    "canonicalKey": "oh_survey-aware_2026",
     "aliases": [
       "survey-aware"
     ],
@@ -94,10 +97,10 @@
       "Alex A T Bui"
     ],
     "venue": "CHIL",
-    "venueName": "Proceedings of the Seventh Conference on Health, Inference, and Learning (CHIL 2026)",
+    "venueName": "Proceedings of the 7th Conference on Health, Inference, and Learning",
     "year": 2026,
-    "date": "2026-06",
-    "dateSource": "cv-presentation",
+    "date": "2026-06-29",
+    "dateSource": "canonical",
     "upstreamOrder": 2,
     "category": "conference",
     "status": "published",
@@ -118,9 +121,9 @@
         "url": "https://github.com/yongkyung-oh/SaML"
       }
     ],
-    "bibtex": null,
-    "apa": null,
-    "bibtexEntryType": null
+    "bibtex": "@inproceedings{oh_survey-aware_2026,\n\tauthor       = {Oh, YongKyung and Zheng, Henry W and Feng, Jeffrey and Bui, Alex A T},\n\ttitle        = {Survey-Aware Machine Learning: A Guideline for Valid Population Health Inference based on Scoping Review},\n\tbooktitle    = {Proceedings of the 7th Conference on Health, Inference, and Learning},\n\tvolume       = 333,\n\tpages        = {198–220},\n\tpublisher    = {PMLR},\n\tyear         = 2026,\n\tdate         = {2026-06-29 2026-06-29},\n}\n",
+    "apa": "Oh, Y., Zheng, H. W., Feng, J., & Bui, A. A. T. (2026). Survey-Aware Machine Learning: A Guideline for Valid Population Health Inference based on Scoping Review. Proceedings of the 7th Conference on Health, Inference, and Learning, 333, 198–220.",
+    "bibtexEntryType": "inproceedings"
   },
   {
     "id": "oh_flowpath_2026",
@@ -137,18 +140,18 @@
     "venue": "AAAI",
     "venueName": "Proceedings of the AAAI Conference on Artificial Intelligence",
     "year": 2026,
-    "date": "2026-03-14",
+    "date": "2026-06-23",
     "dateSource": "canonical",
     "upstreamOrder": 3,
     "category": "conference",
     "status": "published",
     "type": "Conference paper",
-    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/39643",
+    "url": "https://doi.org/10.1609/aaai.v40i29.39643",
     "codeUrl": "https://github.com/yongkyung-oh/FlowPath",
     "links": [
       {
         "type": "paper",
-        "url": "https://ojs.aaai.org/index.php/AAAI/article/view/39643"
+        "url": "https://doi.org/10.1609/aaai.v40i29.39643"
       },
       {
         "type": "arxiv",
@@ -159,8 +162,8 @@
         "url": "https://github.com/yongkyung-oh/FlowPath"
       }
     ],
-    "bibtex": "@article{oh_flowpath_2026,\n\tauthor       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},\n\ttitle        = {FlowPath: Learning Data-Driven Manifolds with Invertible Flows for Robust Irregularly-sampled Time Series Classification},\n\tjournal      = {Proceedings of the AAAI Conference on Artificial Intelligence},\n\tvolume       = 40,\n\tnumber       = 29,\n\tpages        = {24594-24603},\n\tyear         = 2026,\n\tdoi          = {10.1609/aaai.v40i29.39643},\n\tdate         = {2026-03-14 2026-03-14},\n\tshortjournal = {AAAI},\n}\n",
-    "apa": "Oh, Y., Lim, D.-Y., & Kim, S. (2026). FlowPath: Learning Data-Driven Manifolds with Invertible Flows for Robust Irregularly-sampled Time Series Classification. Proceedings of the AAAI Conference on Artificial Intelligence, 40(29), 24594–24603. https://doi.org/10.1609/aaai.v40i29.39643",
+    "bibtex": "@article{oh_flowpath_2026,\n\tauthor       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},\n\ttitle        = {FlowPath: learning data-driven manifolds with invertible flows for robust irregularly-sampled time series classification},\n\tjournal      = {Proceedings of the AAAI Conference on Artificial Intelligence},\n\tvolume       = 40,\n\tnumber       = 29,\n\tpages        = {24594–24603},\n\tyear         = 2026,\n\tdoi          = {10.1609/aaai.v40i29.39643},\n\tdate         = {2026-06-23 June 23, 2026},\n}\n",
+    "apa": "Oh, Y., Lim, D.-Y., & Kim, S. (2026). FlowPath: learning data-driven manifolds with invertible flows for robust irregularly-sampled time series classification. Proceedings of the AAAI Conference on Artificial Intelligence, 40(29), 24594–24603. https://doi.org/10.1609/aaai.v40i29.39643",
     "bibtexEntryType": "article"
   },
   {
@@ -176,18 +179,18 @@
     "venue": "AAAI",
     "venueName": "Proceedings of the AAAI Conference on Artificial Intelligence",
     "year": 2026,
-    "date": "2026-03-14",
+    "date": "2026-06-23",
     "dateSource": "canonical",
     "upstreamOrder": 4,
     "category": "conference",
     "status": "published",
     "type": "Conference paper",
-    "url": "https://ojs.aaai.org/index.php/AAAI/article/view/39442",
+    "url": "https://doi.org/10.1609/aaai.v40i27.39442",
     "codeUrl": "https://github.com/jonghun-lee0/Continuum-Dropout",
     "links": [
       {
         "type": "paper",
-        "url": "https://ojs.aaai.org/index.php/AAAI/article/view/39442"
+        "url": "https://doi.org/10.1609/aaai.v40i27.39442"
       },
       {
         "type": "arxiv",
@@ -198,8 +201,8 @@
         "url": "https://github.com/jonghun-lee0/Continuum-Dropout"
       }
     ],
-    "bibtex": "@article{lee_continuum_2026,\n\tauthor       = {Lee, Jonghun and Oh, YongKyung and Kim, Sungil and Lim, Dong-Young},\n\ttitle        = {Continuum Dropout for Neural Differential Equations},\n\tjournal      = {Proceedings of the AAAI Conference on Artificial Intelligence},\n\tvolume       = 40,\n\tnumber       = 27,\n\tpages        = {22796-22804},\n\tyear         = 2026,\n\tdoi          = {10.1609/aaai.v40i27.39442},\n\tdate         = {2026-03-14 2026-03-14},\n\tshortjournal = {AAAI},\n}\n",
-    "apa": "Lee, J., Oh, Y., Kim, S., & Lim, D.-Y. (2026). Continuum Dropout for Neural Differential Equations. Proceedings of the AAAI Conference on Artificial Intelligence, 40(27), 22796–22804. https://doi.org/10.1609/aaai.v40i27.39442",
+    "bibtex": "@article{lee_continuum_2026,\n\tauthor       = {Lee, Jonghun and Oh, YongKyung and Kim, Sungil and Lim, Dong-Young},\n\ttitle        = {Continuum dropout for neural differential equations},\n\tjournal      = {Proceedings of the AAAI Conference on Artificial Intelligence},\n\tvolume       = 40,\n\tnumber       = 27,\n\tpages        = {22796–22804},\n\tyear         = 2026,\n\tdoi          = {10.1609/aaai.v40i27.39442},\n\tdate         = {2026-06-23 June 23, 2026},\n}\n",
+    "apa": "Lee, J., Oh, Y., Kim, S., & Lim, D.-Y. (2026). Continuum dropout for neural differential equations. Proceedings of the AAAI Conference on Artificial Intelligence, 40(27), 22796–22804. https://doi.org/10.1609/aaai.v40i27.39442",
     "bibtexEntryType": "article"
   },
   {
@@ -207,7 +210,7 @@
     "canonicalKey": "oh_tandem_2025",
     "title": "TANDEM: Temporal Attention-guided Neural Differential Equations for Missingness in Time Series Classification",
     "authors": [
-      "Yongkyung Oh",
+      "YongKyung Oh",
       "Dongyoung Lim",
       "Sungil Kim",
       "Alex A. T. Bui"
@@ -242,7 +245,7 @@
     "canonicalKey": "oh_modeling_2025",
     "title": "Modeling Irregular Astronomical Time Series with Neural Stochastic Delay Differential Equations",
     "authors": [
-      "Yongkyung Oh",
+      "YongKyung Oh",
       "Seungsu Kam",
       "Dongyoung Lim",
       "Sungil Kim"
@@ -439,7 +442,7 @@
         "url": "https://drive.google.com/file/d/1-iB9s5LZx9w8YIQXlr6hYHi60-pi-9X5"
       }
     ],
-    "bibtex": "@article{oh_dualdynamics_2025,\n\tauthor       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},\n\ttitle        = {DualDynamics: Synergizing Implicit and Explicit Methods for Robust Irregular Time Series Analysis},\n\tjournal      = {Proceedings of the AAAI Conference on Artificial Intelligence},\n\tvolume       = 39,\n\tnumber       = 18,\n\tpages        = {19730-19739},\n\tyear         = 2025,\n\tdoi          = {10.1609/aaai.v39i18.34173},\n\tdate         = {2025-04-11 2025-04-11},\n\tshortjournal = {AAAI},\n}\n",
+    "bibtex": "@article{oh_dualdynamics_2025,\n\tauthor       = {Oh, YongKyung and Lim, Dong-Young and Kim, Sungil},\n\ttitle        = {DualDynamics: Synergizing Implicit and Explicit Methods for Robust Irregular Time Series Analysis},\n\tjournal      = {Proceedings of the AAAI Conference on Artificial Intelligence},\n\tvolume       = 39,\n\tnumber       = 18,\n\tpages        = {19730-19739},\n\tyear         = 2025,\n\tdoi          = {10.1609/aaai.v39i18.34173},\n\tdate         = {2025-04-11 2025-04-11},\n}\n",
     "apa": "Oh, Y., Lim, D.-Y., & Kim, S. (2025). DualDynamics: Synergizing Implicit and Explicit Methods for Robust Irregular Time Series Analysis. Proceedings of the AAAI Conference on Artificial Intelligence, 39(18), 19730–19739. https://doi.org/10.1609/aaai.v39i18.34173",
     "bibtexEntryType": "article"
   },
@@ -449,7 +452,7 @@
     "aliases": [
       "stable-neural-sdes"
     ],
-    "title": "Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data.",
+    "title": "Stable Neural Stochastic Differential Equations in Analyzing Irregular Time Series Data",
     "authors": [
       "YongKyung Oh",
       "Dongyoung Lim",

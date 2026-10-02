@@ -178,12 +178,15 @@ const safeUrl = value => {
   assert.ok(['https:', 'http:'].includes(url.protocol), 'Non-public URL protocol');
   return value;
 };
+// Achivement rule (owner, 2026-10-02): co-author names follow the BibTeX verbatim;
+// the owner's own name is the one exception and always reads "YongKyung Oh".
+const ownerName = (given, family) => (family === 'Oh' && /^yong-?kyung$/i.test(given) ? 'YongKyung' : given);
 const authorsFor = (value, override) => {
   if (override?.authors) return override.authors;
   return value.split(' and ').map(author => {
     const [family, ...given] = author.split(', ');
     assert.equal(given.length, 1, 'Unexpected author syntax; requires upstream structured author review');
-    return `${given[0]} ${family}`;
+    return `${ownerName(given[0], family)} ${family}`;
   });
 };
 const publications = [];
