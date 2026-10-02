@@ -69,7 +69,7 @@ def script_fallbacks(browser, evidence):
             if external_scripts:
                 assert injected, "The script fault injection did not intercept any first-party script"
             else:
-                assert route in ["/", "/research/", "/people/"], "Unexpected loss of an interactive route's external scripts"
+                assert route in ["/", "/research/", "/teaching/", "/people/"], "Unexpected loss of an interactive route's external scripts"
                 assert page.locator("astro-island[client]").count() == 0, "A static route must not leave an untested island"
             evidence.screenshot(page, f"{route.strip('/') or 'home'}-{mode}-scripts{'-preopened' if preopen else ''}")
             evidence.check("readable first paint with unavailable JavaScript", {"route": route, "mode": mode, "preopenedMenu": preopen, "injectedScripts": list(injected)})

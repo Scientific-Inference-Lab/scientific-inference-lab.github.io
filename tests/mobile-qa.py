@@ -17,6 +17,7 @@ def run(browser, evidence):
                 identity = identities(page)
                 control_targets(page)
                 whole_words(page, '.footer-profiles a')
+                whole_words(page, '.site-nav a:visible')
                 footer = page.locator('footer').bounding_box()
                 main = page.locator('main').bounding_box()
                 assert footer['y'] >= main['y'] + main['height'] - 1, 'Common footer must follow content, not obscure it'
@@ -61,7 +62,7 @@ def run(browser, evidence):
                     geometry(page, width)
                     control_targets(page)
                     nav = navigation(page)
-                    assert nav.is_visible() and nav.locator("a:visible").count() == 4
+                    assert nav.is_visible() and nav.locator("a:visible").count() == len(ROUTES) - 1
                     header = page.locator('[data-site-header]').bounding_box()
                     main = page.locator('main').bounding_box()
                     assert main['y'] >= header['y'] + header['height'] - 1, 'Open menu must reflow content, not cover its opening'

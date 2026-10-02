@@ -1,0 +1,18 @@
+[
+  {
+    "id": "machine-learning",
+    "order": 0,
+    "title": "Machine Learning",
+    "koreanTitle": "기계학습개론",
+    "description": "Foundations of machine learning and its classical models, with hands-on Python practice.",
+    "url": "https://scientific-inference-lab.github.io/machine-learning/"
+  },
+  {
+    "id": "data-structure",
+    "order": 1,
+    "title": "Data Structure",
+    "koreanTitle": "자료구조",
+    "description": "Fundamental data structures and their analysis, from arrays to graphs, implemented in Python.",
+    "url": "https://scientific-inference-lab.github.io/data-structure/"
+  }
+]

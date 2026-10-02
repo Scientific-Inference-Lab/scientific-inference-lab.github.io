@@ -14,6 +14,7 @@ export async function loadContent() {
     pi: { id: person.id, ...person.data },
     publications,
     programs: (await getCollection('programs')).map(p => ({ id: p.id, ...p.data, related: p.data.related.map(r => ({ ...r, id: resolve(r.id) })) })).sort((a,b) => a.order-b.order),
+    courses: (await getCollection('courses')).map(c => ({ id: c.id, ...c.data })).sort((a,b) => a.order-b.order),
     news: (await getCollection('news')).map(n => ({ id: n.id, ...n.data, publicationId: n.data.publicationId ? resolve(n.data.publicationId) : undefined })).sort((a,b) => b.date.localeCompare(a.date)),
   };
 }

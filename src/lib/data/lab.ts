@@ -42,5 +42,5 @@ export interface Program {
 }
 export const joinUs = {
   heading: 'Join Us',
-  body: 'We welcome inquiries about research opportunities and collaboration in machine learning and scientific inference. Contact YongKyung Oh to discuss your interests.',
+  body: 'We welcome inquiries about research opportunities and collaboration in machine learning and scientific inference.',
 } as const;

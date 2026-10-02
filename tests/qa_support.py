@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 
 from playwright.sync_api import expect, sync_playwright
 
-ROUTES = ["/", "/research/", "/publications/", "/people/", "/contact/"]
+ROUTES = ["/", "/research/", "/publications/", "/teaching/", "/people/", "/contact/"]
 WIDTHS = [320, 390, 768, 1024, 1440]
 LAB_NAME = "Scientific Inference Lab"
 
@@ -391,7 +391,7 @@ def fallback_content(page):
     if was_open is False:
         set_menu_open(page, True)
     assert navigation(page).is_visible()
-    assert navigation(page).locator("a").count() == 4
+    assert navigation(page).locator("a").count() == len(ROUTES) - 1
     if was_open is False:
         set_menu_open(page, False)
     route = urlparse(page.url).path

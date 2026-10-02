@@ -5,7 +5,7 @@ import { loadContent } from '../lib/content';
 // Plain-text site summary for language-model retrieval (llmstxt.org format),
 // generated from the same records as the pages.
 export const GET: APIRoute = async () => {
-  const { pi, programs, publications } = await loadContent();
+  const { pi, programs, publications, courses } = await loadContent();
   const url = (path: string) => new URL(path, site.url).href;
   const lines = [
     `# ${site.name}`,
@@ -21,12 +21,17 @@ export const GET: APIRoute = async () => {
     `- [Home](${url('/')}): lab identity, research directions and news`,
     `- [Research](${url('/research/')}): research directions with questions, related publications and research agendas`,
     `- [Publications](${url('/publications/')}): the complete publication record (${publications.length} entries)`,
+    `- [Teaching](${url('/teaching/')}): undergraduate courses at Pusan National University, with links to their Korean-language course sites`,
     `- [People](${url('/people/')}): principal investigator, recognition, experience and education`,
     `- [Contact](${url('/contact/')}): email and office address`,
     '',
     '## Research directions',
     '',
     ...programs.map(program => `- [${program.title}](${url(`/research/#${program.id}`)}): ${program.summary} Question: ${program.question}`),
+    '',
+    '## Teaching',
+    '',
+    ...courses.map(course => `- [${course.title} (${course.koreanTitle})](${course.url}): ${course.description} Course materials are in Korean.`),
     '',
     '## Principal investigator',
     '',

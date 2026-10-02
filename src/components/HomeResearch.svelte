@@ -9,7 +9,6 @@
   <div class="overview-layout">
     <div class="overview-intro">
       <h2>Research directions</h2>
-      <p>Overlapping directions connect our research.</p>
     </div>
     <div class="direction-list">
       {#each programs as program}
@@ -30,7 +29,6 @@
   .research-overview { container: home-directions / inline-size; padding-block: 3rem 4.5rem; }
   .overview-layout { display: grid; grid-template-columns: minmax(0,1fr); gap: 2rem; }
   .overview-intro h2 { font-size: 2rem; line-height: 1.2; }
-  .overview-intro p { margin-top: .875rem; color: var(--color-muted); }
   .direction-list { display: grid; grid-template-columns: minmax(0,1fr); gap: 1.75rem; }
   .direction { min-width: 0; border-top: 1px solid var(--color-line); padding-top: .75rem; }
   .direction h3 { font-size: 1.25rem; line-height: 1.3; }

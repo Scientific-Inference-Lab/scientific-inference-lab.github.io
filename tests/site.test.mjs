@@ -7,7 +7,7 @@ import { test } from 'node:test';
 import { parse } from 'parse5';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const routes = ['/', '/research/', '/publications/', '/people/', '/contact/'];
+const routes = ['/', '/research/', '/publications/', '/teaching/', '/people/', '/contact/'];
 const origin = 'https://scientific-inference-lab.github.io';
 const routeFile = route => path.join('dist', route, 'index.html');
 const normalize = value => value.replace(/\s+/g, ' ').trim();
@@ -89,7 +89,9 @@ test('five substantive, distinct English documents are prerendered', () => {
     assert.equal(main.length, 1, route);
     assert(content(main[0]).length > 200, `${route}: empty page shell`);
     assert.equal(byTag(main[0], 'h1').length, 1, route);
-    assert(!/[\uac00-\ud7a3]/u.test(content(main[0])), `${route}: mixed-language public text`);
+    // Korean is allowed only where it is marked as Korean (Teaching's course names).
+    const english = node => node.attrs?.some(item => item.name === 'lang' && item.value === 'ko') ? '' : node.nodeName === '#text' ? node.value : ['script', 'style'].includes(node.tagName) ? '' : children(node).map(english).join('');
+    assert(!/[\uac00-\ud7a3]/u.test(english(main[0])), `${route}: mixed-language public text`);
     const title = content(byTag(document, 'title')[0]);
     assert(title.includes('Scientific Inference Lab'), `${route}: missing lab title`);
     titles.add(title);
@@ -102,6 +104,7 @@ test('interior routes share one page-header hierarchy', () => {
   const expected = new Map([
     ['/research/', 'Research'],
     ['/publications/', 'Publications'],
+    ['/teaching/', 'Teaching'],
     ['/people/', 'People'],
     ['/contact/', 'Contact'],
   ]);
@@ -111,7 +114,9 @@ test('interior routes share one page-header hierarchy', () => {
     assert.equal(headers.length, 1, `${route}: use the shared page header exactly once`);
     assert.equal(content(byTag(headers[0], 'h1')[0]), title, `${route}: page title`);
     assert.equal(all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('kicker')).length, 1, `${route}: one shared eyebrow`);
-    assert.equal(all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('page-description')).length, 1, `${route}: one task-oriented description`);
+    // PI 2026-10-02: a substantive orientation sentence where one exists; People and Contact start with their content.
+    const descriptions = all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('page-description'));
+    assert.equal(descriptions.length, ['/people/', '/contact/'].includes(route) ? 0 : 1, `${route}: page-header description`);
   }
   assert.equal(byAttr(documents.get('/'), 'data-page-header').length, 0, 'Home keeps its distinct identity-led hierarchy');
 });
@@ -362,7 +367,11 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   const grantAll = content(grantGroup);
   for (const excluded of ['UniStar', 'Carnegie Mellon', 'IITP', 'Catalyst', 'KRW', 'USD']) assert(!grantAll.includes(excluded), `${excluded}: training programmes, amounts and unverified records stay off People`);
   assert(!routes.includes('/grants/') && !(documents.has('/grants/')), 'No separate Grants route');
-  assert(content(documents.get('/')).includes('led by YongKyung Oh'), 'Home News preserves the PI-confirmed NVIDIA project leadership');
+  // PI 2026-10-02: copy need not foreground the PI's name; the project role stays on People.
+  const surfaces = [...documents.values()].flatMap(document => [content(document), ...meta(document, 'description')]).join(' ');
+  assert(!/led by YongKyung Oh|taught by YongKyung Oh|Contact YongKyung Oh|Publications by YongKyung Oh/.test(surfaces), 'Name-forward phrasing removed');
+  // PI 2026-10-02: no meta copy that describes the page or tells the visitor what to do with it.
+  assert(!/Overlapping (?:research )?directions|Explore their questions|Search the complete publication record|Meet the principal investigator|Research and laboratory updates|Each course site holds|Get in touch to discuss|inference for engineering decisions/.test(surfaces), 'Meta copy removed');
   for (const document of documents.values()) {
     const footer = byTag(document, 'footer')[0];
     assert(content(footer).includes('School of BioMedical Convergence Engineering · Pusan National University'));
@@ -485,6 +494,7 @@ test('the mobile menu is a complete native disclosure before JavaScript loads', 
 });
 
 test('every local media/link target and fragment resolves in the static artifact', async () => {
+  const courseSites = (await json('src/content/courses.json')).map(course => course.url);
   for (const [route, document] of documents) {
     for (const node of all(document, node => node.tagName)) {
       const references = [attr(node, 'href'), attr(node, 'src'), attr(node, 'poster')].filter(Boolean);
@@ -494,6 +504,8 @@ test('every local media/link target and fragment resolves in the static artifact
         if (/^(?:data|blob|mailto|tel|javascript):/.test(reference)) continue;
         const url = new URL(reference, origin + route);
         if (url.origin !== origin) continue;
+        // Course sites share the origin but deploy from their own repositories (checked live).
+        if (courseSites.some(site => url.href.startsWith(site))) continue;
         let relative = decodeURIComponent(url.pathname).replace(/^\//, '');
         if (!relative || relative.endsWith('/')) relative += 'index.html';
         const target = path.resolve(root, 'dist', relative);
@@ -577,6 +589,50 @@ test('search metadata and structured data restate the visible site', async () =>
     assert.equal(item.datePublished, expected, `${id}: datePublished must come from a bibliographic source`);
     if (record.dateSource === 'cv-presentation' && record.date) assert.notEqual(item.datePublished, record.date, `${id}: presentation month emitted as publication date`);
   }
+});
+
+test('Teaching lists the PNU courses with official English names and links to their sites', async () => {
+  const courses = await json('src/content/courses.json');
+  const teaching = documents.get('/teaching/');
+  const main = byTag(teaching, 'main')[0];
+  const rows = byAttr(main, 'data-course');
+  assert.deepEqual(rows.map(row => attr(row, 'data-course')), ['machine-learning', 'data-structure']);
+  // PI decision 2026-10-01 (audit 61): PNU subjectEng in title case, never the descriptive README names.
+  assert.deepEqual(rows.map(row => content(byTag(row, 'h2')[0])), ['Machine Learning', 'Data Structure']);
+  assert(!/Introduction to Machine Learning|Data Structures\b/.test(content(main)), 'Use the official English course names');
+  for (const [index, row] of rows.entries()) {
+    const korean = byAttr(row, 'lang', 'ko').find(node => node.tagName === 'p');
+    assert.equal(content(korean), courses[index].koreanTitle, 'Korean course name as on the course site');
+    const link = byAttr(row, 'data-course-link')[0];
+    assert.equal(attr(link, 'href'), courses[index].url);
+    assert.equal(attr(link, 'hreflang'), 'ko');
+    assert(!has(link, 'target'), 'Same-origin course sites open in place');
+    assert(content(link).includes('Course materials (in Korean)'));
+  }
+  assert(!/\b(?:Fall|Spring|semester|BX\d|DS\d{4}|AB\d)/i.test(content(main)), 'No term or course code without a decision to show it');
+  const nav = byTag(byTag(teaching, 'header')[0], 'nav').find(node => attr(node, 'aria-label') === 'Main navigation');
+  assert.deepEqual(byTag(nav, 'a').map(node => content(node)), ['Research', 'Publications', 'Teaching', 'People', 'Contact']);
+  const graph = JSON.parse(scriptBody(byTag(teaching, 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'];
+  const items = graph.at(-1).mainEntity.itemListElement.map(entry => entry.item);
+  assert.deepEqual(items.map(item => [item.name, item.alternateName, item.url]), courses.map(course => [course.title, course.koreanTitle, course.url]));
+  for (const item of items) {
+    assert.equal(item['@type'], 'Course');
+    assert.equal(item.instructor, undefined, 'instructor belongs on CourseInstance');
+    assert.deepEqual(item.hasCourseInstance, { '@type': 'CourseInstance', instructor: { '@id': `${origin}/people/#pi` } });
+    assert.equal(item.provider['@id'], `${origin}/#university`);
+  }
+  assert(graph.some(node => node['@id'] === `${origin}/people/#pi`), 'The instructor id resolves to the PI node');
+});
+
+test('the favicon is a transparent image, not an empty data URI', async () => {
+  // PI 2026-10-02: no mark, but a real image so /favicon.ico requests resolve.
+  for (const [route, document] of documents) {
+    const icons = byTag(document, 'link').filter(node => attr(node, 'rel') === 'icon');
+    assert.deepEqual(icons.map(node => attr(node, 'href')), ['/favicon.ico'], `${route}: one favicon link`);
+  }
+  const icon = await readFile(path.join(root, 'dist/favicon.ico'));
+  assert.deepEqual([...icon.subarray(0, 4)], [0, 0, 1, 0], 'ICO header');
+  assert.equal(icon.readUInt16LE(4), 3, '16, 32 and 48 px frames');
 });
 
 test('Google Analytics loads only on the production host', () => {

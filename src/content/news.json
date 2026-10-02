@@ -19,7 +19,7 @@
     "date": "2026-07",
     "category": "Publication",
     "title": "Evidence standards at ICML 2026",
-    "text": "YongKyung Oh presented a sole-authored position paper on evidence standards for machine learning at ICML 2026.",
+    "text": "A sole-authored position paper on evidence standards for machine learning was presented at ICML 2026.",
     "publicationId": "evidence-standards"
   },
   {
@@ -27,6 +27,6 @@
     "date": "2026-06",
     "category": "Grant",
     "title": "Selected for the NVIDIA Academic Grant Program",
-    "text": "The Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework project, led by YongKyung Oh with Alex Bui at UCLA Medical Imaging Informatics, was selected for the NVIDIA Academic Grant Program."
+    "text": "The Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework project, with Alex Bui at UCLA Medical Imaging Informatics, was selected for the NVIDIA Academic Grant Program."
   }
 ]

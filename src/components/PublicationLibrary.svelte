@@ -128,7 +128,7 @@
   </div>
   <aside class="library-note mt-10 pt-5 text-sm text-muted" aria-label="About this publication list">
     <p class="text-muted">{publications.length} publications · {publications.filter(p => p.category === 'conference').length} conference papers · {publications.filter(p => p.category === 'journal').length} journal articles · {years.at(-1)}–{years[0]}</p>
-    <p class="mt-2 text-muted"><span class="font-bold text-ink">YongKyung Oh</span>, principal investigator, is highlighted in the author lists.</p>
+    <p class="mt-2 text-muted">The principal investigator appears in bold in author lists.</p>
   </aside>
 </section>
 
