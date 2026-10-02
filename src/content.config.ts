@@ -57,4 +57,11 @@ const news = defineCollection({
   schema: z.object({ date: z.string().regex(/^\d{4}-\d{2}$/), title: text,
     text, category: z.enum(['Lab', 'Grant', 'Publication', 'Award', 'Talk']), publicationId: paperId.optional() }),
 });
-export const collections = { publications, people, programs, news };
+// PI decision 2026-10-01 (audit 61): English titles follow the PNU English
+// syllabus Course Title in title case; course sites live under the lab origin.
+const courses = defineCollection({
+  loader: file('src/content/courses.json'),
+  schema: z.object({ order: z.number().int(), title: text, koreanTitle: text, description: text,
+    url: url.refine(value => value.startsWith('https://scientific-inference-lab.github.io/'), 'Course sites live under the lab origin') }),
+});
+export const collections = { publications, people, programs, news, courses };

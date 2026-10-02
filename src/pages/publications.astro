@@ -7,8 +7,8 @@ import { pi } from '../lib/data/lab';
 import { loadContent } from '../lib/content';
 const { publications } = await loadContent();
 ---
-<SiteLayout title="Publications" description="Publications by YongKyung Oh in machine learning, time series, scientific inference, and engineering applications.">
-  <PageHeader eyebrow="Research record" title="Publications" description="Search the complete publication record by title, author, venue, year, or track.">
+<SiteLayout title="Publications" description="Publications in machine learning, time series, scientific inference, and engineering applications.">
+  <PageHeader eyebrow="Research record" title="Publications" description="Conference papers and journal articles in machine learning, time series, and their scientific, medical, and engineering applications.">
     <a slot="action" href={pi.links.scholar} class="text-link">Google Scholar<ArrowUpRight size={16} aria-hidden="true" /></a>
   </PageHeader>
   <PublicationLibrary {publications} client:load />

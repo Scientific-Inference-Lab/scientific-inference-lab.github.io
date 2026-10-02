@@ -3,7 +3,7 @@ import type { loadContent } from './content';
 import type { Publication } from './data/publications';
 
 type Content = Awaited<ReturnType<typeof loadContent>>;
-export type PageKind = 'home' | 'research' | 'publications' | 'people' | 'contact';
+export type PageKind = 'home' | 'research' | 'publications' | 'teaching' | 'people' | 'contact';
 
 // Google Analytics 4 measurement ID supplied by the PI (2026-09-29).
 export const analytics = { id: 'G-H8EZQ381WH', hostname: new URL(site.url).hostname } as const;
@@ -54,12 +54,28 @@ function article(publication: Publication, pi: Content['pi']) {
   };
 }
 
+// schema.org puts `instructor` on CourseInstance, not Course; the instance
+// carries no term because the page states none (audit 61).
+function course(entry: Content['courses'][number]) {
+  return {
+    '@type': 'Course',
+    '@id': url(`/teaching/#${entry.id}`),
+    name: entry.title,
+    alternateName: entry.koreanTitle,
+    description: entry.description,
+    inLanguage: 'ko',
+    url: entry.url,
+    provider: { '@id': ids.university },
+    hasCourseInstance: { '@type': 'CourseInstance', instructor: { '@id': ids.pi } },
+  };
+}
+
 // One JSON-LD graph per page. It restates facts that the site already shows
 // (no telephone number, no names absent from the pages).
 export function structuredData(kind: PageKind, page: { path: string; title: string; description: string }, content: Content, image?: string) {
-  const { pi, programs, publications } = content;
+  const { pi, programs, publications, courses } = content;
   const topics = programs.map(program => program.title);
-  const pageTypes: Record<PageKind, string> = { home: 'WebPage', research: 'WebPage', publications: 'CollectionPage', people: 'ProfilePage', contact: 'ContactPage' };
+  const pageTypes: Record<PageKind, string> = { home: 'WebPage', research: 'WebPage', publications: 'CollectionPage', teaching: 'CollectionPage', people: 'ProfilePage', contact: 'ContactPage' };
   const webpage = {
     '@type': pageTypes[kind],
     '@id': url(`${page.path}#webpage`),
@@ -70,6 +86,7 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
     isPartOf: { '@id': ids.website },
     about: { '@id': kind === 'people' ? ids.pi : ids.lab },
     ...(kind === 'people' ? { mainEntity: { '@id': ids.pi } } : {}),
+    ...(kind === 'teaching' ? { mainEntity: { '@type': 'ItemList', numberOfItems: courses.length, itemListElement: courses.map((entry, index) => ({ '@type': 'ListItem', position: index + 1, item: course(entry) })) } } : {}),
     ...(kind === 'publications' ? { mainEntity: { '@type': 'ItemList', numberOfItems: publications.length, itemListElement: publications.map((publication, index) => ({ '@type': 'ListItem', position: index + 1, item: article(publication, pi) })) } } : {}),
   };
   return {

@@ -1,0 +1,39 @@
+---
+import { ArrowUpRight } from '@lucide/svelte';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { loadContent } from '../lib/content';
+const { courses } = await loadContent();
+---
+<SiteLayout title="Teaching" description="Undergraduate courses at Pusan National University in machine learning and data structures, with their lecture materials.">
+  <PageHeader eyebrow="Courses and lecture materials" title="Teaching" description="Undergraduate courses in machine learning and data structures at Pusan National University." />
+  <section class="wrap teaching" aria-label="Courses">
+    <ul class="course-list">
+      {courses.map(course => (
+        <li class="course" data-course={course.id}>
+          <h2 id={course.id}>{course.title}</h2>
+          <p class="course-korean" lang="ko">{course.koreanTitle}</p>
+          <p class="course-description">{course.description}</p>
+          <a href={course.url} hreflang="ko" class="text-link course-link" data-course-link={course.id}>
+            <span>Course materials (in Korean)</span><ArrowUpRight size={16} aria-hidden="true" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</SiteLayout>
+
+<style>
+  .teaching { container: teaching / inline-size; padding-block: 2.5rem 1rem; }
+  .course-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+  .course { min-width: 0; padding-block: 2rem; border-bottom: 1px solid var(--color-line); }
+  .course:first-child { padding-top: 0; }
+  .course h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.25; color: var(--color-ink); text-wrap: balance; }
+  .course-korean { margin-top: .25rem; font-size: 1.125rem; font-weight: 500; color: var(--color-muted); }
+  /* Short one-sentence scope: share the page-header description's measure and
+     fill to the column edge (pretty only avoids a lone last word), rather than
+     cutting at an arbitrary character width or balancing into short lines. */
+  .course-description { max-width: 56rem; margin-top: .75rem; font-size: 1.125rem; line-height: 1.6; color: var(--color-body); text-wrap: pretty; }
+  .course-link { min-height: 44px; margin-top: .75rem; gap: .5rem; font-size: 1rem; }
+  @container teaching (max-width: 14rem) { .course h2 { font-size: 1.375rem; } }
+</style>

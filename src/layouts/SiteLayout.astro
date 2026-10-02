@@ -15,7 +15,7 @@ const profiles = getProfileLinks(pi.links);
 const home = Astro.url.pathname === '/';
 const canonical = new URL(Astro.url.pathname, site.url);
 const documentTitle = home ? `${site.name} | ${site.institution}` : `${title} | ${site.name}`;
-const kinds: Record<string, PageKind> = { '/': 'home', '/research/': 'research', '/publications/': 'publications', '/people/': 'people', '/contact/': 'contact' };
+const kinds: Record<string, PageKind> = { '/': 'home', '/research/': 'research', '/publications/': 'publications', '/teaching/': 'teaching', '/people/': 'people', '/contact/': 'contact' };
 const kind = kinds[Astro.url.pathname];
 if (!kind) throw new Error(`No structured-data kind for ${Astro.url.pathname}`);
 const imageUrl = image ? new URL(image, site.url).href : undefined;
@@ -39,7 +39,7 @@ const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTi
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{documentTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} /><link rel="icon" href="data:," />
+    <link rel="canonical" href={canonical} /><link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <meta name="author" content={pi.name} />
     <meta property="og:site_name" content={site.name} /><meta property="og:locale" content="en_US" />

@@ -25,7 +25,7 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
 
   <section class="news-band" aria-labelledby="news-heading">
     <div class="wrap news-layout">
-      <div class="news-heading"><h2 id="news-heading">Latest news</h2><p>Research and laboratory updates.</p></div>
+      <div class="news-heading"><h2 id="news-heading">Latest news</h2></div>
       <div class="news-list">
         {news.map(item => <article class="news-item"><div class="news-meta"><time datetime={item.date}>{new Date(`${item.date}-01T00:00:00Z`).toLocaleDateString('en-US',{ month:'short', year:'numeric',timeZone:'UTC' })}</time><span>{item.category}</span></div><div><h3>{item.publicationId ? <a href={`/publications/#${item.publicationId}`}>{item.title}<ArrowRight size={17} /></a> : item.title}</h3><p>{item.text}</p></div></article>)}
       </div>

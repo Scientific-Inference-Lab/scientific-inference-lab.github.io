@@ -2,7 +2,9 @@
 interface Props {
   eyebrow: string;
   title: string;
-  description: string;
+  /* Substantive orientation only; omit it rather than describe the page
+     itself (PI 2026-10-02: no meta copy). */
+  description?: string;
 }
 
 const { eyebrow, title, description } = Astro.props;
@@ -14,7 +16,7 @@ const hasAction = Astro.slots.has('action');
     <div class="page-head-copy">
       <p class="kicker page-eyebrow">{eyebrow}</p>
       <h1>{title}</h1>
-      <p class="page-description">{description}</p>
+      {description && <p class="page-description">{description}</p>}
     </div>
     {hasAction && <div class="page-head-action"><slot name="action" /></div>}
   </div>

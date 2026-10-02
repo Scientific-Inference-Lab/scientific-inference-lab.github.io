@@ -1,9 +1,10 @@
 [
   ".nojekyll",
   "asset-credits.txt",
-  "licenses/pretendard.txt",
+  "favicon.ico",
   "licenses/bits-ui.txt",
   "licenses/lucide.txt",
+  "licenses/pretendard.txt",
   "licenses/svelte.txt",
   "robots.txt"
 ]
