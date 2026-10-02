@@ -61,11 +61,11 @@
     ],
     "related": [
       {
-        "id": "oh_position_2026_accepted_in_press",
+        "id": "oh_position_2026",
         "label": "Evidence standards"
       },
       {
-        "id": "oh_silent_failures_2026_accepted_in_press",
+        "id": "oh_silent_2026",
         "label": "Silent failures"
       }
     ],

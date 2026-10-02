@@ -1,0 +1,10 @@
+[
+  {
+    "id": "prospective-student",
+    "name": "Prospective student",
+    "role": "Prospective student",
+    "placeholder": true,
+    "summary": "Research positions for graduate and undergraduate students in machine learning for scientific discovery and informed decisions.",
+    "contact": "/contact/"
+  }
+]

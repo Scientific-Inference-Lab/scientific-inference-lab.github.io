@@ -25,15 +25,15 @@ const { courses } = await loadContent();
 
 <style>
   .teaching { container: teaching / inline-size; padding-block: 2.5rem 1rem; }
-  .course-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+  .course-list { max-width: var(--measure-section); display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
   .course { min-width: 0; padding-block: 2rem; border-bottom: 1px solid var(--color-line); }
   .course:first-child { padding-top: 0; }
-  .course h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.25; color: var(--color-ink); text-wrap: balance; }
+  .course h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.25; color: var(--color-ink); }
   .course-korean { margin-top: .25rem; font-size: 1.125rem; font-weight: 500; color: var(--color-muted); }
-  /* Short one-sentence scope: share the page-header description's measure and
-     fill to the column edge (pretty only avoids a lone last word), rather than
-     cutting at an arbitrary character width or balancing into short lines. */
-  .course-description { max-width: 56rem; margin-top: .75rem; font-size: 1.125rem; line-height: 1.6; color: var(--color-body); text-wrap: pretty; }
+  /* Short one-sentence scope: the list shares the page-header description's
+     section measure and the text fills to its edge, rather than cutting at an
+     arbitrary character width or balancing into short lines. */
+  .course-description { margin-top: .75rem; font-size: 1.125rem; line-height: 1.6; color: var(--color-body); }
   .course-link { min-height: 44px; margin-top: .75rem; gap: .5rem; font-size: 1rem; }
   @container teaching (max-width: 14rem) { .course h2 { font-size: 1.375rem; } }
 </style>

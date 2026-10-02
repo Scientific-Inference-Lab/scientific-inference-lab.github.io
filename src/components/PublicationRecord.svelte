@@ -5,6 +5,7 @@
   import { pi } from '../lib/data/lab';
   import { publicationType, type Publication } from '../lib/data/publications';
   import { citationFor } from '../lib/data/citations';
+  import LinkedTitle from './LinkedTitle.svelte';
 
   let { publication, hidden = false, citable = true, showYear = false }: {
     publication: Publication;
@@ -55,11 +56,11 @@
 <article id={publication.id} data-publication={publication.id} data-year={publication.year} data-type={publicationType(publication)} {hidden} class="publication-record min-w-0">
   {#each publication.aliases ?? [] as alias}<span id={alias} class="publication-alias" aria-hidden="true"></span>{/each}
     <h3 class="publication-title font-bold text-ink">
-      <a href={publication.url} class="transition-colors hover:text-action">{publication.title}</a>
+      <a href={publication.url} class="publication-title-link"><LinkedTitle title={publication.title} external /></a>
     </h3>
     <p class="publication-authors text-body">
       {#each publication.authors as author, index}
-        <span data-author={author} class:is-pi={author.toLowerCase() === pi.name.toLowerCase()}>{author}</span>{index < publication.authors.length - 1 ? ', ' : ''}
+        <span class="author-unit"><span data-author={author} class:is-pi={author.toLowerCase() === pi.name.toLowerCase()}>{author}</span>{index < publication.authors.length - 1 ? ',' : ''}</span>{index < publication.authors.length - 1 ? ' ' : ''}
       {/each}
     </p>
     <div class="publication-meta flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
@@ -103,9 +104,14 @@
   .publication-record { container: publication-record / inline-size; position: relative; padding-block: .75rem; border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 13%, transparent); scroll-margin-top: 7rem; }
   .publication-alias { position: absolute; top: 0; scroll-margin-top: 7rem; }
   .publication-record:target,.publication-record:has(.publication-alias:target) { background: var(--color-action-soft); }
-  .publication-title { font-size: 1.125rem; line-height: 1.35; overflow-wrap: anywhere; }
-  .publication-title a { display: inline-block; min-height: 1.5rem; }
+  .publication-title { font-size: 1.125rem; line-height: 1.35; overflow-wrap: break-word; }
+  /* Audit 66 (variant A): the title is the primary-source link; an always-visible ↗ marks it as external. */
+  .publication-title a { display: inline-block; min-height: 1.5rem; transition: color var(--duration-state); }
+  .publication-title a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .15em; }
   .publication-authors { margin-top: .125rem; font-size: .9375rem; line-height: 1.4; }
+  /* Audit 63 D4: each author (with its comma) is one unit, so the list wraps between
+     authors; a unit wider than the line (enlarged text) still wraps inside. No NBSP in data. */
+  .author-unit { display: inline-block; max-width: 100%; }
   .publication-meta { margin-top: .25rem; line-height: 1.4; }
   .publication-meta > span { min-width: 0; }
   [data-publication-type] { padding-block: .125rem; }

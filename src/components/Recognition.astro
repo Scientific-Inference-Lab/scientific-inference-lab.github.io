@@ -1,0 +1,146 @@
+---
+import { ArrowRight } from '@lucide/svelte';
+import type { loadContent } from '../lib/content';
+
+interface RecognitionItem { id: string; venue: string; year: number; label: string; }
+interface Props {
+  pi: Awaited<ReturnType<typeof loadContent>>['pi'];
+  recognition: RecognitionItem[];
+  awardLinks: Record<string, string>;
+}
+const { pi, recognition, awardLinks } = Astro.props;
+---
+<section class="bg-canvas py-12 sm:py-16" aria-labelledby="recognition-heading">
+  <div class="wrap recognition-container">
+    <h2 id="recognition-heading" class="recognition-title-main font-bold">Recognition</h2>
+    <div class="recognition-items">
+      <section class="recognition-group" aria-labelledby="honors-heading">
+        <h3 id="honors-heading" class="recognition-group-title">Honors</h3>
+        <ul class="line-list">
+          {pi.honors.map(honor => (
+            <li class="line-row" data-honor>
+              <span class="recognition-meta">{honor.month} {honor.year}</span>
+              <span class="line-main"><strong class="line-title">{honor.title}</strong><span class="recognition-source"> · {honor.detail ? `${honor.detail}, ` : ''}{honor.organizer}</span></span>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <section class="recognition-group" aria-labelledby="paper-recognition-heading">
+        <h3 id="paper-recognition-heading" class="recognition-group-title">Paper recognition</h3>
+        <ul class="line-list">
+          {recognition.map(publication => (
+            <li class="line-row">
+              <span class="recognition-meta">{publication.venue} · {publication.year}</span>
+              <span class="line-main"><a href={`/publications/#${publication.id}`} class="recognition-link line-title">{publication.label}<ArrowRight size={17} aria-hidden="true" /></a></span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {/* PI 2026-10-02: grants and fellowships are shown in full, not folded. */}
+      <section class="recognition-group" aria-labelledby="grant-recognition-heading">
+        <h3 id="grant-recognition-heading" class="recognition-group-title">Grants and fellowships</h3>
+        <ul class="recognition-list">
+          {pi.grants.map(grant => (
+            <li class="recognition-row" data-grant>
+              <p class="recognition-meta">{grant.period}</p>
+              <div class="min-w-0">
+                <h4 class="recognition-title">{grant.title}</h4>
+                <p class="recognition-detail recognition-source">{grant.sponsor}</p>
+                <p class="recognition-detail">Role: {grant.role}</p>
+                {grant.project && <p class="recognition-detail">{grant.projectLabel}: {grant.project}</p>}
+                {grant.principalInvestigator && <p class="recognition-detail">Principal Investigator: {grant.principalInvestigator}</p>}
+                {grant.description && <p class="recognition-detail">{grant.description}</p>}
+                {grant.context && <p class="recognition-detail">{grant.context}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <div class="recognition-folds">
+      <details class="recognition-details" data-recognition-details="awards">
+        <summary>Research awards</summary>
+        <ul class="recognition-list">
+          {pi.awards.map(award => (
+            <li class="recognition-row" data-award>
+              <p class="recognition-meta">{award.month} {award.year}</p>
+              <div class="min-w-0">
+                <h4 class="recognition-title">{award.title}</h4>
+                {awardLinks[award.cvLabel]
+                  ? <p class="recognition-detail"><a href={`/publications/#${awardLinks[award.cvLabel]}`} class="recognition-link">{award.paper}<ArrowRight size={17} aria-hidden="true" /></a></p>
+                  : <p class="recognition-detail">{award.paper}</p>}
+                <p class="recognition-detail recognition-source">{award.organizer}</p>
+                {award.note && <p class="recognition-detail">{award.note}</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </details>
+
+      <details class="recognition-details" data-recognition-details="patents">
+        <summary>Patents</summary>
+        <ul class="recognition-list">
+          {pi.patents.map(patent => (
+            <li class="recognition-row" data-patent>
+              <p class="recognition-meta">{patent.filings[0].date.slice(-4)}</p>
+              <div class="min-w-0">
+                <h4 class="recognition-title">{patent.title}</h4>
+                {patent.filings.map(filing => <p class="recognition-detail">{filing.office} {filing.number}, {filing.status} {filing.date}</p>)}
+                {patent.jointApplicants && <p class="recognition-detail">Joint applicants: {patent.jointApplicants}.</p>}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .recognition-container { container: recognition / inline-size; }
+  .recognition-title-main { margin-bottom: 1.5rem; font-size: 1.875rem; }
+  @container recognition (max-width: 12rem) { .recognition-title-main { font-size: 1.5rem; } }
+  @container recognition (max-width: 9rem) { .recognition-title-main { font-size: 1.25rem; } }
+  .recognition-items { container: recognition-items / inline-size; min-width: 0; display: grid; gap: 1.75rem; max-width: var(--measure-section); }
+  .recognition-group { min-width: 0; }
+  .recognition-group-title { margin-bottom: .5rem; font-size: 1rem; font-weight: 600; color: var(--color-muted); }
+  .recognition-meta { font-size: 1rem; line-height: 1.5; color: var(--color-muted); }
+  .recognition-title { font-size: 1.125rem; font-weight: 700; line-height: 1.5; }
+  .recognition-source { color: var(--color-muted); }
+  .recognition-detail { margin-top: .125rem; color: var(--color-body); line-height: 1.6; }
+  .recognition-detail.recognition-source { color: var(--color-muted); }
+
+  /* Compact one-line rows (visible Honors and Paper recognition). */
+  .line-list { display: grid; gap: .25rem; padding: 0; margin: 0; list-style: none; }
+  .line-row { display: grid; grid-template-columns: minmax(0,1fr); gap: 0; min-width: 0; padding-block: .25rem; line-height: 1.5; }
+  .line-title { font-weight: 700; color: var(--color-ink); }
+  .line-main { min-width: 0; }
+  @container recognition-items (min-width: 34rem) {
+    .line-row { grid-template-columns: 11rem minmax(0,1fr); column-gap: 1.5rem; align-items: baseline; }
+  }
+
+  /* Collapsed detail groups. */
+  /* One stacked group: folds touch each other, so a closed fold is just its summary row. */
+  .recognition-folds { display: grid; gap: 0; }
+  .recognition-details { border-top: 1px solid var(--color-line); }
+  .recognition-details:last-child { border-bottom: 1px solid var(--color-line); }
+  .recognition-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 44px; cursor: pointer; list-style: none; font-weight: 600; color: var(--color-ink); }
+  .recognition-details > summary::-webkit-details-marker { display: none; }
+  .recognition-details > summary::after { content: '+'; font-size: 1.25rem; line-height: 1; color: var(--color-action); }
+  .recognition-details[open] > summary::after { content: '\2212'; }
+  .recognition-details > summary:hover { color: var(--color-action); }
+  .recognition-details > summary:focus-visible { outline: 3px solid var(--color-action); outline-offset: 2px; }
+  .recognition-details > .recognition-list { padding-block: .75rem 1.5rem; }
+
+  .recognition-list { display: grid; gap: 1.25rem; padding: 0; margin: 0; list-style: none; }
+  .recognition-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .5rem; min-width: 0; }
+  .recognition-link { display: inline-block; min-height: 44px; padding-block: .5rem; color: var(--color-action); }
+  .line-main .recognition-link { min-height: 44px; padding-block: .625rem; }
+  .recognition-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .recognition-link :global(svg) { display: inline-block; width: .9em; height: .9em; margin-left: .375rem; vertical-align: -.1em; }
+  @container recognition-items (min-width: 34rem) {
+    .recognition-row { grid-template-columns: 11rem minmax(0,1fr); column-gap: 1.5rem; align-items: baseline; }
+  }
+</style>

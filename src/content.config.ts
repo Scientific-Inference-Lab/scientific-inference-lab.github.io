@@ -41,11 +41,25 @@ const people = defineCollection({
   loader: file('src/content/people.json'),
   schema: z.object({ name: text, role: text, affiliation: text, photoAlt: text,
     shortBio: text, bio: text, email: z.email(), phone: text, office: text,
-    honors: z.array(z.object({ title: text, institution: text, year: z.number().int(), status: z.enum(['Nominee', 'Finalist', 'Award', 'Scholar']) })),
-    grants: z.array(z.object({ title: text, sponsor: text, year: z.number().int(), period: text, role: text, projectLabel: z.enum(['Project', 'Research title']), project: text, principalInvestigator: text.optional(), context: text.optional() })),
+    honors: z.array(z.object({ cvLabel: z.string().regex(/^H\d{2}$/), title: text, organizer: text, month: text, year: z.number().int(), detail: text.optional() })),
+    awards: z.array(z.object({ cvLabel: z.string().regex(/^HR\d{2}$/), title: text, paper: text, organizer: text, month: text, year: z.number().int(), note: text.optional() })),
+    patents: z.array(z.object({ cvLabel: z.string().regex(/^PT\d{2}$/), title: text,
+      filings: z.array(z.object({ office: z.enum(['KR', 'JP']), number: text, status: z.enum(['granted', 'applied']), date: text })).min(1),
+      jointApplicants: text.optional() })),
+    grants: z.array(z.object({ title: text, sponsor: text, year: z.number().int(), period: text, role: text, projectLabel: z.enum(['Project', 'Research title']).optional(), project: text.optional(), principalInvestigator: text.optional(), description: text.optional(), context: text.optional() })),
     address: text, links: z.object({ orcid: url, scholar: url, github: url, linkedin: url, personal: url }),
     education: z.array(z.object({ period: text, degree: text, where: text })),
     appointments: z.array(z.object({ period: text, role: text, where: text })) }),
+});
+// Lab members other than the PI (consented fields only); the PI stays in people.json.
+const members = defineCollection({
+  loader: file('src/content/members.json'),
+  schema: z.object({ name: text, role: z.enum(['PhD student', 'MS student', 'Undergraduate researcher', 'Alumni', 'Prospective student']),
+    since: text.regex(/^\d{4}$/).optional(), photo: text.optional(), summary: text.optional(),
+    placeholder: z.boolean().optional(), contact: text.optional(),
+    // A local profile route; only then does the card show the Full profile button.
+    profile: text.regex(/^\/people\/[a-z0-9-]+\/$/).optional(),
+    links: z.object({ personal: url.optional(), github: url.optional(), scholar: url.optional(), linkedin: url.optional() }).optional() }),
 });
 const programs = defineCollection({
   loader: file('src/content/programs.json'),
@@ -64,4 +78,4 @@ const courses = defineCollection({
   schema: z.object({ order: z.number().int(), title: text, koreanTitle: text, description: text,
     url: url.refine(value => value.startsWith('https://scientific-inference-lab.github.io/'), 'Course sites live under the lab origin') }),
 });
-export const collections = { publications, people, programs, news, courses };
+export const collections = { publications, people, members, programs, news, courses };

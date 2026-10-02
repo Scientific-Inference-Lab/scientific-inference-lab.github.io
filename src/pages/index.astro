@@ -15,7 +15,7 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
       <p class="home-introduction">{site.intro}</p>
       <div class="home-actions">
         <a class="button" href="/research/">Explore research <ArrowRight size={18} aria-hidden="true" /></a>
-        <a class="button-secondary" href="/people/">Meet the PI <ArrowRight size={18} aria-hidden="true" /></a>
+        <a class="button-secondary" href="/people/yongkyung-oh/">Meet the PI <ArrowRight size={18} aria-hidden="true" /></a>
       </div>
     </div>
     </div>
@@ -45,10 +45,10 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   .intro-copy { min-width: 0; }
   /* Balanced lines: the full-width title would otherwise end a line after the
      hyphen of "decision-making". No phrase-level break or nowrap is forced. */
-  .home-title { font-size: 2.125rem; line-height: 1.12; text-wrap: balance; }
+  .home-title { font-size: 2.125rem; line-height: 1.12; }
   /* Without the former photo column the title spans the page width; only the
      paragraph keeps a reading measure. */
-  .home-introduction { max-width: 46rem; margin-top: 1.25rem; font-size: 1.0625rem; line-height: 1.65; text-wrap: pretty; }
+  .home-introduction { max-width: var(--measure-prose); margin-top: 1.25rem; font-size: 1.0625rem; line-height: 1.65; }
   .home-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.5rem; margin-top: 1.5rem; }
   .home-actions a { max-width: 100%; }
   .news-band { container: home-news / inline-size; border-block: 1px solid var(--color-line); padding-block: 3.5rem; }
@@ -65,11 +65,11 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   .news-item a { display: block; min-height: 44px; padding-block: .375rem; }
   .news-item a :global(svg) { display: inline-block; vertical-align: middle; margin-left: .35rem; color: var(--color-action); }
   .news-item a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .2em; }
-  .news-item p { margin-top: .375rem; max-width: 68ch; line-height: 1.65; }
+  .news-item p { margin-top: .375rem; max-width: var(--measure-prose); line-height: 1.65; }
   .inquiry { container: home-inquiry / inline-size; padding-top: 3.5rem; }
   .inquiry-layout { display: grid; grid-template-columns: minmax(0,1fr); gap: 1.5rem; align-items: center; }
   .inquiry h2 { font-size: 1.75rem; line-height: 1.25; }
-  .inquiry p { margin-top: 1rem; max-width: 70ch; text-wrap: pretty; }
+  .inquiry p { margin-top: 1rem; max-width: var(--measure-prose); }
   .inquiry .button { justify-self: start; max-width: 100%; }
   @container home-intro (min-width: 44rem) {
     .home-title { font-size: 2.75rem; }
