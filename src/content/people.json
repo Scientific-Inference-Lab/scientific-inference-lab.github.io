@@ -50,7 +50,7 @@
       {
         "cvLabel": "HR04",
         "title": "Best Paper Competition Finalist",
-        "paper": "Neural CDE-Flow for Irregular Time Series: Integrating Neural Controlled Differential Equations and Neural Flow for Comprehensive Irregularly Sampled Time Series Analysis",
+        "paper": "Integrating Neural Controlled Differential Equations and Neural Flow for Comprehensive Irregularly-sampled Time Series Analysis",
         "organizer": "Data Analytics and Information Systems (DAIS) Division, IISE Annual Conference & Expo",
         "month": "May",
         "year": 2024
@@ -152,6 +152,12 @@
             "number": "10-2754134",
             "status": "granted",
             "date": "January 8, 2025"
+          },
+          {
+            "office": "US",
+            "number": "12,725,326",
+            "status": "granted",
+            "date": "September 1, 2026"
           }
         ]
       },
@@ -219,7 +225,7 @@
       },
       {
         "cvLabel": "PT06",
-        "title": "Sensor drift compensation for mixed gas classification in E-nose system",
+        "title": "Method and device for compensating for sensor drift",
         "filings": [
           {
             "office": "KR",

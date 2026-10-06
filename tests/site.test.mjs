@@ -359,10 +359,12 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   for (const row of patentRows) {
     const rowText = content(row);
     assert(rowText.includes('KR '), 'Each patent row shows its Korean filing');
-    assert(!/\bUS \d|\bPCT/.test(rowText) && !rowText.includes('prosecution discontinued'), 'Pending US and discontinued PCT filings stay off People');
+    assert(!/\bUS \d{2}\/|\bPCT/.test(rowText) && !rowText.includes('prosecution discontinued'), 'US application numbers and discontinued PCT filings stay off People');
   }
   assert.equal(patentRows.filter(row => content(row).includes('JP ')).length, 2, 'The two granted JP patents appear next to their KR facts');
-  assert(content(patentRows[0]).includes('KR 10-2754134, granted January 8, 2025'));
+  // Achivement 2026-10-06: US 18/395,620 was granted as US 12,725,326 B2; only the granted number is shown.
+  assert(content(patentRows[0]).includes('KR 10-2754134, granted January 8, 2025') && content(patentRows[0]).includes('US 12,725,326, granted September 1, 2026'));
+  assert.equal(patentRows.filter(row => content(row).includes('US ')).length, 1, 'Only the granted US patent appears');
   const expectedProfiles = [
     ['Personal Website', pi.links.personal],
     ['ORCID', pi.links.orcid],
