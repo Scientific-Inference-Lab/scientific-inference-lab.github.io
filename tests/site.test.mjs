@@ -383,9 +383,11 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   assert(has(profileActions[0], 'data-profile-action') && content(profileActions[0]).trim() === 'Full profile' && attr(profileActions[0], 'aria-label') === `Full profile of ${pi.name}`);
   assert(['button-secondary', 'button-compact'].every(name => attr(profileActions[0], 'class')?.split(/\s+/).includes(name)), 'The profile action is the compact outlined button');
   assert.equal(byAttr(index, 'data-read-more').length, 0);
-  // The Team bio is a short summary; the career chronology (GM, CMU, full institution names) stays on the profile.
+  // PI 2026-10-02: the Team bio names the UCLA and UNIST postdocs and the GM/CMU experience (institutions only;
+  // "Intensive AI Program" is the IITP programme name and stays on the profile).
   assert(content(piCard).includes(pi.shortBio));
-  assert(!/General Motors|Carnegie Mellon|Ulsan National|Intensive AI Program/.test(pi.shortBio));
+  assert(['(UCLA)', '(UNIST)', 'General Motors (GM)', 'Carnegie Mellon University (CMU)'].every(name => pi.shortBio.includes(name)));
+  assert(!pi.shortBio.includes('Intensive AI Program'));
   assert(!pi.bio.startsWith(pi.shortBio.split('. ')[0]), 'The Team bio does not reuse the profile Bio opening');
   assert.equal(byAttr(index, 'id', 'pi').length, 1, '/people/#pi resolves for the course sites');
   // PI 2026-10-02: a prospective-student placeholder sits last under Students until real members join.

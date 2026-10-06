@@ -167,7 +167,10 @@ function presentationDate(plainText, year) {
   return { date: `${year}-${String(months.indexOf(month) + 1).padStart(2, '0')}`, snippet };
 }
 const venueLabels = [
-  [/SIGKDD/, 'KDD'], [/Machine Learning \(ICML/, 'ICML'],
+  // Matches both the accepted form "…Machine Learning (ICML 2026)" and the PMLR
+  // booktitle "Proceedings of the 43rd International Conference on Machine Learning",
+  // but not other venues such as "…Machine Learning and Applications (ICMLA)".
+  [/SIGKDD/, 'KDD'], [/International Conference on Machine Learning(?:$| \(ICML)/, 'ICML'],
   [/Health, Inference, and Learning/, 'CHIL'], [/AAAI Conference/, 'AAAI'],
   [/Information and Knowledge Management/, 'CIKM'], [/Joint Conference on Artificial Intelligence/, 'IJCAI'],
   [/Learning Representations/, 'ICLR'], [/Data Mining Workshops/, 'ICDMW'],
@@ -270,6 +273,11 @@ for (const [upstreamOrder, item] of upstream.entries()) {
     upstreamOrder,
     overrides: override ?? null,
   });
+}
+// A conference whose upstream venue changes form (e.g. accepted → PMLR booktitle) must not
+// fall back to its full proceedings title in the short venue label.
+for (const publication of publications.filter(p => p.category === 'conference')) {
+  assert.ok(!/^Proceedings\b|\bConference\b/.test(publication.venue), `${publication.id}: no short venue label for "${publication.venue}"; extend venueLabels`);
 }
 const inputs = [{ path: sourcePath, sha256: hash(sourceText) }, { path: canonicalPath, sha256: hash(canonicalText) }];
 for (const policyPath of policyPaths) inputs.push({ path: policyPath, sha256: hash(await read(policyPath)) });
