@@ -787,3 +787,12 @@ test('the executable QC contract cannot silently succeed on a deleted suite', as
     assert((await stat(path.join(root, 'tests', file))).isFile(), file);
   }
 });
+
+test('lab-authored copy spells "decision-making" one way (PI, 2026-10-06; lesson 14)', async () => {
+  // Publications are excluded: venue names such as "Medical Decision Making" are verbatim.
+  for (const file of ['src/content/people.json', 'src/content/news.json', 'src/content/programs.json', 'src/lib/data/lab.ts', 'src/components/ContactPanel.astro']) {
+    assert(!/decision making/i.test(await readFile(path.join(root, file), 'utf8')), `${file}: use "decision-making"`);
+  }
+  const contact = text(documents.get('/contact/'));
+  assert(contact.includes('Explore research') && !contact.includes('Explore our research'), 'Contact uses the Home label "Explore research"');
+});
