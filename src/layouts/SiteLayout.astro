@@ -6,8 +6,8 @@ import university from '../lib/assets/university.svg';
 import SiteNavigation from '../components/SiteNavigation.astro';
 import { analytics, jsonLd, structuredData, type PageKind } from '../lib/seo';
 import '../lib/styles/app.css';
-interface Props { title: string; description?: string; image?: string; }
-const { title, description = site.intro, image } = Astro.props;
+interface Props { title: string; description?: string; image?: string; notFound?: boolean; }
+const { title, description = site.intro, image, notFound = false } = Astro.props;
 const content = await loadContent();
 const { pi } = content;
 const [emailLocal, emailDomain] = pi.email.split('@');
@@ -17,7 +17,7 @@ const canonical = new URL(Astro.url.pathname, site.url);
 const documentTitle = home ? `${site.name} | ${site.institution}` : `${title} | ${site.name}`;
 const kinds: Record<string, PageKind> = { '/': 'home', '/research/': 'research', '/publications/': 'publications', '/teaching/': 'teaching', '/people/': 'people', '/people/yongkyung-oh/': 'profile', '/contact/': 'contact' };
 const kind = kinds[Astro.url.pathname];
-if (!kind) throw new Error(`No structured-data kind for ${Astro.url.pathname}`);
+if (!kind && !notFound) throw new Error(`No structured-data kind for ${Astro.url.pathname}`);
 const imageUrl = image ? new URL(image, site.url).href : undefined;
 // GA4 (PI 2026-09-29) runs only on the production host, so local QC, previews
 // and dev servers send nothing to Google.
@@ -31,7 +31,9 @@ const analyticsLoader = `if (location.hostname === ${JSON.stringify(analytics.ho
   tag.src = 'https://www.googletagmanager.com/gtag/js?id=${analytics.id}';
   document.head.appendChild(tag);
 }`;
-const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTitle, description }, content, kind === 'people' || kind === 'profile' ? imageUrl : undefined);
+// A missing route is not a canonical page or a research entity. Keep the
+// shared navigation/shell without publishing misleading discovery metadata.
+const graph = kind ? structuredData(kind, { path: Astro.url.pathname, title: documentTitle, description }, content, kind === 'people' || kind === 'profile' ? imageUrl : undefined) : undefined;
 ---
 <!doctype html>
 <html lang="en">
@@ -39,17 +41,18 @@ const graph = structuredData(kind, { path: Astro.url.pathname, title: documentTi
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{documentTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} /><link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    {!notFound && <link rel="canonical" href={canonical} />}<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    {notFound && <meta name="robots" content="noindex, nofollow" />}
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <meta name="author" content={pi.name} />
     <meta property="og:site_name" content={site.name} /><meta property="og:locale" content="en_US" />
     <meta property="og:title" content={documentTitle} />
-    <meta property="og:description" content={description} /><meta property="og:type" content={kind === 'profile' ? 'profile' : 'website'} /><meta property="og:url" content={canonical} />
+    <meta property="og:description" content={description} /><meta property="og:type" content={kind === 'profile' ? 'profile' : 'website'} />{!notFound && <meta property="og:url" content={canonical} />}
     {imageUrl && <meta property="og:image" content={imageUrl} />}
     {imageUrl && <meta property="og:image:alt" content={pi.photoAlt} />}
     <meta name="twitter:card" content="summary" />
-    <script is:inline type="application/ld+json" set:html={jsonLd(graph)} />
-    <script is:inline set:html={analyticsLoader} />
+    {graph && <script is:inline type="application/ld+json" set:html={jsonLd(graph)} />}
+    {!notFound && <script is:inline set:html={analyticsLoader} />}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

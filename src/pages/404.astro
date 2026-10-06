@@ -1,0 +1,22 @@
+---
+import { ArrowRight } from '@lucide/svelte';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+---
+<SiteLayout title="Page not found" description="The requested page could not be found." notFound>
+  <PageHeader eyebrow="404" title="Page not found" />
+  <section class="wrap recovery" aria-label="Page recovery">
+    <p>The address may be incorrect, or the page may have moved.</p>
+    <div class="recovery-actions">
+      <a class="button" href="/">Return home <ArrowRight size={18} aria-hidden="true" /></a>
+      <a class="text-link" href="/research/">View research <ArrowRight size={18} aria-hidden="true" /></a>
+    </div>
+  </section>
+</SiteLayout>
+
+<style>
+  .recovery { padding-block: 2.75rem 4rem; }
+  .recovery p { font-size: var(--type-page-lead); }
+  .recovery-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem 1.75rem; margin-top: 1.75rem; }
+  @media (max-width: 47.99rem) { .recovery { padding-block: 2rem 3rem; } }
+</style>

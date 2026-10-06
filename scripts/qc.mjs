@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { createHash } from 'node:crypto';
-import { readFile, readdir, stat, mkdir, writeFile } from 'node:fs/promises';
+import { readFile, readdir, stat, mkdir, open, unlink, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -25,6 +25,11 @@ const python = process.env.QC_PYTHON || 'python3';
 const runId = new Date().toISOString().replaceAll(':', '-');
 const evidence = path.join(out, runId);
 const report = { runId, status: 'running', engines, commands: [], evidence };
+// The static site tests still read dist/ directly. Until they accept a
+// per-run build root, fail fast instead of letting two QC processes corrupt
+// each other's build and browser evidence.
+const distLock = path.join(root, 'output/qc/.dist.lock');
+let ownsDistLock = false;
 const commandDeadlineMs = 10 * 60 * 1000;
 const terminationGraceMs = 5000;
 const processGroups = process.platform !== 'win32';
@@ -158,6 +163,16 @@ for (const signal of ['SIGINT', 'SIGTERM']) {
 
 await mkdir(evidence, { recursive: true });
 try {
+  await mkdir(path.dirname(distLock), { recursive: true });
+  try {
+    const handle = await open(distLock, 'wx');
+    ownsDistLock = true;
+    try { await handle.writeFile(`${process.pid} ${runId}\n`); }
+    finally { await handle.close(); }
+  } catch (error) {
+    if (error.code === 'EEXIST') throw new Error(`Another QC run owns dist/. Check ${distLock}; if its recorded process has exited, remove only this stale lock after verifying no build is active.`);
+    throw error;
+  }
   checkInterrupted();
   report.inputSha256 = await inputDigest();
   await command(python, ['-c', 'import playwright.sync_api']);
@@ -194,6 +209,7 @@ try {
   await activeCommand?.stop();
   server.closeAllConnections();
   await new Promise(resolve => server.close(resolve));
+  if (ownsDistLock) await unlink(distLock);
   if (interruption) {
     report.status = 'failed';
     report.error = `QC interrupted by ${interruption}`;

@@ -73,7 +73,6 @@ const profiles = getProfileLinks(pi.links);
   .bio-heading { margin-bottom: .75rem; font-size: 1.25rem; font-weight: 700; line-height: 1.3; color: var(--color-ink); }
   .profile-links { grid-area: links; display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; }
   .profile-links a { font-size: 1rem; }
-  .profile-portrait { aspect-ratio: 1; object-fit: cover; }
   @container profile (min-width: 40rem) {
     .profile-layout { grid-template-columns: minmax(0,2fr) minmax(0,3fr); grid-template-areas: 'photo identity' 'photo bio' 'photo links'; column-gap: 4rem; }
     .profile-photo { width: 100%; }

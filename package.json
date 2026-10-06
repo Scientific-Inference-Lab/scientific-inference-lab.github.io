@@ -11,7 +11,7 @@
     "check": "astro check && svelte-check --tsconfig ./tsconfig.json",
     "build": "npm run check && astro build",
     "preview": "astro preview --host 127.0.0.1",
-    "test": "node --test tests/site.test.mjs",
+    "test": "node --test tests/site.test.mjs tests/404.test.mjs tests/venue-label.test.mjs tests/portrait.test.mjs",
     "qc": "node scripts/qc.mjs"
   },
   "dependencies": {

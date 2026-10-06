@@ -44,7 +44,7 @@ const people = defineCollection({
     honors: z.array(z.object({ cvLabel: z.string().regex(/^H\d{2}$/), title: text, organizer: text, month: text, year: z.number().int(), detail: text.optional() })),
     awards: z.array(z.object({ cvLabel: z.string().regex(/^HR\d{2}$/), title: text, paper: text, organizer: text, month: text, year: z.number().int(), note: text.optional() })),
     patents: z.array(z.object({ cvLabel: z.string().regex(/^PT\d{2}$/), title: text,
-      filings: z.array(z.object({ office: z.enum(['KR', 'JP']), number: text, status: z.enum(['granted', 'applied']), date: text })).min(1),
+      filings: z.array(z.object({ office: z.enum(['KR', 'JP', 'US']), number: text, status: z.enum(['granted', 'applied']), date: text })).min(1),
       jointApplicants: text.optional() })),
     grants: z.array(z.object({ title: text, sponsor: text, year: z.number().int(), period: text, role: text, projectLabel: z.enum(['Project', 'Research title']).optional(), project: text.optional(), principalInvestigator: text.optional(), description: text.optional(), context: text.optional() })),
     address: text, links: z.object({ orcid: url, scholar: url, github: url, linkedin: url, personal: url }),
