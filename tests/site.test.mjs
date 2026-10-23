@@ -798,3 +798,38 @@ test('lab-authored copy spells "decision-making" one way (PI, 2026-10-06; lesson
   const contact = text(documents.get('/contact/'));
   assert(contact.includes('Explore research') && !contact.includes('Explore our research'), 'Contact uses the Home label "Explore research"');
 });
+
+test('page purpose stays independent of catalogue topics and agrees across discovery surfaces', async () => {
+  const llms = await readFile(path.join(root, 'dist/llms.txt'), 'utf8');
+  const pageIndex = llms.split('## Pages\n')[1].split('## Research directions\n')[0];
+  const labels = new Map([['/research/', 'Research'], ['/publications/', 'Publications'], ['/teaching/', 'Teaching'], ['/contact/', 'Contact']]);
+  for (const [route, label] of labels) {
+    const document = documents.get(route);
+    const description = meta(document, 'description')[0];
+    assert(description && !/\b(?:explore|search|meet|contact)\b/i.test(description), `${route}: describe the subject, without a visitor command`);
+    assert(!/\b(?:complete|comprehensive|all)\b/i.test(description), `${route}: no unsupported completeness claim`);
+    assert.deepEqual(meta(document, 'og:description'), [description], `${route}: Open Graph agrees`);
+    const graph = JSON.parse(scriptBody(byTag(document, 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'];
+    assert.equal(graph.at(-1).description, description, `${route}: JSON-LD page description agrees`);
+    assert(pageIndex.includes(`- [${label}](${origin}${route}): ${description}`), `${route}: LLM page summary agrees`);
+  }
+  const teaching = documents.get('/teaching/');
+  const purpose = meta(teaching, 'description')[0];
+  const header = byAttr(teaching, 'data-page-header')[0];
+  const visible = all(header, node => (attr(node, 'class') ?? '').split(/\s+/).includes('page-description'));
+  assert.equal(content(visible[0]), purpose, 'Teaching header and metadata have the same enduring purpose');
+  assert(!/\b(?:undergraduate|graduate)\b/i.test(purpose), 'Teaching purpose does not prescribe the current degree level');
+  for (const course of await json('src/content/courses.json')) {
+    assert(!purpose.toLowerCase().includes(course.title.toLowerCase()), `Teaching purpose must not enumerate a current course: ${course.id}`);
+    assert(byAttr(teaching, 'data-course', course.id).length === 1, `${course.id}: keep the real course in the catalogue`);
+  }
+  const researchPurpose = meta(documents.get('/research/'), 'description')[0].toLowerCase();
+  for (const program of await json('src/content/programs.json')) {
+    assert(!researchPurpose.includes(program.title.toLowerCase()), `Research purpose must not enumerate a current direction: ${program.id}`);
+  }
+  const publications = documents.get('/publications/');
+  const publicationHeader = byAttr(publications, 'data-page-header')[0];
+  const publicationDescription = all(publicationHeader, node => (attr(node, 'class') ?? '').split(/\s+/).includes('page-description'));
+  assert.equal(content(publicationDescription[0]), meta(publications, 'description')[0], 'Publications header and metadata agree');
+  assert(!/complete publication record|\b\d+ entries\b/i.test(pageIndex), 'LLM navigation has no universal inventory/count claim');
+});
