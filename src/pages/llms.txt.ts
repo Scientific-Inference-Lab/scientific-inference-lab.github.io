@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getProfileLinks, site } from '../lib/data/lab';
+import { pageDescriptions } from '../lib/data/page-copy';
 import { loadContent } from '../lib/content';
 
 // Plain-text site summary for language-model retrieval (llmstxt.org format),
@@ -19,12 +20,12 @@ export const GET: APIRoute = async () => {
     '## Pages',
     '',
     `- [Home](${url('/')}): lab identity, research directions and news`,
-    `- [Research](${url('/research/')}): research directions with questions, related publications and research agendas`,
-    `- [Publications](${url('/publications/')}): the complete publication record (${publications.length} entries)`,
-    `- [Teaching](${url('/teaching/')}): undergraduate courses at Pusan National University, with links to their Korean-language course sites`,
+    `- [Research](${url('/research/')}): ${pageDescriptions.research}`,
+    `- [Publications](${url('/publications/')}): ${pageDescriptions.publications}`,
+    `- [Teaching](${url('/teaching/')}): ${pageDescriptions.teaching}`,
     `- [Team](${url('/people/')}): lab members, led by the principal investigator`,
     `- [${pi.name}](${url('/people/yongkyung-oh/')}): principal investigator profile with bio, recognition, experience and education`,
-    `- [Contact](${url('/contact/')}): email and office address`,
+    `- [Contact](${url('/contact/')}): ${pageDescriptions.contact}`,
     '',
     '## Research directions',
     '',

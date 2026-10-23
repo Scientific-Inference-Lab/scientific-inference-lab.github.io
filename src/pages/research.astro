@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import { pageDescriptions } from '../lib/data/page-copy';
 import ResearchExplorer from '../components/ResearchExplorer.svelte';
 import { loadContent } from '../lib/content';
 const { programs, publications } = await loadContent();
@@ -12,7 +13,7 @@ const entries = programs.map(program => ({
   }),
 }));
 ---
-<SiteLayout title="Research" description="Machine learning for scientific discovery and informed decisions: AI for Science, continuous-time modeling, evidence-centered AI, and industrial AI and decision-making.">
+<SiteLayout title="Research" description={pageDescriptions.research}>
   <PageHeader eyebrow="Questions, methods and evidence" title="Research" description="We connect scientific knowledge, data, and simulation to understand complex systems, and examine the assumptions, uncertainty, and evidence behind our conclusions." />
   <ResearchExplorer programs={entries} />
 </SiteLayout>

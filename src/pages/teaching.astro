@@ -2,11 +2,12 @@
 import { ArrowUpRight } from '@lucide/svelte';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
+import { pageDescriptions } from '../lib/data/page-copy';
 import { loadContent } from '../lib/content';
 const { courses } = await loadContent();
 ---
-<SiteLayout title="Teaching" description="Undergraduate courses at Pusan National University in machine learning and data structures, with their lecture materials.">
-  <PageHeader eyebrow="Courses and lecture materials" title="Teaching" description="Undergraduate courses in machine learning and data structures at Pusan National University." />
+<SiteLayout title="Teaching" description={pageDescriptions.teaching}>
+  <PageHeader eyebrow="Courses and learning resources" title="Teaching" description={pageDescriptions.teaching} />
   <section class="wrap teaching" aria-label="Courses">
     <ul class="course-list">
       {courses.map(course => (
