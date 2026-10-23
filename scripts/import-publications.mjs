@@ -14,7 +14,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const args = process.argv.slice(2);
 const sourceArgument = args.indexOf('--source');
 if (sourceArgument < 0 || !args[sourceArgument + 1]) {
-  throw new Error('Usage: node scripts/import-publications.mjs --source <Achivement root> [--check]');
+  throw new Error('Usage: node scripts/import-publications.mjs --source <source root> [--check]');
 }
 const sourceRoot = path.resolve(args[sourceArgument + 1]);
 const checkOnly = args.includes('--check');
@@ -26,7 +26,10 @@ const policyPaths = ['AGENTS.md', 'bibtex/README.md', 'CV_publish/README.md'];
 const sourceText = await read(sourcePath);
 const canonicalText = await read(canonicalPath);
 const overridePath = 'scripts/import-publications.overrides.json';
-const overrideText = await readFile(path.join(root, overridePath), 'utf8');
+const overrideText = await readFile(path.join(root, overridePath), 'utf8').catch(error => {
+  if (error.code === 'ENOENT') throw new Error('Publication imports require the local review configuration. Public builds use src/content/publications.json.', { cause: error });
+  throw error;
+});
 const overrides = JSON.parse(overrideText);
 const sourceSchema = z.array(z.object({
   key: z.string().regex(/^[a-z0-9_-]+$/),
@@ -181,8 +184,7 @@ const safeUrl = value => {
   assert.ok(['https:', 'http:'].includes(url.protocol), 'Non-public URL protocol');
   return value;
 };
-// Achivement rule (owner, 2026-10-02): co-author names follow the BibTeX verbatim;
-// the owner's own name is the one exception and always reads "YongKyung Oh".
+// Preserve co-author names from BibTeX and normalize YongKyung Oh's given name.
 const ownerName = (given, family) => (family === 'Oh' && /^yong-?kyung$/i.test(given) ? 'YongKyung' : given);
 const authorsFor = (value, override) => {
   if (override?.authors) return override.authors;

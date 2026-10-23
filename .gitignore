@@ -86,3 +86,6 @@ TODO.md
 NOTES.md
 *.local.md
 *.internal.md
+
+# Local publication-review decisions are never part of the public source.
+/scripts/import-publications.overrides.json
