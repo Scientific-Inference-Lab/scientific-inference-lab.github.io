@@ -25,6 +25,13 @@ jobs:
       # Do not auto-enable it or change repository visibility from CI.
       - name: Check GitHub Pages configuration
         uses: actions/configure-pages@v5
+      - name: Use primary Ubuntu package mirror
+        run: |
+          for apt_source in /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
+            if [ -f "$apt_source" ]; then
+              sudo sed -i -E 's|https?://azure\.archive\.ubuntu\.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$apt_source"
+            fi
+          done
       - name: Build and browser QC
         uses: ./.github/actions/quality-check
       - name: Upload verified site
