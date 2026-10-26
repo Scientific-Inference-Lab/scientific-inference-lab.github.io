@@ -8,7 +8,7 @@ import { parse } from 'parse5';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const asset = 'src/lib/assets/pi.jpg';
-// PI 2026-10-06: the lectern photo, exported directly from Drive Pic/Profile.png (record: audit 59).
+
 const expectedHash = '97fcbbca344ff3b6da44fe7605366d217aa574b6f0adf51c7259a9eee7dbeda0';
 const alt = 'YongKyung Oh speaking at a lectern';
 const descendants = node => [node, ...(node.childNodes ?? []).flatMap(descendants)];

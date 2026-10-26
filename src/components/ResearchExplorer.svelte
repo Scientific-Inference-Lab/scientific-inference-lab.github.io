@@ -99,7 +99,7 @@
   .related-papers li + li { border-top: 1px solid var(--color-line); }
   .paper-context { color: var(--color-muted); font-size: .8125rem; line-height: 1.5; }
   .related-papers h4 { margin-top: .25rem; font-size: 1.0625rem; line-height: 1.4; }
-  /* Audit 66: the → travels with the title's last word (LinkedTitle), so balanced lines keep it beside the text at every width. */
+  /* the → travels with the title's last word (LinkedTitle), so balanced lines keep it beside the text at every width. */
   .paper-title { display: block; min-height: 44px; padding-block: .25rem; }
   .paper-title:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: 3px; }
   .paper-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: .375rem .625rem; margin-top: .125rem; font-size: .8125rem; color: var(--color-muted); line-height: 1.5; }

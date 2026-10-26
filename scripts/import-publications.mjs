@@ -286,7 +286,7 @@ for (const policyPath of policyPaths) inputs.push({ path: policyPath, sha256: ha
 const data = `${JSON.stringify(publications, null, 2)}\n`;
 const manifest = `${JSON.stringify({
   format: 'scientific-inference-lab-publications-import-v3',
-  source: 'Achivement public CV and canonical BibTeX mirrors',
+  source: 'Public CV and canonical BibTeX mirrors',
   policy: 'Public CV publication records are cross-checked against allowlisted upstream YAML; canonical-eligible per-record BibTeX is preserved byte for byte; APA 7 is generated from that BibTeX only. No private record paths are followed.',
   citationFormatter: { library: 'Citation.js', template: 'apa', locale: 'en-US', format: 'text' },
   inputs,

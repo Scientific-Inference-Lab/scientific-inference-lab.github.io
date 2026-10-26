@@ -105,11 +105,11 @@
   .publication-alias { position: absolute; top: 0; scroll-margin-top: 7rem; }
   .publication-record:target,.publication-record:has(.publication-alias:target) { background: var(--color-action-soft); }
   .publication-title { font-size: 1.125rem; line-height: 1.35; overflow-wrap: break-word; }
-  /* Audit 66 (variant A): the title is the primary-source link; an always-visible ↗ marks it as external. */
+  /* the title is the primary-source link; an always-visible ↗ marks it as external. */
   .publication-title a { display: inline-block; min-height: 1.5rem; transition: color var(--duration-state); }
   .publication-title a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .15em; }
   .publication-authors { margin-top: .125rem; font-size: .9375rem; line-height: 1.4; }
-  /* Audit 63 D4: each author (with its comma) is one unit, so the list wraps between
+  /* each author (with its comma) is one unit, so the list wraps between
      authors; a unit wider than the line (enlarged text) still wraps inside. No NBSP in data. */
   .author-unit { display: inline-block; max-width: 100%; }
   .publication-meta { margin-top: .25rem; line-height: 1.4; }

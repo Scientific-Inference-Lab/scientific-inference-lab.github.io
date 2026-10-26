@@ -45,7 +45,7 @@
         "label": "Stable neural dynamics"
       }
     ],
-    "order": 1
+    "order": 3
   },
   {
     "id": "evidence-centered-ai",
@@ -88,6 +88,6 @@
       { "id": "oh_predicting_2026", "label": "Traffic disruption impacts" },
       { "id": "oh_grid-based_2024", "label": "Maritime anomaly monitoring" }
     ],
-    "order": 3
+    "order": 1
   }
 ]

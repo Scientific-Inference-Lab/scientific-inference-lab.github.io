@@ -71,8 +71,8 @@ const news = defineCollection({
   schema: z.object({ date: z.string().regex(/^\d{4}-\d{2}$/), title: text,
     text, category: z.enum(['Lab', 'Grant', 'Publication', 'Award', 'Talk']), publicationId: paperId.optional() }),
 });
-// PI decision 2026-10-01 (audit 61): English titles follow the PNU English
-// syllabus Course Title in title case; course sites live under the lab origin.
+
+// English titles follow the syllabus Course Title; course sites live under the lab origin.
 const courses = defineCollection({
   loader: file('src/content/courses.json'),
   schema: z.object({ order: z.number().int(), title: text, koreanTitle: text, description: text,

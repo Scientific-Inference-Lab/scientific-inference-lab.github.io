@@ -504,7 +504,7 @@ def contrast(page):
     return result
 
 
-# Audit 63 D7. Baseline one-word last lines (7 routes x 5 widths) before the line-break rules; reported, not gated.
+# Baseline one-word last lines (7 routes x 5 widths) before the line-break rules; reported, not gated.
 LINE_BREAK_BASELINE = {"chromium": 53, "webkit": 50}
 
 

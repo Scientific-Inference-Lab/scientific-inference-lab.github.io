@@ -29,7 +29,7 @@ function postalAddress(pi: Content['pi']) {
 
 const doi = (publication: Publication) => publication.bibtex?.match(/\bdoi\s*=\s*\{([^}]+)\}/i)?.[1];
 
-// Audit 60: only a bibliographic date is a publication date. A canonical date
+// only a bibliographic date is a publication date. A canonical date
 // is used as is; a CV presentation month is never emitted, and falls back to
 // an explicit canonical BibTeX year when one exists.
 function publicationDate(publication: Publication) {
@@ -56,7 +56,7 @@ function article(publication: Publication, pi: Content['pi']) {
 }
 
 // schema.org puts `instructor` on CourseInstance, not Course; the instance
-// carries no term because the page states none (audit 61).
+// carries no term because the page states none.
 function course(entry: Content['courses'][number]) {
   return {
     '@type': 'Course',

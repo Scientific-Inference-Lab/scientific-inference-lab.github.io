@@ -57,7 +57,7 @@
     background: var(--color-paper);
     --type-page-title: 3.25rem;
     --type-page-lead: 1.125rem;
-    /* Measure (audit 63 D2) sits on the text column or container, never as a
+    /* Measure sits on the text column or container, never as a
        narrower cap on one paragraph inside a wider column. Prose: reading cap.
        Section: lists and page leads sharing one content width. */
     --measure-prose: 70ch;
@@ -65,7 +65,7 @@
   }
   * { box-sizing: border-box; letter-spacing: 0; }
   html { scroll-padding-top: 2rem; }
-  /* Line breaking (audit 63 D3/D5): wrap style is set once here by role.
+  /* Line breaking: wrap style is set once here by role.
      Headings and labels balance; prose avoids one-word last lines.
      `anywhere` belongs only on email, URL and DOI elements. */
   body { margin: 0; font-size: 1rem; line-height: 1.6; overflow-wrap: break-word; }

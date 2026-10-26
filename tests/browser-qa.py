@@ -384,7 +384,7 @@ def publications(page, context, evidence):
 
 
 def line_endings(page, evidence):
-    """Audit 63 D7: every route at the five review widths, after fonts load."""
+    """every route at the five review widths, after fonts load."""
     pages = []
     for width in sorted(WIDTHS, reverse=True):
         page.set_viewport_size({"width": width, "height": 900})

@@ -206,7 +206,7 @@ def run(browser, evidence):
         context = browser.new_context(viewport={"width": width, "height": 844})
         page = evidence.watch(context.new_page())
         visit(page, evidence.args.base, "/people/yongkyung-oh/")
-        # PI 2026-09-29: no Email button on People (Contact offers it); a "Bio" head leads into the biography.
+        # no Email button on People (Contact offers it); a "Bio" head leads into the biography.
         assert page.locator("[data-pi-contact]").count() == 0, "The profile must not repeat the Contact email button"
         name = page.locator("#pi-name").bounding_box()
         head = page.locator("#bio-heading").bounding_box()
@@ -271,7 +271,7 @@ def run(browser, evidence):
             if route in ["/people/", "/people/yongkyung-oh/"]:
                 assert raster, {"route": route, "images": images}
             if route == "/":
-                # PI request 2026-09-29: the Home portrait was replaced by a "Meet the PI" button.
+                # the Home portrait was replaced by a "Meet the PI" button.
                 assert not raster, {"route": route, "images": images}
             evidence.check("responsive image sources", {"route": route, "DPR": ratio, "raster": raster, "vector": vector})
         context.close()

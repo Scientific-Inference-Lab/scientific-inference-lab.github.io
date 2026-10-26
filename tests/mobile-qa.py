@@ -25,7 +25,7 @@ def run(browser, evidence):
                     evidence.check('research labels retain whole words', {'route': route, 'width': width,
                         'rootTextPercent': scale, **research_label_words(page), **research_navigation(page)})
                 if route == '/':
-                    # PI request 2026-09-29: Home carries no portrait; a "Meet the PI" button replaces it (PI 2026-10-02: to the profile).
+                    # Home carries no portrait; a "Meet the PI" button replaces it.
                     intro = page.locator('.home-intro').evaluate('''el => {
                       const button = [...el.querySelectorAll('a')].find(a => a.getAttribute('href') === '/people/yongkyung-oh/');
                       const box = button?.getBoundingClientRect();

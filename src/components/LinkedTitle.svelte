@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ArrowRight, ArrowUpRight } from '@lucide/svelte';
-  // Audit 66: a linked title's destination cue (→ internal, ↗ external) is always visible and
+  // a linked title's destination cue (→ internal, ↗ external) is always visible and
   // travels with the last word, so it sits beside balanced lines and never wraps alone.
   let { title, external = false }: { title: string; external?: boolean } = $props();
   const split = $derived(title.trimEnd().lastIndexOf(' '));

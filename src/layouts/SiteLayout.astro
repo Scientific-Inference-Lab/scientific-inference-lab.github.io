@@ -19,7 +19,7 @@ const kinds: Record<string, PageKind> = { '/': 'home', '/research/': 'research',
 const kind = kinds[Astro.url.pathname];
 if (!kind && !notFound) throw new Error(`No structured-data kind for ${Astro.url.pathname}`);
 const imageUrl = image ? new URL(image, site.url).href : undefined;
-// GA4 (PI 2026-09-29) runs only on the production host, so local QC, previews
+// GA4 runs only on the production host, so local QC, previews
 // and dev servers send nothing to Google.
 const analyticsLoader = `if (location.hostname === ${JSON.stringify(analytics.hostname)}) {
   window.dataLayer = window.dataLayer || [];
