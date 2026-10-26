@@ -204,6 +204,26 @@ test('the imported public inventory retains complete titles, author order and me
   assert.deepEqual(facts['stable-neural-sdes'].authors, ['YongKyung Oh', 'Dongyoung Lim', 'Sungil Kim']);
 });
 
+test('Discovery metadata stays concise, canonical and consistent with sharing metadata', () => {
+  for (const [route, doc] of documents) {
+    const head = byTag(doc, 'head')[0];
+    const title = content(byTag(head, 'title')[0]).trim();
+    const descriptions = byTag(head, 'meta').filter(node => attr(node, 'name') === 'description');
+    assert.equal(descriptions.length, 1, `${route}: one description`);
+    const description = attr(descriptions[0], 'content');
+    assert(title.length <= 40, `${route}: title should fit the reviewed 40-character recommendation`);
+    assert(description.length <= 80, `${route}: description should fit the reviewed 80-character recommendation`);
+    for (const [property, expected] of [['og:title', title], ['og:description', description]]) {
+      const matches = byTag(head, 'meta').filter(node => attr(node, 'property') === property);
+      assert.equal(matches.length, 1, `${route}: one ${property}`);
+      assert.equal(attr(matches[0], 'content'), expected, `${route}: consistent ${property}`);
+    }
+    const discovery = byTag(head, 'link').filter(node => attr(node, 'rel') === 'describedby');
+    assert.equal(discovery.length, 1, `${route}: llms discovery`);
+    assert.equal(attr(discovery[0], 'href'), '/llms.txt');
+  }
+});
+
 test('Home news is a recent, high-signal editorial selection rather than a fixed quota', () => {
   assert(news.length > 0 && news.length <= 5, 'Home should show up to five substantive updates');
   const icmlNews = news.find(item => item.publicationId === 'evidence-standards');
@@ -667,6 +687,7 @@ test('search metadata and structured data restate the visible site', async () =>
     const graph = JSON.parse(source)['@graph'];
     const node = type => graph.find(item => item['@type'] === type);
     assert(node('WebSite') && node('ResearchOrganization') && node('CollegeOrUniversity'), `${route}: site entities`);
+    assert.equal(node('CollegeOrUniversity').name, 'Pusan National University', `${route}: institution stays explicit in structured data`);
     const person = node('Person');
     assert.deepEqual(person.knowsAbout, researchTitles, `${route}: Person topics must follow the visible research order`);
     assert.deepEqual(node('ResearchOrganization').knowsAbout, researchTitles, `${route}: lab topics must follow the visible research order`);
@@ -680,7 +701,7 @@ test('search metadata and structured data restate the visible site', async () =>
     assert.equal(page.name, title, `${route}: structured page name`);
   }
   assert((await readFile(path.join(root, 'dist/llms.txt'), 'utf8')).includes(fieldEnumeration), 'llms.txt scope must use the SSOT field enumeration');
-  assert.match(content(byTag(documents.get('/'), 'title')[0]), /Pusan National University/, 'Home title names the institution for search results');
+  assert.equal(content(byTag(documents.get('/'), 'title')[0]), 'Scientific Inference Lab', 'Home title names the lab concisely');
   const graphOf = route => JSON.parse(scriptBody(byTag(documents.get(route), 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'];
   const piRecord = (await json('src/content/people.json'))[0];
   const profile = graphOf(profileRoute);
