@@ -14,7 +14,7 @@ const students = members.filter(member => member.role !== 'Alumni').sort((a, b) 
 const alumni = members.filter(member => member.role === 'Alumni');
 const sections = [{ id: 'students', title: 'Students', items: students }, { id: 'alumni', title: 'Alumni', items: alumni }].filter(section => section.items.length > 0);
 ---
-<SiteLayout title="Team" description="Members of the Scientific Inference Lab at Pusan National University, led by principal investigator YongKyung Oh." image={portrait.src}>
+<SiteLayout title="Team" description="Scientific Inference Lab members at Pusan National University." image={portrait.src}>
   <PageHeader eyebrow="Lab members" title="Team" />
   <PiCard {pi} {site} {portrait} />
   {sections.map(section => (

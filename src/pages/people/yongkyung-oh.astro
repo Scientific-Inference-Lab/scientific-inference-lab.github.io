@@ -24,7 +24,7 @@ const awardLinks = Object.fromEntries(pi.awards.flatMap(award => {
   return publication ? [[award.cvLabel, publication.id]] : [];
 }));
 ---
-<SiteLayout title={pi.name} description="YongKyung Oh, principal investigator of the Scientific Inference Lab at Pusan National University." image={portrait.src}>
+<SiteLayout title={pi.name} description="YongKyung Oh, principal investigator of Scientific Inference Lab." image={portrait.src}>
   <PageHeader eyebrow="Principal Investigator" title={pi.name} titleId="pi-name" />
   <PiProfile {pi} {site} {portrait} />
   <Recognition {pi} recognition={selectedRecognition} {awardLinks} />
