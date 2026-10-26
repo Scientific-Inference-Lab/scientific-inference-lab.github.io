@@ -41,6 +41,7 @@ const graph = kind ? structuredData(kind, { path: Astro.url.pathname, title: doc
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{documentTitle}</title>
     <meta name="description" content={description} />
+    {!notFound && <meta name="google-site-verification" content="PN_ccdokWReXFr8M382twvv15eqs339fRexkeBM66ls" />}
     {!notFound && <link rel="canonical" href={canonical} />}<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
     {notFound && <meta name="robots" content="noindex, nofollow" />}
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
