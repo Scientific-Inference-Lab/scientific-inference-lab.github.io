@@ -13,7 +13,7 @@ export const site = {
   founded: '2026-09-01',
   identity: 'Scientific inference for discovery and decision-making.',
   intro: 'We develop machine learning methods for scientific discovery and informed decisions, grounded in continuous-time modeling and evidence-centered evaluation.',
-  scope: 'Scientific Inference Lab develops machine learning methods for scientific discovery and informed decisions. Our research spans AI for Science, continuous-time modeling, evidence-centered AI, and industrial applications. We connect scientific knowledge, data, and simulation to understand complex systems, and bring machine learning and optimization together to support decisions in manufacturing, logistics, and service systems. Across these directions, we examine the assumptions, uncertainty, and evidence behind our conclusions.',
+  scope: 'Scientific Inference Lab develops machine learning methods for scientific discovery and informed decisions. Our research spans AI for Science, industrial AI and decision-making, evidence-centered AI, and continuous-time modeling. We connect scientific knowledge, data, and simulation to understand complex systems, and bring machine learning and optimization together to support decisions in manufacturing, logistics, and service systems. Across these directions, we examine the assumptions, uncertainty, and evidence behind our conclusions.',
 } as const;
 
 export const pi = people[0];

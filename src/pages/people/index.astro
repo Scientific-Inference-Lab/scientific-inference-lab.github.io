@@ -9,7 +9,7 @@ import { responsiveImage } from '../../lib/media';
 import photo from '../../lib/assets/pi.jpg';
 const { pi, members } = await loadContent();
 const portrait = await responsiveImage(photo, pi.photoAlt, '(min-width: 768px) 192px, 192px');
-// Real students first; the prospective-student placeholder (PI request) stays last.
+// Real students first; the prospective-student placeholder stays last.
 const students = members.filter(member => member.role !== 'Alumni').sort((a, b) => Number(Boolean(a.placeholder)) - Number(Boolean(b.placeholder)));
 const alumni = members.filter(member => member.role === 'Alumni');
 const sections = [{ id: 'students', title: 'Students', items: students }, { id: 'alumni', title: 'Alumni', items: alumni }].filter(section => section.items.length > 0);

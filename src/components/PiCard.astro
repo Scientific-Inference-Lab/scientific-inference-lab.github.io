@@ -22,7 +22,7 @@ const profiles = getProfileLinks(pi.links);
       </picture>
     </div>
     <div class="pi-text min-w-0">
-      {/* PI 2026-10-02 (second turn): a static name and one visible profile action on its row; wraps under the name in a narrow column. */}
+      {/* a static name and one visible profile action on its row; wraps under the name in a narrow column. */}
       <div class="pi-name-row">
         <h2 id="pi-card-name" class="pi-name font-display font-bold">{pi.name}</h2>
         <a href="/people/yongkyung-oh/" class="button-secondary button-compact" aria-label={`Full profile of ${pi.name}`} data-profile-action>Full profile<ArrowRight size={16} aria-hidden="true" /></a>
@@ -42,8 +42,8 @@ const profiles = getProfileLinks(pi.links);
   .pi-card { display: grid; grid-template-columns: minmax(0,1fr); gap: 1.25rem; align-items: start; }
   .pi-photo { width: min(12rem, 100%); }
   /* The name shrinks with its own column (rem container queries follow enlarged
-     text, lesson 18) so "YongKyung" never breaks inside the word. */
-  /* One measure on the text column (audit 63 D2): the section width keeps the
+     text) so "YongKyung" never breaks inside the word. */
+  /* One measure on the text column: the section width keeps the
      affiliation on one line at desktop and the short bio at a readable length. */
   .pi-text { container: pi-text / inline-size; max-width: var(--measure-section); }
   .pi-name { font-size: 1.75rem; line-height: 1.2; }

@@ -1,4 +1,4 @@
-// PI 2026-10-02: Team comes first.
+
 export const nav = [
   { href: '/people/', label: 'Team' },
   { href: '/research/', label: 'Research' },
