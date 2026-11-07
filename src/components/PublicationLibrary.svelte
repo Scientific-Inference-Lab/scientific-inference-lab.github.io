@@ -148,7 +148,9 @@
   }
   .library-note { border-top: 1px solid var(--color-line); }
   .year-anchor { display: block; height: 0; }
-  .library-input { height: 3rem; min-width: 0; border: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent); border-radius: .25rem; background: var(--color-paper); padding-inline: .9rem; font: inherit; color: var(--color-ink); }
+  /* Field edge ≥3:1 on paper (WCAG 1.4.11); placeholder uses the muted token (6.2:1) instead of the preflight grey. */
+  .library-input { height: 3rem; min-width: 0; border: 1px solid color-mix(in srgb, var(--color-ink) 50%, transparent); border-radius: .25rem; background: var(--color-paper); padding-inline: .9rem; font: inherit; color: var(--color-ink); }
+  .library-input::placeholder { color: var(--color-muted); opacity: 1; }
   input.library-input { padding-left: 2.75rem; }
   .library-input:disabled { color: var(--color-muted); cursor: default; }
 </style>
