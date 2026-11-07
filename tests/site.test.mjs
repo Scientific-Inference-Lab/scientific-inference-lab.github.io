@@ -477,6 +477,8 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   assert(!/led by YongKyung Oh|taught by YongKyung Oh|Contact YongKyung Oh|Publications by YongKyung Oh/.test(surfaces), 'Name-forward phrasing removed');
 
   assert(!/Overlapping (?:research )?directions|Explore their questions|Search the complete publication record|Meet the principal investigator|Research and laboratory updates|Each course site holds|Get in touch to discuss|inference for engineering decisions/.test(surfaces), 'Meta copy removed');
+  // Action labels name their destination instead of a generic verb.
+  assert(!/Explore research|Meet the PI|Discuss your interests|Discuss a research interest/.test(surfaces), 'Generic action labels removed');
   for (const document of documents.values()) {
     const footer = byTag(document, 'footer')[0];
     assert(content(footer).includes('School of BioMedical Convergence Engineering · Pusan National University'));
@@ -526,7 +528,7 @@ test('research directions remain complete and generated illustrations stay out o
   assert.equal(byTag(homeIntro, 'img').length + byTag(homeIntro, 'picture').length + byTag(homeIntro, 'figure').length, 0, 'Home introduction must not show a portrait');
   const peopleActions = byTag(homeIntro, 'a').filter(node => ['/people/', profileRoute].includes(attr(node, 'href')));
   assert.equal(peopleActions.length, 1, 'Home needs exactly one People action');
-  assert(attr(peopleActions[0], 'class')?.split(/\s+/).includes('button-secondary') && content(peopleActions[0]).trim() === 'Meet the PI' && attr(peopleActions[0], 'href') === profileRoute, 'The People action is the "Meet the PI" button to the profile');
+  assert(attr(peopleActions[0], 'class')?.split(/\s+/).includes('button-secondary') && content(peopleActions[0]).trim() === 'Principal Investigator' && attr(peopleActions[0], 'href') === profileRoute, 'The People action is the "Principal Investigator" button to the profile');
   const contactPage = documents.get('/contact/');
   assert(!content(byTag(contactPage, 'main')[0]).includes('We welcome inquiries'), 'Contact must not repeat the Home inquiry guidance');
   const contactEmail = all(contactPage, node => attr(node, 'class')?.split(/\s+/).includes('contact-email'))[0];
@@ -829,8 +831,9 @@ test('lab-authored copy spells "decision-making" one way', async () => {
   for (const file of ['src/content/people.json', 'src/content/news.json', 'src/content/programs.json', 'src/lib/data/lab.ts', 'src/components/ContactPanel.astro']) {
     assert(!/decision making/i.test(await readFile(path.join(root, file), 'utf8')), `${file}: use "decision-making"`);
   }
-  const contact = text(documents.get('/contact/'));
-  assert(contact.includes('Explore research') && !contact.includes('Explore our research'), 'Contact uses the Home label "Explore research"');
+  const researchLabels = route => byTag(byTag(documents.get(route), 'main')[0], 'a').filter(node => attr(node, 'href') === '/research/').map(node => content(node).trim());
+  assert.deepEqual(researchLabels('/contact/'), researchLabels('/').slice(0, 1), 'Contact names the Research destination with the Home label');
+  assert.deepEqual(researchLabels('/'), ['Research'], 'The Home Research action names its destination');
 });
 
 

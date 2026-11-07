@@ -67,7 +67,7 @@
         </section>
       {/each}
       <p class="research-inquiry">
-        <a href="/contact/" class="text-link">Discuss a research interest <ArrowRight size={16} aria-hidden="true" /></a>
+        <a href="/contact/" class="text-link">Contact <ArrowRight size={16} aria-hidden="true" /></a>
       </p>
     </div>
   </div>
