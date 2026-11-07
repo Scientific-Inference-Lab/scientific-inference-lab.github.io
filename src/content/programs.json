@@ -4,8 +4,8 @@
     "title": "AI for Science",
     "shortTitle": "AI for Science",
     "question": "How can scientific knowledge, observations, and simulation help uncover mechanisms in complex systems?",
-    "summary": "Combining machine learning, scientific knowledge, and simulation to discover mechanisms and understand complex systems.",
-    "description": "Combining machine learning, scientific knowledge, and simulation to discover mechanisms and understand complex systems.",
+    "summary": "We combine machine learning, scientific knowledge, and simulation to discover mechanisms and understand complex systems.",
+    "description": "We combine machine learning, scientific knowledge, and simulation to discover mechanisms and understand complex systems.",
     "agenda": [
       "Inverse problems and system identification",
       "Simulation-based surrogate models",
@@ -28,8 +28,8 @@
     "title": "Continuous-Time Modeling",
     "shortTitle": "Continuous-Time Modeling",
     "question": "How can we learn, forecast, and simulate continuous dynamics from irregular observations?",
-    "summary": "Learning continuous dynamics from irregular observations through neural differential equations, with attention to stability and uncertainty.",
-    "description": "Learning continuous dynamics from irregular observations through neural differential equations, with attention to stability and uncertainty.",
+    "summary": "Neural differential equations let us learn continuous dynamics from irregular observations while accounting for stability and uncertainty.",
+    "description": "Neural differential equations let us learn continuous dynamics from irregular observations while accounting for stability and uncertainty.",
     "agenda": [
       "Neural differential equations",
       "Dynamic system identification and forecasting",
@@ -52,8 +52,8 @@
     "title": "Evidence-Centered AI",
     "shortTitle": "Evidence-Centered AI",
     "question": "What comparisons and uncertainty assessments justify an AI claim?",
-    "summary": "Developing evaluation principles that align AI claims with robust comparisons, uncertainty assessment, and reproducible evidence.",
-    "description": "Developing evaluation principles that align AI claims with robust comparisons, uncertainty assessment, and reproducible evidence.",
+    "summary": "We develop principles for evaluating AI claims against robust comparisons, uncertainty assessment, and reproducible evidence.",
+    "description": "We develop principles for evaluating AI claims against robust comparisons, uncertainty assessment, and reproducible evidence.",
     "agenda": [
       "Validity of comparisons and reproducibility",
       "Uncertainty assessment",
@@ -77,8 +77,8 @@
     "title": "Industrial AI & Decision-Making",
     "shortTitle": "Industrial AI & Decision-Making",
     "question": "How can machine learning, optimization, and simulation support operating decisions in industrial systems?",
-    "summary": "Connecting machine learning, optimization, and simulation to support decisions in manufacturing, logistics, and service systems.",
-    "description": "Connecting machine learning, optimization, and simulation to support decisions in manufacturing, logistics, and service systems.",
+    "summary": "We support decisions in manufacturing, logistics, and service systems by connecting machine learning, optimization, and simulation.",
+    "description": "We support decisions in manufacturing, logistics, and service systems by connecting machine learning, optimization, and simulation.",
     "agenda": [
       "Quality, reliability, and predictive maintenance",
       "Resource allocation",

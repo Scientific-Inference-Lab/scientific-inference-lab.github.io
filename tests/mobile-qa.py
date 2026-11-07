@@ -25,7 +25,7 @@ def run(browser, evidence):
                     evidence.check('research labels retain whole words', {'route': route, 'width': width,
                         'rootTextPercent': scale, **research_label_words(page), **research_navigation(page)})
                 if route == '/':
-                    # Home carries no portrait; a "Meet the PI" button replaces it.
+                    # Home carries no portrait; a "Principal Investigator" button replaces it.
                     intro = page.locator('.home-intro').evaluate('''el => {
                       const button = [...el.querySelectorAll('a')].find(a => a.getAttribute('href') === '/people/yongkyung-oh/');
                       const box = button?.getBoundingClientRect();
@@ -34,7 +34,7 @@ def run(browser, evidence):
                               viewport: document.documentElement.clientWidth};
                     }''')
                     assert intro['images'] == 0, f'Home intro must not show a portrait: {intro}'
-                    assert intro['label'] == 'Meet the PI' and intro['isButton'], intro
+                    assert intro['label'] == 'Principal Investigator' and intro['isButton'], intro
                     assert intro['height'] >= 44 and intro['right'] <= intro['viewport'] + 1, intro
                     whole_words(page, '.home-actions a')
                     evidence.check('Home PI button replaces the portrait', {'width': width, 'rootTextPercent': scale, **intro})

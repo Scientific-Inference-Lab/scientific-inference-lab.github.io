@@ -271,7 +271,7 @@ def run(browser, evidence):
             if route in ["/people/", "/people/yongkyung-oh/"]:
                 assert raster, {"route": route, "images": images}
             if route == "/":
-                # the Home portrait was replaced by a "Meet the PI" button.
+                # the Home portrait was replaced by a "Principal Investigator" button.
                 assert not raster, {"route": route, "images": images}
             evidence.check("responsive image sources", {"route": route, "DPR": ratio, "raster": raster, "vector": vector})
         context.close()
