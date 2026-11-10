@@ -9,7 +9,7 @@ import { loadContent } from '../lib/content';
 const { publications } = await loadContent();
 ---
 <SiteLayout title="Publications" description={pageDescriptions.publications}>
-  <PageHeader eyebrow="Research record" title="Publications" description={pageDescriptions.publications}>
+  <PageHeader title="Publications" description={pageDescriptions.publications}>
     <a slot="action" href={pi.links.scholar} class="text-link">Google Scholar<ArrowUpRight size={16} aria-hidden="true" /></a>
   </PageHeader>
   <PublicationLibrary {publications} client:load />

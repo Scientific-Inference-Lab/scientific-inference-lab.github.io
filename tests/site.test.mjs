@@ -116,7 +116,7 @@ test('interior routes share one page-header hierarchy', () => {
     const headers = byAttr(main, 'data-page-header');
     assert.equal(headers.length, 1, `${route}: use the shared page header exactly once`);
     assert.equal(content(byTag(headers[0], 'h1')[0]), title, `${route}: page title`);
-    assert.equal(all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('kicker')).length, 1, `${route}: one shared eyebrow`);
+    assert.equal(all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('kicker')).length, 0, `${route}: no eyebrow above the page title`);
 
     const descriptions = all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('page-description'));
     assert.equal(descriptions.length, ['/people/', profileRoute, '/contact/'].includes(route) ? 0 : 1, `${route}: page-header description`);

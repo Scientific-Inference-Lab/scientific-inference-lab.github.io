@@ -15,7 +15,7 @@ const alumni = members.filter(member => member.role === 'Alumni');
 const sections = [{ id: 'students', title: 'Students', items: students }, { id: 'alumni', title: 'Alumni', items: alumni }].filter(section => section.items.length > 0);
 ---
 <SiteLayout title="Team" description="Scientific Inference Lab members at Pusan National University." image={portrait.src}>
-  <PageHeader eyebrow="Lab members" title="Team" />
+  <PageHeader title="Team" />
   <PiCard {pi} {site} {portrait} />
   {sections.map(section => (
     <section class="wrap member-section" aria-labelledby={`${section.id}-heading`}>

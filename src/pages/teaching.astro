@@ -7,7 +7,7 @@ import { loadContent } from '../lib/content';
 const { courses } = await loadContent();
 ---
 <SiteLayout title="Teaching" description={pageDescriptions.teaching}>
-  <PageHeader eyebrow="Courses and learning resources" title="Teaching" description={pageDescriptions.teaching} />
+  <PageHeader title="Teaching" description={pageDescriptions.teaching} />
   <section class="wrap teaching" aria-label="Courses">
     <ul class="course-list">
       {courses.map(course => (

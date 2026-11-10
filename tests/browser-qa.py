@@ -138,7 +138,7 @@ def inner_page_headers(page, evidence):
             header = page.locator("[data-page-header]")
             expect(header).to_have_count(1)
             expect(header.locator("h1")).to_have_text(title)
-            expect(header.locator(".kicker")).to_have_count(1)
+            expect(header.locator(".kicker")).to_have_count(0)
             expect(header.locator(".page-description")).to_have_count(0 if route in ["/people/", "/people/yongkyung-oh/", "/contact/"] else 1)
             measurements.append(header.evaluate("""element => {
               const heading = element.querySelector('h1');
