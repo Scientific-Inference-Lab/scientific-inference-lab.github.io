@@ -25,7 +25,7 @@ const awardLinks = Object.fromEntries(pi.awards.flatMap(award => {
 }));
 ---
 <SiteLayout title={pi.name} description="YongKyung Oh, principal investigator of Scientific Inference Lab." image={portrait.src}>
-  <PageHeader eyebrow="Principal Investigator" title={pi.name} titleId="pi-name" />
+  <PageHeader title={pi.name} titleId="pi-name" />
   <PiProfile {pi} {site} {portrait} />
   <Recognition {pi} recognition={selectedRecognition} {awardLinks} />
 </SiteLayout>
