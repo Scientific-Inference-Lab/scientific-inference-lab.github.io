@@ -420,14 +420,23 @@ def fallback_content(page):
     assert page.locator('a[href="/research/"]').count() > 0
 
 
-def program_heading_in_view(page, program):
-    page.wait_for_function("""id => {
+def program_heading_in_view(page, program, timeout=5000):
+    # A scripts-disabled page runs no page timers or animation frames, so
+    # wait_for_function checks such a page only once. Poll from the test side
+    # so a fragment scroll applied just after navigation still counts.
+    state = """id => {
       const heading=document.getElementById(id)?.querySelector('h2');
-      if (!heading) return false;
+      if (!heading) return {inView: false, missing: true};
       const rect=heading.getBoundingClientRect();
-      return rect.width>0 && rect.height>0 && rect.top>=-1 && rect.bottom<=innerHeight+1
-        && rect.left>=-1 && rect.right<=innerWidth+1;
-    }""", arg=program, timeout=5000)
+      return {inView: rect.width>0 && rect.height>0 && rect.top>=-1 && rect.bottom<=innerHeight+1
+        && rect.left>=-1 && rect.right<=innerWidth+1,
+        top: rect.top, bottom: rect.bottom, scrollY, innerHeight};
+    }"""
+    elapsed = 0
+    while not (result := page.evaluate(state, program))["inView"]:
+        assert elapsed < timeout, {"program": program, "heading": result, "waitedMs": elapsed}
+        page.wait_for_timeout(100)
+        elapsed += 100
     heading = page.locator(f'[data-program-panel][id="{program}"] h2')
     expect(heading).to_be_visible()
     return {"program": program, "heading": heading.bounding_box(), "scrollY": page.evaluate("scrollY")}
