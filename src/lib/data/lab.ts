@@ -1,3 +1,4 @@
+import profileCatalog from '../../content/profile-links.json';
 import people from '../../content/people.json';
 
 export const site = {
@@ -19,15 +20,19 @@ export const site = {
 
 export const pi = people[0];
 
-// People and the shared footer name and order the same verified destinations.
+// The PI profile, card and footer consume one ordered public catalog.
 export function getProfileLinks(links: typeof pi.links) {
-  return [
-    { label: 'Personal Website', href: links.personal },
-    { label: 'ORCID', href: links.orcid },
-    { label: 'Google Scholar', href: links.scholar },
-    { label: 'GitHub', href: links.github },
-    { label: 'LinkedIn', href: links.linkedin },
-  ];
+  for (const id of ['personal', 'orcid', 'scholar', 'github', 'linkedin'] as const) {
+    const entry = profileCatalog.links.find(link => link.id === id);
+    if (!entry || links[id] !== entry.url) throw new Error(`PI profile destination drift: ${id}`);
+  }
+  return profileCatalog.links
+    .filter(link => !link.omitOn.includes('lab'))
+    .map(link => ({ label: link.label, href: link.url }));
+}
+
+export function getPersonProfileUrls() {
+  return profileCatalog.links.filter(link => !['lab', 'cv'].includes(link.id)).map(link => link.url);
 }
 
 export interface Program {

@@ -386,11 +386,47 @@ test('personal recognition and PI profiles preserve truthful types and destinati
   assert(content(patentRows[0]).includes('KR 10-2754134, granted January 8, 2025') && content(patentRows[0]).includes('US 12,725,326, granted September 1, 2026'));
   assert.equal(patentRows.filter(row => content(row).includes('US ')).length, 1, 'Only the granted US patent appears');
   const expectedProfiles = [
-    ['Personal Website', pi.links.personal],
-    ['ORCID', pi.links.orcid],
-    ['Google Scholar', pi.links.scholar], ['GitHub', pi.links.github],
-    ['LinkedIn', pi.links.linkedin],
-  ];
+  [
+    "Personal Webpage",
+    "https://yongkyung-oh.github.io/"
+  ],
+  [
+    "Google Scholar",
+    "https://scholar.google.com/citations?user=YJ1L50YAAAAJ"
+  ],
+  [
+    "ORCID",
+    "https://orcid.org/0000-0002-8027-3433"
+  ],
+  [
+    "GitHub",
+    "https://github.com/yongkyung-oh"
+  ],
+  [
+    "LinkedIn",
+    "https://www.linkedin.com/in/yongkyung-oh"
+  ],
+  [
+    "CV PDF",
+    "https://drive.google.com/file/d/12kr_OViGjSfBox5_kUnpnpop87liNlyV/view?usp=sharing"
+  ],
+  [
+    "Semantic Scholar",
+    "https://www.semanticscholar.org/author/YongKyung-Oh/2147251317"
+  ],
+  [
+    "Web of Science",
+    "https://www.webofscience.com/wos/author/record/JJE-4937-2023"
+  ],
+  [
+    "Scopus",
+    "https://www.scopus.com/authid/detail.uri?authorId=57219780668"
+  ],
+  [
+    "DBLP",
+    "https://dblp.org/pid/299/8416.html"
+  ]
+];
   const profileDestinations = node => byTag(node, 'a').map(a => [content(a).trim(), attr(a, 'href')]);
   const peopleProfiles = byAttr(people, 'aria-label', "YongKyung Oh's profiles")[0];
   assert(peopleProfiles, 'The profile page must name the owner of the profiles');
@@ -697,7 +733,7 @@ test('search metadata and structured data restate the visible site', async () =>
     const footerEmail = attr(byAttr(document, 'data-footer-email')[0], 'href');
     assert.equal(person.email, footerEmail, `${route}: Person email must equal the visible footer address`);
     const footerProfiles = all(byAttr(document, 'aria-label', 'PI profiles')[0], item => item.tagName === 'a').map(item => attr(item, 'href'));
-    assert.deepEqual(person.sameAs, footerProfiles, `${route}: sameAs must equal the visible profile links`);
+    assert.deepEqual(person.sameAs, footerProfiles.filter(url => !url.startsWith('https://drive.google.com/')), `${route}: sameAs must equal the visible person profiles, excluding the CV document`);
     const page = graph.at(-1);
     assert.equal(page.url, origin + route, `${route}: structured page URL`);
     assert.equal(page.name, title, `${route}: structured page name`);
