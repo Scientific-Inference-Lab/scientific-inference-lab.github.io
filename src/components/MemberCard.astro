@@ -6,7 +6,7 @@ interface Props {
     links?: { personal?: string; github?: string; scholar?: string; linkedin?: string } };
 }
 const { member } = Astro.props;
-const labels = { personal: 'Personal Website', scholar: 'Google Scholar', github: 'GitHub', linkedin: 'LinkedIn' } as const;
+const labels = { personal: 'Personal Webpage', scholar: 'Google Scholar', github: 'GitHub', linkedin: 'LinkedIn' } as const;
 const links = (Object.keys(labels) as (keyof typeof labels)[]).flatMap(key => member.links?.[key] ? [{ label: labels[key], href: member.links[key]! }] : []);
 ---
 <li class:list={['member-card', { 'is-placeholder': member.placeholder }]} data-member={member.id} data-placeholder={member.placeholder ? '' : undefined}>

@@ -1,4 +1,4 @@
-import { getProfileLinks, site } from './data/lab';
+import { getPersonProfileUrls, site } from './data/lab';
 import type { loadContent } from './content';
 import type { Publication } from './data/publications';
 
@@ -128,7 +128,7 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
         alumniOf: [...new Set(pi.education.map(entry => entry.where))].map(name => ({ '@type': 'CollegeOrUniversity', name })),
         award: [...pi.honors, ...pi.awards].map(item => `${item.title}, ${item.organizer}, ${item.year}`),
         knowsAbout: topics,
-        sameAs: getProfileLinks(pi.links).map(profile => profile.href),
+        sameAs: getPersonProfileUrls(),
         ...(image ? { image } : {}),
       },
       ...members.map(member => ({
