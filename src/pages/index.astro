@@ -46,8 +46,7 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   /* Balanced lines: the full-width title would otherwise end a line after the
      hyphen of "decision-making". No phrase-level break or nowrap is forced. */
   .home-title { font-size: 2.125rem; line-height: 1.12; }
-  /* Without the former photo column the title spans the page width; only the
-     paragraph keeps a reading measure. */
+  /* The title spans the column; the paragraph keeps a reading measure. */
   .home-introduction { max-width: var(--measure-prose); margin-top: 1.25rem; font-size: 1.0625rem; line-height: 1.65; }
   .home-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1.5rem; margin-top: 1.5rem; }
   .home-actions a { max-width: 100%; }

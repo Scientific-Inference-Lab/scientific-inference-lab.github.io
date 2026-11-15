@@ -40,15 +40,9 @@ __pycache__/
 .env.*
 !.env.example
 
-# ---------------------------------------------------------------------------
-# Internal development notes & AI agent tooling
-#
-# This is a public-facing lab website. Everything below is internal working
-# material — agent instructions, session handoffs, task specs, working notes —
-# and is deliberately kept out of the published repository.
-# ---------------------------------------------------------------------------
+# Local tooling
 
-# Claude Code / agent configuration and working records
+# Agent configuration
 .claude/
 CLAUDE.md
 CLAUDE.local.md
@@ -74,8 +68,6 @@ GEMINI.md
 .mcp.json
 
 # Internal notes & scratch work
-# /docs/ holds the brand and web spec drafts and the source deck — working
-# material for the site, not part of it.
 /docs/
 /_archive/
 notes/
@@ -87,5 +79,5 @@ NOTES.md
 *.local.md
 *.internal.md
 
-# Local publication-review decisions are never part of the public source.
+# Local import configuration
 /scripts/import-publications.overrides.json

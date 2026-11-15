@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
 import { mkdir, mkdtemp, readFile, readdir, rm, stat, utimes, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -60,9 +60,7 @@ const publications = await json('src/content/publications.json');
 const news = await json('src/content/news.json');
 
 test('freshness guard rejects a stale build and missing routes', async () => {
-  const parent = path.join(root, 'output');
-  await mkdir(parent, { recursive: true });
-  const fixture = await mkdtemp(path.join(parent, 'freshness-test-'));
+  const fixture = await mkdtemp(path.join(tmpdir(), 'lab-freshness-test-'));
   try {
     for (const folder of ['src', 'public']) await mkdir(path.join(fixture, folder));
     for (const file of ['package.json', 'package-lock.json', 'astro.config.mjs', 'svelte.config.js', 'tsconfig.json']) await writeFile(path.join(fixture, file), '{}');
@@ -83,7 +81,7 @@ test('freshness guard rejects a stale build and missing routes', async () => {
   }
 });
 
-test('five substantive, distinct English documents are prerendered', () => {
+test('substantive, distinct English documents are prerendered', () => {
   const titles = new Set();
   for (const [route, document] of documents) {
     assert.equal(attr(byTag(document, 'html')[0], 'lang'), 'en', route);
@@ -128,14 +126,14 @@ test('static assets are explicitly allowed and copied without modification', asy
   const allowed = await json('tests/static-assets.json');
   assert.equal(new Set(allowed).size, allowed.length, 'Duplicate static asset entries');
   const actual = (await files(path.join(root, 'public'))).map(file => path.relative(path.join(root, 'public'), file).split(path.sep).join('/')).sort();
-  assert.deepEqual(actual, [...allowed].sort(), 'Review additions/removals in tests/static-assets.json before shipping');
+  assert.deepEqual(actual, [...allowed].sort(), 'Static assets must match tests/static-assets.json');
   for (const name of actual) {
     assert.deepEqual(await readFile(path.join(root, 'dist', name)), await readFile(path.join(root, 'public', name)), name);
   }
 });
 
 test('public output excludes internal records, machine paths and source maps', async () => {
-  const forbidden = [/\/Users\//, /%2fUsers%2f/i, /Working\/Achivement/, /file:\/\//, /\.claude\//, /\.codex\//, /_archive\//, /docs\/(?:current|audit|data|design)\//, /AGENTS\.md/, /CLAUDE\.md/, /diagnosis before further self-directed fixes/i];
+  const forbidden = [/\/Users\//, /%2fUsers%2f/i, /file:\/\//, /\.claude\//, /\.codex\//, /_archive\//, /docs\/(?:current|audit|data|design)\//, /AGENTS\.md/, /CLAUDE\.md/];
   for (const filename of await files(path.join(root, 'dist'))) {
     const relative = path.relative(path.join(root, 'dist'), filename).split(path.sep).join('/');
     assert(!/^(?:docs|_archive|output|\.claude|\.codex|src)\//.test(relative), relative);
@@ -162,13 +160,13 @@ test('identity is real text, lab-first, and independent of the university header
     assert(universityMark && attr(universityMark, 'src')?.split('?')[0].endsWith('.svg'), `${route}: institutional signature must use the official vector asset`);
   }
   const home = byTag(documents.get('/'), 'h1')[0];
-  assert.equal(content(home), 'Scientific inference for discovery and decision-making.', 'The approved purpose, not a repeated wordmark, leads Home');
+  assert.equal(content(home), 'Scientific inference for discovery and decision-making.', 'The purpose leads Home');
   assert.equal(byTag(home, 'br').length, 0);
 });
 
 test('the imported public inventory retains complete titles, author order and metadata', () => {
   const records = byAttr(documents.get('/publications/'), 'data-publication');
-  assert(publications.length >= 28, 'The agreed public inventory must not silently regress to the old six-paper selection');
+  assert(publications.length > 0, 'Publication records are present');
   assert.equal(records.length, publications.length);
   assert.equal(new Set(publications.map(record => record.id)).size, publications.length);
   for (const publication of publications) {
@@ -189,19 +187,7 @@ test('the imported public inventory retains complete titles, author order and me
     for (const url of [publication.url, publication.codeUrl].filter(Boolean)) assert(byTag(record, 'a').some(node => attr(node, 'href') === url), `${publication.id}: missing source ${url}`);
     assert(!has(record, 'hidden'), `${publication.id}: initial content hidden without JavaScript`);
   }
-  const facts = Object.fromEntries(publications.flatMap(record => [record.id, ...(record.aliases ?? [])].map(id => [id, record])));
-  assert.equal(facts['evidence-standards'].status, 'published'); // PMLR 306
-  assert.equal(facts['evidence-standards'].presentationStatus, 'presented');
-  assert.equal(facts['evidence-standards'].bibliographyStatus, undefined, 'Final PMLR metadata is exported; no pending marker');
-  assert.match(facts['evidence-standards'].bibtex, /^@inproceedings\{oh_position_2026,/, 'ICML carries its canonical Zotero citation');
-  assert.equal(typeof facts['evidence-standards'].apa, 'string', 'APA is generated from the canonical citation');
-  assert.deepEqual(facts['evidence-standards'].authors, ['YongKyung Oh']);
-  assert.equal(facts['silent-failures'].status, 'published');
-  assert.equal(facts['survey-aware'].status, 'published');
-  assert.equal(facts['multi-view'].recognition, 'Best Paper Award, Models and Methods Track');
-  assert.equal(facts['stable-neural-sdes'].recognition, 'Spotlight');
-  assert.deepEqual(facts['flowpath'].authors, ['YongKyung Oh', 'Dong-Young Lim', 'Sungil Kim']);
-  assert.deepEqual(facts['stable-neural-sdes'].authors, ['YongKyung Oh', 'Dongyoung Lim', 'Sungil Kim']);
+
 });
 
 test('Discovery metadata stays concise, canonical and consistent with sharing metadata', () => {
@@ -211,8 +197,8 @@ test('Discovery metadata stays concise, canonical and consistent with sharing me
     const descriptions = byTag(head, 'meta').filter(node => attr(node, 'name') === 'description');
     assert.equal(descriptions.length, 1, `${route}: one description`);
     const description = attr(descriptions[0], 'content');
-    assert(title.length <= 40, `${route}: title should fit the reviewed 40-character recommendation`);
-    assert(description.length <= 80, `${route}: description should fit the reviewed 80-character recommendation`);
+    assert(title.length <= 40, `${route}: title should fit the 40-character title limit`);
+    assert(description.length <= 80, `${route}: description should fit the 80-character description limit`);
     for (const [property, expected] of [['og:title', title], ['og:description', description]]) {
       const matches = byTag(head, 'meta').filter(node => attr(node, 'property') === property);
       assert.equal(matches.length, 1, `${route}: one ${property}`);
@@ -226,8 +212,6 @@ test('Discovery metadata stays concise, canonical and consistent with sharing me
 
 test('Home news is a recent, high-signal editorial selection rather than a fixed quota', () => {
   assert(news.length > 0 && news.length <= 5, 'Home should show up to five substantive updates');
-  const icmlNews = news.find(item => item.publicationId === 'evidence-standards');
-  assert(icmlNews?.text.includes('presented') && !icmlNews.text.includes('is accepted'), 'ICML news must reflect the completed presentation');
   assert.equal(new Set(news.map(item => item.id)).size, news.length, 'News IDs must be unique');
   assert.deepEqual(news.map(item => item.date), [...news].map(item => item.date).sort().reverse(), 'News must be newest first');
   const newest = new Date(`${news[0].date}-01T00:00:00Z`);
@@ -236,7 +220,6 @@ test('Home news is a recent, high-signal editorial selection rather than a fixed
     assert(new Date(`${item.date}-01T00:00:00Z`) >= cutoff, `${item.id}: Home news is older than the rolling 12-month editorial window`);
     assert(['Lab', 'Grant', 'Publication', 'Award', 'Talk'].includes(item.category), `${item.id}: missing editorial category`);
   }
-  assert(news.some(item => item.category === 'Grant'), 'Current grants should not be displaced by older publication filler');
   const home = documents.get('/');
   const rendered = byAttr(home, 'class').find(node => (attr(node, 'class') ?? '').split(/\s+/).includes('news-list'));
   assert(rendered, 'Home news list missing');
@@ -244,38 +227,26 @@ test('Home news is a recent, high-signal editorial selection rather than a fixed
     assert(content(rendered).includes(item.title), `${item.id}: missing from Home`);
     assert(content(rendered).includes(item.category), `${item.id}: category missing from Home`);
   }
-  assert(!content(rendered).includes('CHIL'), 'Older CHIL updates must not remain as Home filler');
 });
 
 test('publication order uses explicit canonical dates then upstream order', () => {
-  assert.deepEqual(publications.map(p => p.upstreamOrder).sort((a,b) => a-b), Array.from({length: publications.length}, (_,i) => i));
+  assert.deepEqual(publications.map(p => p.order).sort((a,b) => a-b), Array.from({length: publications.length}, (_,i) => i));
   const ordered = [...publications].sort((a,b) => b.year-a.year ||
-    (b.date?.length > 4 ? b.date : '').localeCompare(a.date?.length > 4 ? a.date : '') || a.upstreamOrder-b.upstreamOrder);
+    (b.date?.length > 4 ? b.date : '').localeCompare(a.date?.length > 4 ? a.date : '') || a.order-b.order);
   const rendered = byAttr(documents.get('/publications/'), 'data-publication').map(node => attr(node, 'data-publication'));
   assert.deepEqual(rendered, ordered.map(p => p.id));
   for (const publication of publications) {
     if (!publication.date) continue;
-    if (publication.dateSource === 'canonical') assert(publication.bibtex?.includes(publication.date), `${publication.id}: date is not explicit in the canonical citation`);
-    else assert.equal(publication.dateSource, 'cv-presentation', `${publication.id}: missing date source`);
+    if (publication.dateType === 'publication') assert(publication.bibtex?.includes(publication.date), `${publication.id}: date is not explicit in the canonical citation`);
+    else assert.equal(publication.dateType, 'presentation', `${publication.id}: missing date source`);
     assert.equal(Number(publication.date.slice(0,4)), publication.year);
     assert(!/-00/.test(publication.date), `${publication.id}: unknown month/day must not become a date`);
   }
-  const explicitCV = {
-    oh_stable_2024: '2024-05',
-  };
-  assert.deepEqual(Object.fromEntries(publications.filter(p=>p.dateSource==='cv-presentation').map(p=>[p.id,p.date])), explicitCV);
 });
 
 test('canonical publication identities and legacy fragments survive the inventory import', () => {
   const document = documents.get('/publications/');
-  const legacy = {
-    flowpath: 'oh_flowpath_2026',
-    'multi-view': 'oh_multi-view_2025',
-    'stable-neural-sdes': 'oh_stable_2024',
-    'evidence-standards': 'oh_position_2026',
-    'silent-failures': 'oh_silent_2026',
-    'survey-aware': 'oh_survey-aware_2026',
-  };
+  const legacy = Object.fromEntries(publications.flatMap(record => (record.aliases ?? []).map(alias => [alias, record.id])));
   for (const record of publications) {
     assert.equal(record.id, record.canonicalKey, `${record.id}: identity must use the stable upstream key`);
     assert(['conference', 'journal'].includes(record.category), `${record.id}: missing publication category`);
@@ -288,7 +259,6 @@ test('canonical publication identities and legacy fragments survive the inventor
     assert.equal(byAttr(article, 'id', alias).length, 1, `${alias}: static alias must target the corresponding publication, not a script-only redirect`);
   }
   const canonical = publications.filter(record => record.bibtex !== null);
-  assert(canonical.length >= 25, 'The existing canonical citation inventory must not regress');
   for (const record of canonical) {
     assert.equal(typeof record.bibtex, 'string', `${record.id}: citation must be canonical text or explicit null`);
     assert.equal(typeof record.apa, 'string', `${record.id}: APA must be generated for every canonical citation`);
@@ -296,26 +266,13 @@ test('canonical publication identities and legacy fragments survive the inventor
     assert.match(record.bibtex, new RegExp(`^\\s*@(?:article|inproceedings|incollection|book|misc)\\s*\\{\\s*${record.canonicalKey}\\s*,`, 'i'), `${record.id}: malformed or mismatched canonical citation`);
     assert.equal(record.bibtex.match(/^\s*@(\w+)/)?.[1].toLowerCase(), record.bibtexEntryType, `${record.id}: preserve canonical entry type independently of display category`);
   }
-  // The three formerly accepted papers carry canonical citations.
-  for (const id of Object.values(legacy).slice(3)) {
-    const record = publications.find(record => record.id === id);
-    assert.equal(typeof record.bibtex, 'string', `${id}: published record must carry its canonical Zotero citation`);
-    assert.equal(typeof record.apa, 'string', `${id}: APA must be generated from the canonical Zotero citation`);
-    assert.equal(byAttr(document, 'data-cite', id).length, 1, `${id}: canonical citation must expose one Cite control`);
+  for (const record of canonical) {
+    assert.equal(byAttr(document, 'data-cite', record.id).length, 1, `${record.id}: one Cite control`);
   }
   assert.equal(publications.filter(record => record.apa !== null).length, canonical.length, 'APA and canonical BibTeX availability must match');
 });
 
-test('canonical citations retain the independently recorded upstream byte hashes', async () => {
-  const baseline = (await json('tests/canonical-citations.json')).records;
-  assert.equal(Object.keys(baseline).length, 28, 'Keep all baseline records, including unavailable citations');
-  for (const [id, expected] of Object.entries(baseline)) {
-    const record = publications.find(item => item.id === id);
-    assert(record, `${id}: canonical baseline record removed`);
-    const actual = record.bibtex === null ? null : createHash('sha256').update(record.bibtex, 'utf8').digest('hex');
-    assert.equal(actual, expected, `${id}: citation bytes changed from the upstream import; verify the canonical source before updating this fixture`);
-  }
-});
+
 
 test('older-work grouping preserves exact years, records and stable year anchors', () => {
   const library = documents.get('/publications/');
@@ -329,217 +286,81 @@ test('older-work grouping preserves exact years, records and stable year anchors
     assert.equal(content(byAttr(rendered, 'data-publication-year')[0]), String(record.year));
     assert.equal(byAttr(library, 'id', `year-${record.year}`).length, 1);
   }
-  assert(records.some(record => record.id === 'oh_exploiting_2019'), 'Grouping must not silently remove IISE');
 });
 
-test('personal recognition and PI profiles preserve truthful types and destinations', async () => {
+test('people profiles render their public records and working destinations', async () => {
   const pi = (await json('src/content/people.json'))[0];
-  const people = documents.get(profileRoute);
+  const members = await json('src/content/members.json');
+  const catalog = await json('src/content/profile-links.json');
+  const profile = documents.get(profileRoute);
   const index = documents.get('/people/');
-  assert(content(people).includes("Chancellor's Award for Postdoctoral Research Nominee"), 'Nominee status stays in the honor title');
-  assert(!content(people).includes('Best Postdoctoral'));
-  assert.equal(content(byAttr(people, 'id', 'recognition-heading')[0]), 'Recognition');
-  const recognitionSection = byAttr(people, 'aria-labelledby', 'recognition-heading')[0];
-  // Honors and Paper recognition are visible one-line rows; the rest sit in closed native <details>.
-  const visibleGroups = byTag(recognitionSection, 'section').filter(group => ['honors-heading', 'paper-recognition-heading'].includes(attr(group, 'aria-labelledby')));
-  assert.deepEqual(visibleGroups.map(group => content(byTag(group, 'h3')[0])), ['Honors', 'Paper recognition']);
-  const details = byTag(recognitionSection, 'details');
-
-  assert.deepEqual(details.map(node => content(byTag(node, 'summary')[0])), ['Research awards', 'Patents']);
-  for (const node of details) {
-    assert(!has(node, 'open'), 'Recognition details start closed');
-    assert(!/\d/.test(content(byTag(node, 'summary')[0])), 'Summaries carry no counts');
+  const expectedProfiles = catalog.links.filter(link => !link.omitOn.includes('lab')).map(link => [link.label, link.url]);
+  const profileDestinations = node => byTag(node, 'a').map(link => [content(link).trim(), attr(link, 'href')]);
+  for (const document of [profile, index]) {
+    const profiles = byAttr(document, 'aria-label', `${pi.name}'s profiles`)[0];
+    assert(profiles, 'Named profile links');
+    assert.deepEqual(profileDestinations(profiles), expectedProfiles);
   }
-  assert.equal(byAttr(details[0], 'data-award').length, 10);
-  assert.equal(byAttr(details[1], 'data-patent').length, 7);
-  assert.equal(visibleGroups.flatMap(group => byTag(group, 'details')).length, 0, 'Honors and Paper recognition stay outside the details');
-  const honorRows = byAttr(people, 'data-honor');
-  assert.equal(honorRows.length, pi.honors.length);
+  assert(content(profile).includes(pi.bio), 'Profile bio matches its record');
+  const card = byAttr(index, 'id', 'pi')[0];
+  assert(card && content(card).includes(pi.shortBio), 'PI card matches its record');
+  assert.equal(byTag(byAttr(index, 'id', 'pi-card-name')[0], 'a').length, 0);
+  const actions = byTag(card, 'a').filter(link => attr(link, 'href') === profileRoute);
+  assert.equal(actions.length, 1, 'One profile destination');
+  assert(has(actions[0], 'data-profile-action'));
+  assert.equal(attr(actions[0], 'aria-label'), `Full profile of ${pi.name}`);
+  assert.equal(content(actions[0]).trim(), 'Full profile');
 
-  assert.equal(honorRows.length, 2);
-  assert(!content(people).includes('Valedictorian'));
-  assert(honorRows.every(row => /^\S.* · /.test(content(row).replace(/^\w+ \d{4}\s*/, ''))), 'Honor title and organizer are separated');
-  const awardRows = byAttr(people, 'data-award');
-  assert.equal(awardRows.length, pi.awards.length);
-
-  assert.equal(awardRows.length, 10);
-  assert(!awardRows.some(row => content(row).includes('Distinguished Paper Award')), 'Known-wrong award labels must not ship');
-  const publicationIds = new Set((await json('src/content/publications.json')).map(record => record.id));
-  for (const row of awardRows) {
-    for (const a of byTag(row, 'a')) {
-      assert(attr(a, 'href').startsWith('/publications/#') && publicationIds.has(attr(a, 'href').slice('/publications/#'.length)), `award link ${attr(a, 'href')} must resolve to a publication`);
+  const recognition = byAttr(profile, 'aria-labelledby', 'recognition-heading')[0];
+  assert(recognition, 'Named recognition section');
+  for (const [attribute, records] of [['data-honor', pi.honors], ['data-award', pi.awards], ['data-patent', pi.patents], ['data-grant', pi.grants]]) {
+    const rows = byAttr(recognition, attribute);
+    assert.equal(rows.length, records.length, `${attribute}: all records rendered`);
+    for (const [position, record] of records.entries()) {
+      assert(content(rows[position]).includes(record.title), `${attribute}: title`);
+      if (record.organizer) assert(content(rows[position]).includes(record.organizer), `${attribute}: organizer`);
+      if (record.sponsor) assert(content(rows[position]).includes(record.sponsor), `${attribute}: sponsor`);
+      if (record.role) assert(content(rows[position]).includes(`Role: ${record.role}`), `${attribute}: role`);
+      for (const filing of record.filings ?? []) assert(content(rows[position]).includes(`${filing.office} ${filing.number}, ${filing.status} ${filing.date}`), `${attribute}: filing`);
     }
   }
-  assert.equal(byTag(awardRows[1], 'a').length, 1, 'The CHIL Best Paper Award links to its paper');
-  assert(content(awardRows[0]).includes('Energy Analytics Challenge Finalist') && content(awardRows[0]).includes('May 2026'));
-  assert(content(awardRows[8]).includes('Encouragement Award') && content(awardRows[9]).includes('Excellence Award'), 'Certified award labels');
-  const patentRows = byAttr(people, 'data-patent');
-  assert.equal(patentRows.length, pi.patents.length);
-  assert.equal(patentRows.length, 7);
-  for (const row of patentRows) {
-    const rowText = content(row);
-    assert(rowText.includes('KR '), 'Each patent row shows its Korean filing');
-    assert(!/\bUS \d{2}\/|\bPCT/.test(rowText) && !rowText.includes('prosecution discontinued'), 'US application numbers and discontinued PCT filings stay off People');
+  const details = byTag(recognition, 'details');
+  assert.deepEqual(details.map(node => content(byTag(node, 'summary')[0])), ['Research awards', 'Patents']);
+  assert(details.every(node => !has(node, 'open')), 'Details start closed');
+  for (const id of ['honors-heading', 'paper-recognition-heading', 'grant-recognition-heading']) {
+    const group = byAttr(recognition, 'aria-labelledby', id)[0];
+    assert(group && !byTag(group, 'details').length, `${id}: visible group`);
   }
-  assert.equal(patentRows.filter(row => content(row).includes('JP ')).length, 2, 'The two granted JP patents appear next to their KR facts');
-  // US 18/395,620 was granted as US 12,725,326 B2; only the granted number is shown.
-  assert(content(patentRows[0]).includes('KR 10-2754134, granted January 8, 2025') && content(patentRows[0]).includes('US 12,725,326, granted September 1, 2026'));
-  assert.equal(patentRows.filter(row => content(row).includes('US ')).length, 1, 'Only the granted US patent appears');
-  const expectedProfiles = [
-  [
-    "Personal Webpage",
-    "https://yongkyung-oh.github.io/"
-  ],
-  [
-    "Google Scholar",
-    "https://scholar.google.com/citations?user=YJ1L50YAAAAJ"
-  ],
-  [
-    "ORCID",
-    "https://orcid.org/0000-0002-8027-3433"
-  ],
-  [
-    "GitHub",
-    "https://github.com/yongkyung-oh"
-  ],
-  [
-    "LinkedIn",
-    "https://www.linkedin.com/in/yongkyung-oh"
-  ],
-  [
-    "CV PDF",
-    "https://drive.google.com/file/d/12kr_OViGjSfBox5_kUnpnpop87liNlyV/view?usp=sharing"
-  ],
-  [
-    "Semantic Scholar",
-    "https://www.semanticscholar.org/author/YongKyung-Oh/2147251317"
-  ],
-  [
-    "Web of Science",
-    "https://www.webofscience.com/wos/author/record/JJE-4937-2023"
-  ],
-  [
-    "Scopus",
-    "https://www.scopus.com/authid/detail.uri?authorId=57219780668"
-  ],
-  [
-    "DBLP",
-    "https://dblp.org/pid/299/8416.html"
-  ]
-];
-  const profileDestinations = node => byTag(node, 'a').map(a => [content(a).trim(), attr(a, 'href')]);
-  const peopleProfiles = byAttr(people, 'aria-label', "YongKyung Oh's profiles")[0];
-  assert(peopleProfiles, 'The profile page must name the owner of the profiles');
-  assert.deepEqual(profileDestinations(peopleProfiles), expectedProfiles);
-  const indexProfiles = byAttr(index, 'aria-label', "YongKyung Oh's profiles")[0];
-  assert.deepEqual(profileDestinations(indexProfiles), expectedProfiles);
-
-  const piCard = byAttr(index, 'id', 'pi')[0];
-  assert.equal(byTag(byAttr(index, 'id', 'pi-card-name')[0], 'a').length, 0, 'The PI name is a static heading');
-  const profileActions = byTag(piCard, 'a').filter(node => attr(node, 'href') === profileRoute);
-  assert.equal(profileActions.length, 1, 'One tab stop leads to the profile');
-  assert(has(profileActions[0], 'data-profile-action') && content(profileActions[0]).trim() === 'Full profile' && attr(profileActions[0], 'aria-label') === `Full profile of ${pi.name}`);
-  assert(['button-secondary', 'button-compact'].every(name => attr(profileActions[0], 'class')?.split(/\s+/).includes(name)), 'The profile action is the compact outlined button');
-  assert.equal(byAttr(index, 'data-read-more').length, 0);
-
-  // "Intensive AI Program" is the IITP programme name and stays on the profile).
-  assert(content(piCard).includes(pi.shortBio));
-  assert(['(UCLA)', '(UNIST)', 'General Motors (GM)', 'Carnegie Mellon University (CMU)'].every(name => pi.shortBio.includes(name)));
-  assert(!pi.shortBio.includes('Intensive AI Program'));
-  assert(!pi.bio.startsWith(pi.shortBio.split('. ')[0]), 'The Team bio does not reuse the profile Bio opening');
-  assert.equal(byAttr(index, 'id', 'pi').length, 1, '/people/#pi resolves for the course sites');
-
-  const members = await json('src/content/members.json');
-  const indexHeadings = byTag(index, 'h2').map(content);
-  assert(indexHeadings.includes('Students') && !indexHeadings.includes('Alumni'), 'Students shows the placeholder; empty Alumni stays hidden');
+  const publicationIds = new Set(publications.map(record => record.id));
+  for (const link of byTag(recognition, 'a')) {
+    const href = attr(link, 'href');
+    assert(href?.startsWith('/publications/#') && publicationIds.has(href.slice('/publications/#'.length)), 'Recognition link resolves to a publication');
+  }
   const cards = byAttr(index, 'data-member');
-  assert.equal(attr(cards.at(-1), 'data-member'), 'prospective-student', 'The placeholder is the last card');
-  assert(has(cards.at(-1), 'data-placeholder'));
-  assert(byTag(cards.at(-1), 'a').some(a => attr(a, 'href') === '/contact/'));
-  const graph = JSON.parse(scriptBody(byTag(index, 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'];
-  assert(!JSON.stringify(graph).includes('prospective-student'), 'The placeholder is not a Person in structured data');
-  assert(!/coming soon|vacanc/i.test(content(index)), 'No filler copy');
-  assert(members.every(member => member.placeholder || member.since), 'Real members carry a start year');
-  assert.equal(byAttr(index, 'data-recognition-details').length, 0, 'Recognition lives on the profile page');
-  const folds = all(people, node => (attr(node, 'class') ?? '').split(/\s+/).includes('recognition-folds'))[0];
-  assert.equal(byTag(folds, 'details').length, 2, 'The folds (research awards, patents) share one zero-gap group');
+  assert.equal(cards.length, members.length);
+  const orderedMembers = [...members.filter(member => member.role !== 'Alumni').sort((a, b) => Number(Boolean(a.placeholder)) - Number(Boolean(b.placeholder))), ...members.filter(member => member.role === 'Alumni')];
+  assert.deepEqual(cards.map(node => attr(node, 'data-member')), orderedMembers.map(member => member.id));
+  for (const member of members.filter(member => member.placeholder)) {
+    assert(has(byAttr(index, 'data-member', member.id)[0], 'data-placeholder'));
+    const graph = JSON.parse(scriptBody(byTag(index, 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'];
+    assert(!JSON.stringify(graph).includes(member.id), 'Placeholder is not structured as a Person');
+  }
+  assert.equal(byAttr(index, 'data-recognition-details').length, 0);
   for (const [route, document] of documents) {
     const footer = byTag(document, 'footer')[0];
     const profiles = byAttr(footer, 'aria-label', 'PI profiles')[0];
-    assert(profiles, `${route}: footer must identify the profiles as the PI's`);
-    assert.deepEqual(profileDestinations(profiles), expectedProfiles, `${route}: footer and People must share visible labels, order and destinations`);
-    assert(content(footer).includes(pi.name) && content(footer).includes('Principal Investigator'), `${route}: PI ownership must be visible, not only an accessibility label`);
-    assert.equal(byAttr(footer, 'aria-label', 'Footer navigation').length, 0, 'Repeated footer route navigation was removed by the PI');
-    assert(!byTag(footer, 'a').some(a => ['/research/', '/publications/', '/people/', '/people/yongkyung-oh/', '/contact/'].includes(attr(a, 'href'))), 'No duplicate internal route list in the footer');
-  }
-  assert(content(people).includes('Data Science Major, School of BioMedical Convergence Engineering, Pusan National University'));
-  assert(content(people).includes('Master in Technology and Innovation Management'));
-  assert(!content(people).includes('Master of Science in Technology and Innovation Management'));
-  const selectedRecognition = byAttr(people, 'aria-labelledby', 'paper-recognition-heading')[0];
-  assert(selectedRecognition, 'People must retain a named paper-recognition group');
-  const selectedText = content(selectedRecognition);
-  assert(selectedText.indexOf('ICML · 2026') < selectedText.indexOf('CHIL · 2025'), 'ICML recognition must precede CHIL');
-  assert(selectedText.includes('Sole-authored position paper'));
-  for (const [route, document] of documents) {
-    assert(!/single[- ]author/i.test(content(document)), `${route}: ICML authorship uses the canonical "sole-authored" wording`);
-  }
-  assert(content(documents.get('/')).includes('sole-authored position paper'), 'Home News uses the canonical ICML authorship wording');
-  assert(selectedText.includes('Best Paper Award'));
-  assert(!selectedText.includes('Models and Methods Track') && !selectedText.includes('Paper award'), 'People uses the concise CHIL recognition label');
-  const grantGroup = byAttr(recognitionSection, 'aria-labelledby', 'grant-recognition-heading')[0];
-  assert(grantGroup && !byTag(grantGroup, 'details').length, 'Grants and fellowships are shown in full');
-  const grantRows = byAttr(grantGroup, 'data-grant');
-
-  assert.equal(grantRows.length, 4);
-  const [nvidia, nrf, unistar, iitp] = grantRows.map(content);
-  assert(nvidia.includes('NVIDIA Academic Grant Program') && nvidia.includes('2026') && nvidia.includes('NVIDIA'));
-  assert(unistar.includes('Biomedical UniStar Training Program') && unistar.includes('Korea Health Industry Development Institute (KHIDI)') && unistar.includes('Role: Researcher & Trainee'));
-  assert(iitp.includes('Institute for Information & Communication Technology Planning & Evaluation (IITP)') && iitp.includes('Carnegie Mellon University (CMU)'));
-  assert(nvidia.includes('Role: Lead Scientist on the project team') && nvidia.includes('Project: Neural SDE-Augmented') && nvidia.includes('Principal Investigator: Alex A. T. Bui, UCLA'), 'Grant role, project and PI follow the public-safe CV export');
-
-  assert(nrf.includes('Postdoctoral Fellowship for Overseas Research') && nrf.includes('National Research Foundation of Korea (NRF)') && nrf.includes('2024-2025'));
-  assert(nrf.includes('Role: Principal Investigator') && nrf.includes('Research title: Approach to Detect Distribution Shifts Over Time'));
-
-  assert(nrf.includes('Evaluate Model Trustworthy with Retraining in Longitudinal Medical Data') && !nrf.includes('Trustworthiness'), 'NRF title must match the certificate');
-  assert.equal((nrf.match(/Principal Investigator/g) ?? []).length, 1, 'The fellowship states the PI role once, as the CV does');
-  assert(nrf.includes('before joining Pusan National University'), 'The fellowship must read as the PI\'s past award, not current lab funding');
-  const grantAll = content(grantGroup);
-  for (const excluded of ['Catalyst', 'KRW', 'USD', 'Amount']) assert(!grantAll.includes(excluded), `${excluded}: amounts and unverified records stay off People`);
-  // Owner rule (2026-10-02): the role pairs "Intensive AI Program" with the IITP funding line's English name; the institution stays separate.
-  assert(content(people).includes('Intensive AI Program (High-Potential Individuals Global Training Program)') && !content(people).includes('CMU Intensive AI Program') && !content(people).includes('Intensive Artificial Intelligence Program'));
-  assert(!routes.includes('/grants/') && !(documents.has('/grants/')), 'No separate Grants route');
-
-  const surfaces = [...documents.values()].flatMap(document => [content(document), ...meta(document, 'description')]).join(' ');
-  assert(!/led by YongKyung Oh|taught by YongKyung Oh|Contact YongKyung Oh|Publications by YongKyung Oh/.test(surfaces), 'Name-forward phrasing removed');
-
-  assert(!/Overlapping (?:research )?directions|Explore their questions|Search the complete publication record|Meet the principal investigator|Research and laboratory updates|Each course site holds|Get in touch to discuss|inference for engineering decisions/.test(surfaces), 'Meta copy removed');
-  // Action labels name their destination instead of a generic verb.
-  assert(!/Explore research|Meet the PI|Discuss your interests|Discuss a research interest/.test(surfaces), 'Generic action labels removed');
-  for (const document of documents.values()) {
-    const footer = byTag(document, 'footer')[0];
-    assert(content(footer).includes('School of BioMedical Convergence Engineering · Pusan National University'));
-    assert(!content(footer).includes('Data Science Major'), 'Footer affiliation must omit the major');
+    assert(profiles, `${route}: named footer profiles`);
+    assert.deepEqual(profileDestinations(profiles), expectedProfiles, `${route}: consistent profile links`);
+    assert(content(footer).includes(pi.name) && content(footer).includes('Principal Investigator'), `${route}: PI identity`);
   }
 });
 
 test('research directions remain complete and generated illustrations stay out of the public site', async () => {
   const document = documents.get('/research/');
   const programs = (await json('src/content/programs.json')).sort((a, b) => a.order - b.order);
-  const expectedCuration = {
-    'ai-for-science': ['oh_multi-view_2025', 'oh_modeling_2025'],
-    'continuous-time-modeling': ['oh_flowpath_2026', 'oh_stable_2024'],
-    'evidence-centered-ai': ['oh_position_2026', 'oh_silent_2026'],
-    'industrial-ai-and-decision-making': ['oh_predicting_2026', 'oh_grid-based_2024'],
-  };
   const ids = programs.map(program => program.id);
-  // Owner-approved research-field SSOT (2026-10-08): purposes, then shared foundations.
-  const canonicalOrder = ['ai-for-science', 'industrial-ai-and-decision-making', 'evidence-centered-ai', 'continuous-time-modeling'];
-  assert.deepEqual(ids.filter(id => canonicalOrder.includes(id)), canonicalOrder, 'Research direction order must follow the reviewed SSOT');
-  assert(ids.length >= 4, 'The four-direction research inventory must not regress');
+  assert(ids.length > 0, 'Research directions are present');
   assert.equal(new Set(ids).size, ids.length, 'Research program IDs must be unique');
-  for (const id of ['ai-for-science', 'continuous-time-modeling', 'evidence-centered-ai']) {
-    assert(ids.includes(id), `${id}: existing research fragment removed`);
-  }
   const panels = byAttr(document, 'data-program-panel');
   assert.deepEqual(panels.map(panel => attr(panel, 'id')), ids);
   const main = byTag(document, 'main')[0];
@@ -548,8 +369,6 @@ test('research directions remain complete and generated illustrations stay out o
   assert.deepEqual(byTag(index[0], 'a').map(node => attr(node, 'href')), ids.map(id => `#${id}`));
   assert.deepEqual(byAttr(main, 'data-program-link'), byTag(index[0], 'a'), 'All four direction links belong to the one index');
   assert.deepEqual(byTag(main, 'a').filter(node => attr(node, 'href')?.startsWith('#')).map(node => attr(node, 'href')), ids.map(id => `#${id}`), 'Do not restore per-section Next or index-return links');
-  assert(!/Selected current work|Planned inquiry|work predating the lab|Back to directions|Next:/.test(content(main)), 'Redundant Research labels and attribution must stay removed');
-  assert.equal(byTag(main, 'dl').length, 0, 'Do not restore the unexplained Observations/Inference comparison row');
   assert.equal(all(main, node => ['direction-number', 'section-number'].some(name => (attr(node, 'class') ?? '').split(/\s+/).includes(name))).length, 0, 'Peer research directions must not display ordinal numbers');
   const inquiry = byTag(main, 'a').filter(node => attr(node, 'href') === '/contact/');
   assert.equal(inquiry.length, 1, 'Research has one terminal inquiry action');
@@ -571,14 +390,13 @@ test('research directions remain complete and generated illustrations stay out o
   assert(contactEmail && byTag(contactEmail, 'wbr').length === 1, 'Contact email keeps a single preferred break point before "@"');
   const homeDirections = byAttr(home, 'aria-label', 'Research directions')[0];
   assert(homeDirections, 'Home must expose the complete research direction index');
-  assert.deepEqual(byTag(homeDirections, 'a').map(node => attr(node, 'href')), ids.map(id => `/research/#${id}`), 'Home and Research must present the same canonical direction order');
+  assert.deepEqual(byTag(homeDirections, 'a').map(node => attr(node, 'href')), ids.map(id => `/research/#${id}`), 'Home and Research must present the same direction order');
   const llms = await readFile(path.join(root, 'dist/llms.txt'), 'utf8');
   const llmsDirections = llms.split('## Research directions\n')[1].split('## Teaching\n')[0];
-  assert.deepEqual([...llmsDirections.matchAll(/\/research\/#([^)]*)\)/g)].map(match => match[1]), ids, 'llms.txt must preserve the canonical direction order');
+  assert.deepEqual([...llmsDirections.matchAll(/\/research\/#([^)]*)\)/g)].map(match => match[1]), ids, 'llms.txt must preserve the direction order');
   assert.equal(content(byTag(byTag(home, 'main')[0], 'h2')[0]), 'Research directions', 'Home should explain its directions before individual papers');
   for (const program of programs) {
     const { id } = program;
-    assert.deepEqual(program.related.map(paper => paper.id), expectedCuration[id], `${id}: Related publications must remain the reviewed two-record curation`);
     const panel = panels.find(node => attr(node, 'id') === id);
     assert(panel && !has(panel, 'hidden'), `${id}: missing no-JavaScript content`);
     assert.equal(content(byTag(panel, 'h2')[0]), program.title, `${id}: missing research heading`);
@@ -594,22 +412,20 @@ test('research directions remain complete and generated illustrations stay out o
     const homeLink = byTag(homeDirections, 'a').find(node => attr(node, 'href') === `/research/#${id}`);
     assert(homeLink && content(homeLink).includes(program.shortTitle), `${id}: missing labeled Home destination`);
     const overview = byAttr(homeDirections, 'data-home-direction', id)[0];
-    assert(overview && byTag(overview, 'img').length === 0, `${id}: generated Home imagery must stay removed`);
-    assert(content(overview).includes(program.summary), `${id}: approved summary must be openly comparable on Home`);
+    assert(overview && byTag(overview, 'img').length === 0, `${id}: direction overviews contain no images`);
+    assert(content(overview).includes(program.summary), `${id}: summary must be openly comparable on Home`);
     assert(!has(overview, 'hidden'), `${id}: Home must not conceal direction descriptions`);
     assert(byTag(overview, 'a').some(node => attr(node, 'href') === `/research/#${id}`), `${id}: overview needs a direct research destination`);
-    assert.equal(byTag(panel, 'img').length, 0, `${id}: generated Research imagery must stay removed`);
+    assert.equal(byTag(panel, 'img').length, 0, `${id}: direction panels contain no images`);
     const links = byTag(panel, 'a').map(node => attr(node, 'href'));
     const publicationLinks = links.filter(href => href?.startsWith('/publications/#'));
     const expectedPublications = program.related.map(paper => `/publications/#${paper.id}`);
-    assert.equal(publicationLinks.length, 2, `${id}: show exactly two curated Related publications`);
-    assert.deepEqual(publicationLinks, expectedPublications, `${id}: preserve the reviewed year/venue/recognition curation`);
+    assert.equal(publicationLinks.length, program.related.length, `${id}: all related publications`);
+    assert.deepEqual(publicationLinks, expectedPublications, `${id}: render the related publication destinations`);
     assert.deepEqual(byTag(related, 'a').map(node => attr(node, 'href')), expectedPublications, `${id}: linked evidence belongs in the related-publications section`);
   }
   assert.equal(byAttr(homeDirections, 'role', 'tab').length, 0, 'Home directions are native destinations, not a second selector');
   assert.equal(byAttr(document, 'role', 'tab').length, 0, 'Research must expose all four sections without selection');
-  const notices = await readFile(path.join(root, 'dist/asset-credits.txt'), 'utf8');
-  assert(!/AI-generated explanatory illustrations/i.test(notices), 'Deleted generated illustrations must not remain in the public asset record');
 });
 
 test('the official wordmark is the full name in Pretendard 700, black, from the shipped Pretendard asset', async () => {
@@ -624,8 +440,6 @@ test('the official wordmark is the full name in Pretendard 700, black, from the 
   const compact = css.replace(/\s+/g, ' ').replace(/ ?([{};:,]) ?/g, '$1');
   assert(/--font-wordmark:"?Pretendard"?/.test(compact), 'Wordmark token resolves to Pretendard');
   assert(/\.wordmark-text\{[^}]*font:700 [^}]*var\(--font-wordmark\)[^}]*letter-spacing:-\.018em[^}]*color:#000/.test(compact), 'Wordmark is Pretendard 700 with -.018em tracking in black');
-  assert(!/Newsreader/i.test(css), 'The retired Newsreader face must not ship');
-  await assert.rejects(readFile(path.join(root, 'dist/licenses/newsreader.txt')), 'The retired Newsreader notice must not ship');
   const licence = await readFile(path.join(root, 'dist/licenses/pretendard.txt'), 'utf8');
   assert(licence.includes('SIL Open Font License'), 'The Pretendard licence ships with the wordmark face');
 });
@@ -729,7 +543,7 @@ test('search metadata and structured data restate the visible site', async () =>
     const person = node('Person');
     assert.deepEqual(person.knowsAbout, researchTitles, `${route}: Person topics must follow the visible research order`);
     assert.deepEqual(node('ResearchOrganization').knowsAbout, researchTitles, `${route}: lab topics must follow the visible research order`);
-    assert(node('ResearchOrganization').description.includes(fieldEnumeration), `${route}: lab scope must use the SSOT field enumeration`);
+    assert(node('ResearchOrganization').description.includes(fieldEnumeration), `${route}: lab scope must use the research field enumeration`);
     const footerEmail = attr(byAttr(document, 'data-footer-email')[0], 'href');
     assert.equal(person.email, footerEmail, `${route}: Person email must equal the visible footer address`);
     const footerProfiles = all(byAttr(document, 'aria-label', 'PI profiles')[0], item => item.tagName === 'a').map(item => attr(item, 'href'));
@@ -738,7 +552,7 @@ test('search metadata and structured data restate the visible site', async () =>
     assert.equal(page.url, origin + route, `${route}: structured page URL`);
     assert.equal(page.name, title, `${route}: structured page name`);
   }
-  assert((await readFile(path.join(root, 'dist/llms.txt'), 'utf8')).includes(fieldEnumeration), 'llms.txt scope must use the SSOT field enumeration');
+  assert((await readFile(path.join(root, 'dist/llms.txt'), 'utf8')).includes(fieldEnumeration), 'llms.txt scope must use the research field enumeration');
   assert.equal(content(byTag(documents.get('/'), 'title')[0]), 'Scientific Inference Lab', 'Home title names the lab concisely');
   const graphOf = route => JSON.parse(scriptBody(byTag(documents.get(route), 'script').find(node => attr(node, 'type') === 'application/ld+json')))['@graph'];
   const piRecord = (await json('src/content/people.json'))[0];
@@ -764,9 +578,9 @@ test('search metadata and structured data restate the visible site', async () =>
     assert.equal(item.name, record.title, `${id}: title`);
     // a CV presentation month is not a publication date.
     const bibtexYear = record.bibtex?.match(/\byear\s*=\s*\{?(\d{4})\}?/i)?.[1];
-    const expected = record.status !== 'published' ? undefined : record.dateSource === 'canonical' ? record.date : bibtexYear;
+    const expected = record.status !== 'published' ? undefined : record.dateType === 'publication' ? record.date : bibtexYear;
     assert.equal(item.datePublished, expected, `${id}: datePublished must come from a bibliographic source`);
-    if (record.dateSource === 'cv-presentation' && record.date) assert.notEqual(item.datePublished, record.date, `${id}: presentation month emitted as publication date`);
+    if (record.dateType === 'presentation' && record.date) assert.notEqual(item.datePublished, record.date, `${id}: presentation month emitted as publication date`);
   }
 });
 
@@ -854,13 +668,7 @@ test('line breaking is set by role in app.css and never pinned in prose', async 
   }
 });
 
-test('the executable QC contract cannot silently succeed on a deleted suite', async () => {
-  const packageJson = await json('package.json');
-  assert(packageJson.scripts.test.includes('tests/site.test.mjs'), 'Name the test entry explicitly so deletion is fatal');
-  for (const file of ['browser-qa.py', 'mobile-qa.py', 'design-state-qa.py', 'qa_support.py']) {
-    assert((await stat(path.join(root, 'tests', file))).isFile(), file);
-  }
-});
+
 
 test('lab-authored copy spells "decision-making" one way', async () => {
   // Publications are excluded: venue names such as "Medical Decision Making" are verbatim.

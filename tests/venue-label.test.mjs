@@ -4,8 +4,7 @@ import { test } from 'node:test';
 
 const publications = JSON.parse(await readFile(new URL('../src/content/publications.json', import.meta.url), 'utf8'));
 
-// Independent release gate for the reviewed conference display vocabulary.
-// Keep canonical venueName and BibTeX intact; new source forms stop for review.
+// Use compact labels for known conference names; keep full book titles.
 const compactLabels = [
   [/SIGKDD/, 'KDD'],
   [/International Conference on Machine Learning(?:$| \(ICML)/, 'ICML'],
@@ -17,28 +16,28 @@ const compactLabels = [
   [/Data Mining Workshops/, 'ICDMW'],
   [/IISE Annual Conference/, 'IISE'],
 ];
-const reviewedFullTitles = new Map([
+const fullTitles = new Map([
   // This is a Springer volume title, not an established short conference name.
   ['oh_deep_2025', 'Human Activity Recognition and Anomaly Detection'],
 ]);
 
 function assertVenueLabel(publication) {
   const { id, venue, venueName } = publication;
-  if (reviewedFullTitles.has(id)) {
-    assert.equal(venueName, reviewedFullTitles.get(id), `${id}: reviewed full title changed; recheck source`);
+  if (fullTitles.has(id)) {
+    assert.equal(venueName, fullTitles.get(id), `${id}: full title differs`);
     assert.equal(venue, venueName, `${id}: do not invent an abbreviation`);
     return;
   }
   const matches = compactLabels.filter(([pattern]) => pattern.test(venueName));
-  assert.equal(matches.length, 1, `${id}: canonical venue requires display-label review`);
+  assert.equal(matches.length, 1, `${id}: venue has no unique compact label`);
   assert.equal(venue, matches[0][1], `${id}: incorrect short venue label`);
 }
 
-test('all published conference labels match reviewed canonical-source forms', () => {
+test('conference labels match their venue names', () => {
   for (const publication of publications.filter(item => item.category === 'conference')) assertVenueLabel(publication);
 });
 
-test('old ICML proceedings fallback cannot reach release QC', () => {
+test('ICML proceedings use the compact label', () => {
   assert.throws(() => assertVenueLabel({
     id: 'oh_position_2026',
     venueName: 'Proceedings of the 43rd International Conference on Machine Learning',

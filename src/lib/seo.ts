@@ -5,7 +5,7 @@ import type { Publication } from './data/publications';
 type Content = Awaited<ReturnType<typeof loadContent>>;
 export type PageKind = 'home' | 'research' | 'publications' | 'teaching' | 'people' | 'profile' | 'contact';
 
-// Google Analytics 4 measurement ID supplied by the PI (2026-09-29).
+// Google Analytics 4 configuration for the production host.
 export const analytics = { id: 'G-H8EZQ381WH', hostname: new URL(site.url).hostname } as const;
 
 const url = (path: string) => new URL(path, site.url).href;
@@ -34,7 +34,7 @@ const doi = (publication: Publication) => publication.bibtex?.match(/\bdoi\s*=\s
 // an explicit canonical BibTeX year when one exists.
 function publicationDate(publication: Publication) {
   if (publication.status !== 'published') return undefined;
-  if (publication.dateSource === 'canonical') return publication.date;
+  if (publication.dateType === 'publication') return publication.date;
   return publication.bibtex?.match(/\byear\s*=\s*\{?(\d{4})\}?/i)?.[1];
 }
 

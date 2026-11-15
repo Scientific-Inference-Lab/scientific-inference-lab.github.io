@@ -47,8 +47,7 @@ const current = (href: string) => (href === '/people/' ? pathname.startsWith(hre
   .site-header { background: var(--color-paper); border-bottom: 1px solid var(--color-line); }
   .header-inner { min-height: 88px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .25rem 1.5rem; padding-block: 14px; }
   .wordmark-text { font-size: 24px; }
-  /* Five routes (Teaching, 2026-10-01): labels never break inside a word; at
-     enlarged text the desktop row wraps whole labels instead. */
+  /* Keep navigation labels whole and wrap the row as text grows. */
   .site-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 0 2rem; }
   .site-nav a { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; font-weight: 600; line-height: 1.5; }
   .nav-label { position: relative; padding-block: .25rem; white-space: nowrap; }

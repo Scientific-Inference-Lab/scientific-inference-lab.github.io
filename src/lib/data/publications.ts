@@ -8,8 +8,8 @@ export interface Publication {
   venueName: string;
   year: number;
   date?: string;
-  dateSource?: 'canonical' | 'cv-presentation';
-  upstreamOrder: number;
+  dateType?: 'publication' | 'presentation';
+  order: number;
   category: 'conference' | 'journal';
   status: 'accepted' | 'published';
   presentationStatus?: 'presented';
@@ -27,8 +27,8 @@ export interface Publication {
 export const publicationType = (publication: Publication) => publication.type;
 
 export function comparePublications(a: Publication, b: Publication): number {
-  // Year-only citations have no within-year date; retain the source's order.
+  // Year-only citations have no within-year date; retain the display order.
   const dateA = a.date && a.date.length > 4 ? a.date : '';
   const dateB = b.date && b.date.length > 4 ? b.date : '';
-  return b.year - a.year || dateB.localeCompare(dateA) || a.upstreamOrder - b.upstreamOrder;
+  return b.year - a.year || dateB.localeCompare(dateA) || a.order - b.order;
 }

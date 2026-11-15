@@ -67,8 +67,8 @@ const { pi, recognition, awardLinks } = Astro.props;
               <p class="recognition-meta">{award.month} {award.year}</p>
               <div class="min-w-0">
                 <h4 class="recognition-title">{award.title}</h4>
-                {awardLinks[award.cvLabel]
-                  ? <p class="recognition-detail"><a href={`/publications/#${awardLinks[award.cvLabel]}`} class="recognition-link">{award.paper}<ArrowRight size={17} aria-hidden="true" /></a></p>
+                {awardLinks[award.paper]
+                  ? <p class="recognition-detail"><a href={`/publications/#${awardLinks[award.paper]}`} class="recognition-link">{award.paper}<ArrowRight size={17} aria-hidden="true" /></a></p>
                   : <p class="recognition-detail">{award.paper}</p>}
                 <p class="recognition-detail recognition-source">{award.organizer}</p>
                 {award.note && <p class="recognition-detail">{award.note}</p>}

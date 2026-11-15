@@ -66,13 +66,7 @@ const [emailLocal, emailDomain] = pi.email.split('@');
 <style>
   .contact-primary { container: contact-panel / inline-size; padding-block: 2.5rem; }
   .contact-identity { container-type: inline-size; }
-  /* Keep the address on one line where possible (PI, 2026-09-29): the display size
-     follows the column (the address is ~12.9em wide, so 7.4cqi fits with margin)
-     between the body-size floor (1rem, which still follows the user's text
-     enlargement) and the design size. Only when even
-     the floor cannot fit (tiny viewports or enlarged text, which must not be
-     suppressed) does it break, first at the <wbr> before "@", and inside a part
-     only as a last resort, so it never overflows its column. */
+  /* Scale the email with its container and allow wrapping at the address separator. */
   .contact-email { max-width: 100%; min-height: 44px; overflow-wrap: anywhere; font-size: clamp(1rem, 7.4cqi, 1.5rem); line-height: 1.4; }
   .contact-email:hover { text-decoration: underline; text-underline-offset: .15em; }
   .contact-person h2, .contact-person p { font-size: 1rem; line-height: 1.5; }
