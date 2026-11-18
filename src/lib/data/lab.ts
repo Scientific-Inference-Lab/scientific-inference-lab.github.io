@@ -1,6 +1,9 @@
 import profileCatalog from '../../content/profile-links.json';
 import people from '../../content/people.json';
 
+interface ProfileLink { id: string; label: string; url: string; group: string; omitOn: string[]; webFeatured?: boolean }
+const profileLinks: ProfileLink[] = profileCatalog.links;
+
 export const site = {
   name: 'Scientific Inference Lab',
   institution: 'Pusan National University',
@@ -23,16 +26,18 @@ export const pi = people[0];
 // The PI profile, card and footer consume one ordered public catalog.
 export function getProfileLinks(links: typeof pi.links) {
   for (const id of ['personal', 'orcid', 'scholar', 'github', 'linkedin'] as const) {
-    const entry = profileCatalog.links.find(link => link.id === id);
+    const entry = profileLinks.find(link => link.id === id);
     if (!entry || links[id] !== entry.url) throw new Error(`PI profile destination drift: ${id}`);
   }
-  return profileCatalog.links
+  return profileLinks
     .filter(link => !link.omitOn.includes('lab'))
-    .map(link => ({ label: link.label, href: link.url }));
+    .map(link => ({ label: link.label, href: link.url, featured: link.webFeatured === true }));
 }
 
+// Structured data lists the person's profiles in the visible order: featured first, then the collapsed ones.
 export function getPersonProfileUrls() {
-  return profileCatalog.links.filter(link => !['lab', 'cv'].includes(link.id)).map(link => link.url);
+  const person = profileLinks.filter(link => !['lab', 'cv'].includes(link.id));
+  return [...person.filter(link => link.webFeatured === true), ...person.filter(link => link.webFeatured !== true)].map(link => link.url);
 }
 
 export interface Program {

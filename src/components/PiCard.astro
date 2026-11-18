@@ -1,5 +1,6 @@
 ---
-import { ArrowRight, ArrowUpRight } from '@lucide/svelte';
+import { ArrowRight } from '@lucide/svelte';
+import ProfileLinks from './ProfileLinks.astro';
 import { getProfileLinks } from '../lib/data/lab';
 import type { site as siteData } from '../lib/data/lab';
 import type { loadContent } from '../lib/content';
@@ -30,9 +31,7 @@ const profiles = getProfileLinks(pi.links);
       <p class="mt-2 text-lg font-medium text-ink">{pi.role}</p>
       <p class="mt-1 leading-relaxed text-body">{site.affiliation}</p>
       <p class="pi-short mt-3 leading-relaxed text-body">{pi.shortBio}</p>
-      <ul class="pi-links" aria-label="YongKyung Oh's profiles">
-        {profiles.map(profile => <li><a href={profile.href} class="text-link inline-flex min-h-11 items-center gap-2">{profile.label}<ArrowUpRight size={16} aria-hidden="true" /></a></li>)}
-      </ul>
+      <ProfileLinks name={pi.name} profiles={profiles} class="pi-links" />
     </div>
   </div>
 </section>
@@ -52,7 +51,7 @@ const profiles = getProfileLinks(pi.links);
   @container pi-text (max-width: 7rem) { .pi-name { font-size: 1rem; } }
   .pi-name-row { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; }
   .pi-name-row .pi-name { min-width: 0; }
-  .pi-links { display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; margin-top: .5rem; }
+  :global(.pi-links) { margin-top: .5rem; }
   @container pi-section (min-width: 34rem) {
     .pi-card { grid-template-columns: 12rem minmax(0,1fr); column-gap: 2.5rem; }
     .pi-name { font-size: 2.25rem; }

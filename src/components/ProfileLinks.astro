@@ -1,0 +1,38 @@
+---
+import { ArrowUpRight } from '@lucide/svelte';
+
+interface Props {
+  name: string;
+  profiles: { label: string; href: string; featured: boolean }[];
+  class?: string;
+  /** Accessible name for the list; null when a parent landmark already names it. */
+  label?: string | null;
+}
+const { name, profiles, class: className, label = `${name}'s profiles` } = Astro.props;
+const featured = profiles.filter(profile => profile.featured);
+const more = profiles.filter(profile => !profile.featured);
+---
+<ul class:list={['profile-link-list', className]} aria-label={label ?? undefined}>
+  {featured.map(profile => <li><a href={profile.href} class="text-link inline-flex min-h-11 items-center gap-2">{profile.label}<ArrowUpRight size={16} aria-hidden="true" /></a></li>)}
+  {more.length > 0 && (
+    <li class="profile-more">
+      <details>
+        <summary>More profiles</summary>
+        <ul class="profile-link-list">
+          {more.map(profile => <li><a href={profile.href} class="text-link inline-flex min-h-11 items-center gap-2">{profile.label}<ArrowUpRight size={16} aria-hidden="true" /></a></li>)}
+        </ul>
+      </details>
+    </li>
+  )}
+</ul>
+
+<style>
+  .profile-link-list { display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; padding: 0; margin: 0; list-style: none; }
+  .profile-more { flex-basis: 100%; }
+  .profile-more summary { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; cursor: pointer; list-style: none; font-weight: 600; color: var(--color-ink); }
+  .profile-more summary::-webkit-details-marker { display: none; }
+  .profile-more summary::after { content: '+'; font-size: 1.25rem; line-height: 1; color: var(--color-action); }
+  .profile-more details[open] > summary::after { content: '\2212'; }
+  .profile-more summary:hover { color: var(--color-action); }
+  .profile-more summary:focus-visible { outline: 3px solid var(--color-action); outline-offset: 2px; }
+</style>

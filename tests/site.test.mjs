@@ -294,12 +294,19 @@ test('people profiles render their public records and working destinations', asy
   const catalog = await json('src/content/profile-links.json');
   const profile = documents.get(profileRoute);
   const index = documents.get('/people/');
-  const expectedProfiles = catalog.links.filter(link => !link.omitOn.includes('lab')).map(link => [link.label, link.url]);
+  const shown = catalog.links.filter(link => !link.omitOn.includes('lab'));
+  const expectedProfiles = [...shown.filter(link => link.webFeatured === true), ...shown.filter(link => link.webFeatured !== true)].map(link => [link.label, link.url]);
+  const collapsed = shown.filter(link => link.webFeatured !== true).length;
   const profileDestinations = node => byTag(node, 'a').map(link => [content(link).trim(), attr(link, 'href')]);
   for (const document of [profile, index]) {
     const profiles = byAttr(document, 'aria-label', `${pi.name}'s profiles`)[0];
     assert(profiles, 'Named profile links');
     assert.deepEqual(profileDestinations(profiles), expectedProfiles);
+    const more = byTag(profiles, 'details');
+    assert.equal(more.length, 1, 'One closed profile disclosure');
+    assert(!has(more[0], 'open'), 'Extra profiles start collapsed');
+    assert.equal(content(byTag(more[0], 'summary')[0]).trim(), 'More profiles');
+    assert.equal(byTag(more[0], 'a').length, collapsed, 'Only non-featured profiles are collapsed');
   }
   assert(content(profile).includes(pi.bio), 'Profile bio matches its record');
   const card = byAttr(index, 'id', 'pi')[0];

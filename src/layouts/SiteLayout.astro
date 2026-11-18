@@ -1,5 +1,6 @@
 ---
-import { ArrowUpRight, Mail } from '@lucide/svelte';
+import { Mail } from '@lucide/svelte';
+import ProfileLinks from '../components/ProfileLinks.astro';
 import { getProfileLinks, site } from '../lib/data/lab';
 import { loadContent } from '../lib/content';
 import university from '../lib/assets/university.svg';
@@ -71,9 +72,7 @@ const graph = kind ? structuredData(kind, { path: Astro.url.pathname, title: doc
             <p class="footer-person"><strong>{pi.name}</strong><span>Principal Investigator</span></p>
             <a href={`mailto:${pi.email}`} class="text-link footer-email" data-footer-email><span><span class="email-part">{emailLocal}</span><wbr /><span class="email-part">@{emailDomain}</span></span><Mail size={16} aria-hidden="true" /></a>
             <nav aria-label="PI profiles">
-              <ul class="footer-profiles">
-                {profiles.map(profile => <li><a href={profile.href} class="text-link"><span>{profile.label}</span><ArrowUpRight size={16} aria-hidden="true" /></a></li>)}
-              </ul>
+              <ProfileLinks name={pi.name} profiles={profiles} class="footer-profiles" label={null} />
             </nav>
           </div>
         </div>
@@ -94,10 +93,9 @@ const graph = kind ? structuredData(kind, { path: Astro.url.pathname, title: doc
   .footer-person { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; padding-top: .625rem; }
   .footer-person strong { font-size: 1rem; font-weight: 600; color: var(--color-ink); }
   .footer-person > span { font-size: .875rem; color: var(--color-muted); }
-  .footer-profiles { display: flex; flex-wrap: wrap; gap: .25rem 1.5rem; margin-top: .25rem; }
-  .footer-profiles li { min-width: 0; }
-  .footer-profiles a { min-height: 44px; max-width: 100%; gap: .5rem; font-size: 1rem; }
-  .footer-profiles a > span { min-width: 0; overflow-wrap: normal; }
+  :global(.footer-profiles) { margin-top: .25rem; }
+  :global(.footer-profiles li) { min-width: 0; }
+  :global(.footer-profiles a) { max-width: 100%; font-size: 1rem; }
   /* The address stays on one line whenever the column allows (body size, never
      shrunk). If it cannot fit, it breaks first at the <wbr> before "@", and
      inside a part only as a last resort, so neither the text nor the icon leaves
