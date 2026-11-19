@@ -53,5 +53,27 @@
     "category": "Grant",
     "title": "Selected for the NVIDIA Academic Grant Program",
     "text": "The Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework project, with Alex Bui at UCLA Medical Imaging Informatics, was selected for the NVIDIA Academic Grant Program."
+  },
+  {
+    "id": "flowpath-aaai-2026-publication",
+    "date": "2026-03",
+    "category": "Publication",
+    "title": "FlowPath in the AAAI 2026 proceedings",
+    "text": "FlowPath, a method for classifying irregularly sampled time series, was published in the AAAI 2026 proceedings on March 14, 2026.",
+    "source": {
+      "label": "AAAI proceedings paper",
+      "url": "https://doi.org/10.1609/aaai.v40i29.39643"
+    }
+  },
+  {
+    "id": "chil-2025-best-paper-award",
+    "date": "2025-06",
+    "category": "Award",
+    "title": "Best Paper Award at CHIL 2025",
+    "text": "YongKyung Oh and Alex Bui’s paper on adapting medical time-series models across domains received the Best Paper Award in the Models and Methods Track at CHIL 2025.",
+    "source": {
+      "label": "PMLR paper",
+      "url": "https://proceedings.mlr.press/v287/oh25a.html"
+    }
   }
 ]
