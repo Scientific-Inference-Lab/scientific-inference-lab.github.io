@@ -26,6 +26,7 @@ export const GET: APIRoute = async () => {
     `- [Team](${url('/people/')}): lab members, led by the principal investigator`,
     `- [${pi.name}](${url('/people/yongkyung-oh/')}): principal investigator profile with bio, recognition, experience and education`,
     `- [Contact](${url('/contact/')}): ${pageDescriptions.contact}`,
+    `- [News](${url('/news/')}): ${pageDescriptions.news}`,
     '',
     '## Research directions',
     '',

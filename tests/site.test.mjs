@@ -8,8 +8,8 @@ import { parse } from 'parse5';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const profileRoute = '/people/yongkyung-oh/';
-const routes = ['/', '/people/', profileRoute, '/research/', '/publications/', '/teaching/', '/contact/'];
-const navRoutes = routes.filter(route => route !== '/' && route !== profileRoute);
+const routes = ['/', '/people/', profileRoute, '/research/', '/publications/', '/teaching/', '/contact/', '/news/'];
+const navRoutes = routes.filter(route => route !== '/' && route !== profileRoute && route !== '/news/');
 const origin = 'https://scientific-inference-lab.github.io';
 const routeFile = route => path.join('dist', route, 'index.html');
 const normalize = value => value.replace(/\s+/g, ' ').trim();
@@ -108,6 +108,7 @@ test('interior routes share one page-header hierarchy', () => {
     ['/people/', 'Team'],
     [profileRoute, 'YongKyung Oh'],
     ['/contact/', 'Contact'],
+    ['/news/', 'News'],
   ]);
   for (const [route, title] of expected) {
     const main = byTag(documents.get(route), 'main')[0];
@@ -117,7 +118,7 @@ test('interior routes share one page-header hierarchy', () => {
     assert.equal(all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('kicker')).length, 0, `${route}: no eyebrow above the page title`);
 
     const descriptions = all(headers[0], node => (attr(node, 'class') ?? '').split(/\s+/).includes('page-description'));
-    assert.equal(descriptions.length, ['/people/', profileRoute, '/contact/'].includes(route) ? 0 : 1, `${route}: page-header description`);
+    assert.equal(descriptions.length, ['/people/', profileRoute, '/contact/', '/news/'].includes(route) ? 0 : 1, `${route}: page-header description`);
   }
   assert.equal(byAttr(documents.get('/'), 'data-page-header').length, 0, 'Home keeps its distinct identity-led hierarchy');
 });
@@ -210,22 +211,21 @@ test('Discovery metadata stays concise, canonical and consistent with sharing me
   }
 });
 
-test('Home news is a recent, high-signal editorial selection rather than a fixed quota', () => {
-  assert(news.length > 0 && news.length <= 5, 'Home should show up to five substantive updates');
+test('Home shows the three latest news items and links to the complete archive', () => {
+  assert(news.length > 0, 'News must have published entries');
   assert.equal(new Set(news.map(item => item.id)).size, news.length, 'News IDs must be unique');
   assert.deepEqual(news.map(item => item.date), [...news].map(item => item.date).sort().reverse(), 'News must be newest first');
-  const newest = new Date(`${news[0].date}-01T00:00:00Z`);
-  const cutoff = new Date(Date.UTC(newest.getUTCFullYear() - 1, newest.getUTCMonth(), 1));
-  for (const item of news) {
-    assert(new Date(`${item.date}-01T00:00:00Z`) >= cutoff, `${item.id}: Home news is older than the rolling 12-month editorial window`);
-    assert(['Lab', 'Grant', 'Publication', 'Award', 'Talk'].includes(item.category), `${item.id}: missing editorial category`);
-  }
-  const home = documents.get('/');
-  const rendered = byAttr(home, 'class').find(node => (attr(node, 'class') ?? '').split(/\s+/).includes('news-list'));
-  assert(rendered, 'Home news list missing');
-  for (const item of news) {
-    assert(content(rendered).includes(item.title), `${item.id}: missing from Home`);
-    assert(content(rendered).includes(item.category), `${item.id}: category missing from Home`);
+  const home = byAttr(documents.get('/'), 'data-home-news')[0];
+  const archive = documents.get('/news/');
+  assert(byTag(home, 'a').some(link => attr(link, 'href') === '/news/' && content(link) === 'More news'));
+  for (const [page, items, heading] of [[home, news.slice(0, 3), 'h3'], [archive, news, 'h2']]) {
+    const entries = byTag(page, 'article');
+    assert.deepEqual(entries.map(node => attr(node, 'id')), items.map(item => `news-${item.id}`));
+    for (const [index, item] of items.entries()) {
+      assert.equal(content(byTag(entries[index], heading)[0]), item.title);
+      assert.equal(attr(byTag(entries[index], 'time')[0], 'datetime'), item.date);
+      assert(content(entries[index]).includes(item.category));
+    }
   }
 });
 
@@ -455,7 +455,8 @@ test('People is the current navigation item on both People routes', () => {
   for (const [route, document] of documents) {
     for (const nav of byTag(document, 'nav').filter(node => attr(node, 'aria-label') === 'Main navigation')) {
       const current = byTag(nav, 'a').filter(node => attr(node, 'aria-current') === 'page').map(node => attr(node, 'href'));
-      const expected = route === '/' ? [] : [route === profileRoute ? '/people/' : route];
+      const destination = route === profileRoute ? '/people/' : route;
+      const expected = navRoutes.includes(destination) ? [destination] : [];
       assert.deepEqual(current, expected, `${route}: current navigation item`);
     }
   }
@@ -691,7 +692,7 @@ test('lab-authored copy spells "decision-making" one way', async () => {
 test('page purpose stays independent of catalogue topics and agrees across discovery surfaces', async () => {
   const llms = await readFile(path.join(root, 'dist/llms.txt'), 'utf8');
   const pageIndex = llms.split('## Pages\n')[1].split('## Research directions\n')[0];
-  const labels = new Map([['/research/', 'Research'], ['/publications/', 'Publications'], ['/teaching/', 'Teaching'], ['/contact/', 'Contact']]);
+  const labels = new Map([['/research/', 'Research'], ['/publications/', 'Publications'], ['/teaching/', 'Teaching'], ['/contact/', 'Contact'], ['/news/', 'News']]);
   for (const [route, label] of labels) {
     const document = documents.get(route);
     const description = meta(document, 'description')[0];

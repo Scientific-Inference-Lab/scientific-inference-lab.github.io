@@ -1,0 +1,56 @@
+---
+import { ArrowRight } from '@lucide/svelte';
+import type { loadContent } from '../lib/content';
+
+interface Props {
+  items: Awaited<ReturnType<typeof loadContent>>['news'];
+  heading: 'h2' | 'h3';
+}
+
+const { items, heading: Heading } = Astro.props;
+const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+---
+
+<div class="news-list">
+  {items.map(item => (
+    <article class="news-item" id={`news-${item.id}`}>
+      <div class="news-meta">
+        <time datetime={item.date}>{monthLabel.format(new Date(`${item.date}-01T00:00:00Z`))}</time>
+        <span>{item.category}</span>
+      </div>
+      <div>
+        <Heading>
+          {item.publicationId
+            ? <a href={`/publications/#${item.publicationId}`}>{item.title}<ArrowRight size={17} aria-hidden="true" /></a>
+            : item.title}
+        </Heading>
+        <p>{item.text}</p>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .news-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: .625rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .news-item:first-child { padding-top: 0; }
+  .news-meta { display: flex; flex-wrap: wrap; gap: .375rem .75rem; font-size: .8125rem; color: var(--color-muted); }
+  .news-meta span { font-weight: 600; }
+  .news-meta time[data-recent] { color: var(--color-action); font-weight: 700; }
+  .news-item :is(h2, h3) { font-size: 1.125rem; line-height: 1.4; }
+  .news-item a { display: block; min-height: 44px; padding-block: .375rem; }
+  .news-item a :global(svg) { display: inline-block; vertical-align: middle; margin-inline-start: .35rem; color: var(--color-action); }
+  .news-item a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .2em; }
+  .news-item p { margin-top: .375rem; max-width: var(--measure-prose); line-height: 1.65; }
+  @media (min-width: 60rem) {
+    .news-item { grid-template-columns: 7rem minmax(0, 1fr); gap: 1.5rem; }
+    .news-meta { display: block; padding-top: .25rem; }
+    .news-meta time, .news-meta span { display: block; }
+    .news-meta span { margin-top: .25rem; }
+  }
+</style>

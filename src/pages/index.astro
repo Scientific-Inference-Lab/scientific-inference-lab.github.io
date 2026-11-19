@@ -2,6 +2,7 @@
 import { ArrowRight } from '@lucide/svelte';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import HomeResearch from '../components/HomeResearch.svelte';
+import NewsList from '../components/NewsList.astro';
 import { loadContent } from '../lib/content';
 import { site, joinUs } from '../lib/data/lab';
 const { programs, news } = await loadContent();
@@ -23,11 +24,12 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
 
   <HomeResearch programs={topics} />
 
-  <section class="news-band" aria-labelledby="news-heading">
+  <section class="news-band" aria-labelledby="news-heading" data-home-news>
     <div class="wrap news-layout">
       <div class="news-heading"><h2 id="news-heading">Latest news</h2></div>
-      <div class="news-list">
-        {news.map(item => <article class="news-item"><div class="news-meta"><time datetime={item.date}>{new Date(`${item.date}-01T00:00:00Z`).toLocaleDateString('en-US',{ month:'short', year:'numeric',timeZone:'UTC' })}</time><span>{item.category}</span></div><div><h3>{item.publicationId ? <a href={`/publications/#${item.publicationId}`}>{item.title}<ArrowRight size={17} /></a> : item.title}</h3><p>{item.text}</p></div></article>)}
+      <div class="news-content">
+        <NewsList items={news.slice(0, 3)} heading="h3" />
+        <a class="text-link more-news" href="/news/">More news <ArrowRight size={17} aria-hidden="true" /></a>
       </div>
     </div>
   </section>
@@ -39,6 +41,29 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
     </div>
   </section>
 </SiteLayout>
+<script>
+  const calendar = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+  });
+
+  function updateRecentNews() {
+    const parts = calendar.formatToParts(new Date());
+    const year = Number(parts.find(part => part.type === 'year')?.value);
+    const month = Number(parts.find(part => part.type === 'month')?.value);
+    const currentMonth = year * 12 + month;
+
+    for (const time of document.querySelectorAll<HTMLTimeElement>('[data-home-news] time[datetime]')) {
+      const [itemYear, itemMonth] = time.dateTime.split('-').map(Number);
+      const age = currentMonth - (itemYear * 12 + itemMonth);
+      time.toggleAttribute('data-recent', age === 0 || age === 1);
+    }
+  }
+
+  updateRecentNews();
+  window.addEventListener('pageshow', updateRecentNews);
+</script>
 <style>
   .home-intro { container: home-intro / inline-size; padding-block: 2.75rem 0; }
   .intro-layout { display: grid; grid-template-columns: minmax(0,1fr); align-items: start; gap: 2rem; }
@@ -53,18 +78,8 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   .news-band { container: home-news / inline-size; border-block: 1px solid var(--color-line); padding-block: 3.5rem; }
   .news-layout { display: grid; grid-template-columns: minmax(0,1fr); gap: 2rem; }
   .news-heading h2 { font-size: 2rem; line-height: 1.2; }
-  .news-heading > p { margin-top: .875rem; color: var(--color-muted); }
-  .news-list { min-width: 0; }
-  .news-item { display: grid; grid-template-columns: minmax(0,1fr); gap: .625rem; padding-block: 1.25rem; border-bottom: 1px solid var(--color-line); }
-  .news-item:first-child { padding-top: 0; }
-  .news-item:last-child { border: 0; padding-bottom: 0; }
-  .news-meta { display: flex; flex-wrap: wrap; gap: .375rem .75rem; font-size: .8125rem; color: var(--color-muted); }
-  .news-meta span { font-weight: 600; }
-  .news-item h3 { font-size: 1.125rem; line-height: 1.4; }
-  .news-item a { display: block; min-height: 44px; padding-block: .375rem; }
-  .news-item a :global(svg) { display: inline-block; vertical-align: middle; margin-left: .35rem; color: var(--color-action); }
-  .news-item a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .2em; }
-  .news-item p { margin-top: .375rem; max-width: var(--measure-prose); line-height: 1.65; }
+  .news-content { min-width: 0; }
+  .more-news { margin-top: .8rem; text-decoration: underline; text-underline-offset: .22em; }
   .inquiry { container: home-inquiry / inline-size; padding-top: 3.5rem; }
   .inquiry-layout { display: grid; grid-template-columns: minmax(0,1fr); gap: 1.5rem; align-items: center; }
   .inquiry h2 { font-size: 1.75rem; line-height: 1.25; }
@@ -82,11 +97,7 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
   @container home-news (min-width: 60rem) {
     .news-layout { grid-template-columns: minmax(0,.8fr) minmax(0,2fr); gap: 4rem; }
     .news-heading { grid-column: 1; }
-    .news-list { grid-column: 2; grid-row: 1; }
-    .news-item { grid-template-columns: 7rem minmax(0,1fr); gap: 1.5rem; }
-    .news-meta { display: block; padding-top: .25rem; }
-    .news-meta time,.news-meta span { display: block; }
-    .news-meta span { margin-top: .25rem; }
+    .news-content { grid-column: 2; grid-row: 1; }
   }
   @container home-inquiry (min-width: 48rem) {
     .inquiry-layout { grid-template-columns: minmax(0,1fr) auto; gap: 4rem; }

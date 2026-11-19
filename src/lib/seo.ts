@@ -3,7 +3,7 @@ import type { loadContent } from './content';
 import type { Publication } from './data/publications';
 
 type Content = Awaited<ReturnType<typeof loadContent>>;
-export type PageKind = 'home' | 'research' | 'publications' | 'teaching' | 'people' | 'profile' | 'contact';
+export type PageKind = 'home' | 'research' | 'publications' | 'teaching' | 'people' | 'profile' | 'contact' | 'news';
 
 // Google Analytics 4 configuration for the production host.
 export const analytics = { id: 'G-H8EZQ381WH', hostname: new URL(site.url).hostname } as const;
@@ -80,7 +80,7 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
   const memberRef = (id: string) => ({ '@id': url(`/people/#member-${id}`) });
   const profilePath = '/people/yongkyung-oh/';
   const topics = programs.map(program => program.title);
-  const pageTypes: Record<PageKind, string> = { home: 'WebPage', research: 'WebPage', publications: 'CollectionPage', teaching: 'CollectionPage', people: 'CollectionPage', profile: 'ProfilePage', contact: 'ContactPage' };
+  const pageTypes: Record<PageKind, string> = { home: 'WebPage', research: 'WebPage', publications: 'CollectionPage', teaching: 'CollectionPage', people: 'CollectionPage', profile: 'ProfilePage', contact: 'ContactPage', news: 'CollectionPage' };
   const webpage = {
     '@type': pageTypes[kind],
     '@id': url(`${page.path}#webpage`),
