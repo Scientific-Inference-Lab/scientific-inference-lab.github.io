@@ -19,9 +19,10 @@ const selectedRecognition = [
   return { id: publication.id, venue: publication.venue, year: publication.year, label };
 });
 // A research award links to its paper only on an exact (case-insensitive) title match.
-const awardLinks = Object.fromEntries(pi.awards.flatMap(award => {
-  const publication = publications.find(item => item.title.toLowerCase() === award.paper.toLowerCase());
-  return publication ? [[award.paper, publication.id]] : [];
+const awardLinks = Object.fromEntries(pi.awards.flatMap(({ paper }) => {
+  if (!paper) return [];
+  const publication = publications.find(item => item.title.toLowerCase() === paper.toLowerCase());
+  return publication ? [[paper, publication.id]] : [];
 }));
 ---
 <SiteLayout title={pi.name} description="YongKyung Oh, principal investigator of Scientific Inference Lab." image={portrait.src}>

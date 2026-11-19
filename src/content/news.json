@@ -1,5 +1,19 @@
 [
   {
+    "id": "google-tpu-research-cloud",
+    "date": "2026-11",
+    "category": "Grant",
+    "title": "Google TPU Research Cloud provides computing support",
+    "text": "Google’s TPU Research Cloud provided in-kind access to Cloud TPUs for the lab, with YongKyung Oh as principal investigator. Access was confirmed in November 2026."
+  },
+  {
+    "id": "kiie-wooheon-selection",
+    "date": "2026-11",
+    "category": "Award",
+    "title": "YongKyung Oh selected for the Wooheon early-career researcher award",
+    "text": "The Korean Institute of Industrial Engineers (KIIE) selected YongKyung Oh for its Wooheon early-career researcher award in November 2026."
+  },
+  {
     "id": "lab-opens",
     "date": "2026-09",
     "category": "Lab",
@@ -21,12 +35,5 @@
     "title": "Evidence standards at ICML 2026",
     "text": "A sole-authored position paper on evidence standards for machine learning was presented at ICML 2026.",
     "publicationId": "evidence-standards"
-  },
-  {
-    "id": "nvidia-academic-grant",
-    "date": "2026-06",
-    "category": "Grant",
-    "title": "Selected for the NVIDIA Academic Grant Program",
-    "text": "The Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework project, with Alex Bui at UCLA Medical Imaging Informatics, was selected for the NVIDIA Academic Grant Program."
   }
 ]

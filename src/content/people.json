@@ -21,6 +21,12 @@
     ],
     "awards": [
       {
+        "title": "Selected for the Wooheon early-career researcher award",
+        "organizer": "Korean Institute of Industrial Engineers (KIIE)",
+        "month": "November",
+        "year": 2026
+      },
+      {
         "title": "Energy Analytics Challenge Finalist",
         "paper": "Transform-First Forecasting for County-Level Power Outages",
         "organizer": "Energy Systems Division (ESD), Institute of Industrial and Systems Engineers (IISE) Annual Conference & Expo",
@@ -94,13 +100,21 @@
     ],
     "grants": [
       {
+        "title": "Google TPU Research Cloud",
+        "sponsor": "Google",
+        "year": 2026,
+        "period": "November 2026–May 2027 (expected end)",
+        "role": "Principal Investigator",
+        "description": "In-kind access to Cloud TPUs."
+      },
+      {
         "title": "NVIDIA Academic Grant Program",
         "sponsor": "NVIDIA",
         "year": 2026,
         "role": "Lead Scientist on the project team",
         "project": "Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework",
         "principalInvestigator": "Alex A. T. Bui, UCLA",
-        "period": "2026",
+        "period": "July–December 2026",
         "projectLabel": "Project"
       },
       {
@@ -250,7 +264,7 @@
     ],
     "appointments": [
       {
-        "period": "2023-2026",
+        "period": "September 2023–August 2026",
         "role": "Postdoctoral Researcher",
         "where": "Medical and Imaging Informatics, David Geffen School of Medicine, University of California, Los Angeles"
       },

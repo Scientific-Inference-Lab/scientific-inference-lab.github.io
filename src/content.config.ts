@@ -42,7 +42,7 @@ const people = defineCollection({
   schema: z.object({ name: text, role: text, affiliation: text, photoAlt: text,
     shortBio: text, bio: text, email: z.email(), phone: text, office: text,
     honors: z.array(z.object({ title: text, organizer: text, month: text, year: z.number().int(), detail: text.optional() })),
-    awards: z.array(z.object({ title: text, paper: text, organizer: text, month: text, year: z.number().int(), note: text.optional() })),
+    awards: z.array(z.object({ title: text, paper: text.optional(), organizer: text, month: text, year: z.number().int(), note: text.optional() })),
     patents: z.array(z.object({ title: text,
       filings: z.array(z.object({ office: z.enum(['KR', 'JP', 'US']), number: text, status: z.enum(['granted', 'applied']), date: text })).min(1),
       jointApplicants: text.optional() })),
