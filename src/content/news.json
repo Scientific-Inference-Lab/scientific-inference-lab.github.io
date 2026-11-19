@@ -14,6 +14,17 @@
     "text": "Google’s TPU Research Cloud provided in-kind access to Cloud TPUs for the lab, with YongKyung Oh as principal investigator. Access was confirmed in November 2026."
   },
   {
+    "id": "us-time-series-image-encoding-patent",
+    "date": "2026-09",
+    "category": "Patent",
+    "title": "U.S. patent granted for time-series image encoding",
+    "text": "A U.S. patent on encoding time-series data as images, co-invented by the lab’s PI, was issued to UNIST on September 1, 2026 (US 12,725,326 B2).",
+    "source": {
+      "label": "USPTO Official Gazette",
+      "url": "https://patentsgazette.uspto.gov/week35/OG/html/1550-1/US12725326-20260901.html"
+    }
+  },
+  {
     "id": "lab-opens",
     "date": "2026-09",
     "category": "Lab",

@@ -225,6 +225,11 @@ test('Home shows the three latest news items and links to the complete archive',
       assert.equal(content(byTag(entries[index], heading)[0]), item.title);
       assert.equal(attr(byTag(entries[index], 'time')[0], 'datetime'), item.date);
       assert(content(entries[index]).includes(item.category));
+      if (item.source) {
+        const sourceLink = byAttr(entries[index], 'href', item.source.url);
+        assert.equal(sourceLink.length, 1);
+        assert.equal(content(sourceLink[0]), item.source.label);
+      }
     }
   }
 });

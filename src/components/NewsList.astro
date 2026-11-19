@@ -25,6 +25,7 @@ const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'num
             : item.title}
         </Heading>
         <p>{item.text}</p>
+        {item.source && <a class="text-link news-source" href={item.source.url}>{item.source.label}</a>}
       </div>
     </article>
   ))}
@@ -47,6 +48,7 @@ const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'num
   .news-item a :global(svg) { display: inline-block; vertical-align: middle; margin-inline-start: .35rem; color: var(--color-action); }
   .news-item a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .2em; }
   .news-item p { margin-top: .375rem; max-width: var(--measure-prose); line-height: 1.65; }
+  .news-item a.news-source { display: inline-flex; font-size: .875rem; text-decoration: underline; text-underline-offset: .22em; }
   @media (min-width: 60rem) {
     .news-item { grid-template-columns: 7rem minmax(0, 1fr); gap: 1.5rem; }
     .news-meta { display: block; padding-top: .25rem; }
