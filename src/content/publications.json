@@ -390,10 +390,6 @@
       {
         "type": "slide",
         "url": "https://drive.google.com/file/d/1Xl20xFrXKzZQyoQJZHxAKutLO3RbgUzn"
-      },
-      {
-        "type": "workshop",
-        "url": "https://keyplay.github.io/ijcai2024_workshop/"
       }
     ],
     "bibtex": "@inproceedings{oh_deep_2025,\n\tauthor       = {Oh, YongKyung and Kim, Sungil and Bui, Alex A. T.},\n\ttitle        = {Deep Interaction Feature Fusion for Robust Human Activity Recognition},\n\tbooktitle    = {Human Activity Recognition and Anomaly Detection},\n\tpages        = {99-116},\n\tpublisher    = {Springer Nature},\n\taddress      = {Singapore},\n\tyear         = 2025,\n\tdoi          = {10.1007/978-981-97-9003-6\\_7},\n\tdate         = {2025-00-00 2025},\n}\n",
