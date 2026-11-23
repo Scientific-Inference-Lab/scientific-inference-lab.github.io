@@ -16,6 +16,9 @@ const displayedDistinctions = [
   ...displayedAwards.map(award => ({ ...award, isAward: true, detail: undefined })),
 ].sort((a, b) => monthOrder(b) - monthOrder(a));
 const remainingAwards = pi.awards.filter(award => !displayedAwards.includes(award));
+const patentMonth = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
+  patentMonth.format(Math.max(...filings.map(({ date }) => Date.parse(`${date} UTC`))));
 ---
 <section class="bg-canvas py-12 sm:py-16" aria-labelledby="recognition-heading">
   <div class="wrap recognition-container">
@@ -96,7 +99,7 @@ const remainingAwards = pi.awards.filter(award => !displayedAwards.includes(awar
         <ul class="recognition-list">
           {pi.patents.map(patent => (
             <li class="recognition-row" data-patent>
-              <p class="recognition-meta">{Math.max(...patent.filings.map(({ date }) => Number(date.slice(-4))))}</p>
+              <p class="recognition-meta">{latestPatentDate(patent.filings)}</p>
               <div class="min-w-0">
                 <h4 class="recognition-title">{patent.title}</h4>
                 {patent.filings.map(filing => <p class="recognition-detail">{filing.office} {filing.number}, {filing.status} {filing.date}</p>)}
