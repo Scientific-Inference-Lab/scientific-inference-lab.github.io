@@ -31,6 +31,7 @@ const publications = defineCollection({
     year: z.number().int().min(1900), date: text.regex(/^\d{4}(?:-(?:0[1-9]|1[0-2])(?:-(?:0[1-9]|[12]\d|3[01]))?)?$/).optional(),
     order: z.number().int().nonnegative(), category: z.enum(['conference', 'journal']),
     dateType: z.enum(['publication', 'presentation']).optional(),
+    publishedOnline: z.iso.date().optional(),
     status: z.enum(['accepted', 'published']), type: text, recognition: text.optional(),
     presentationStatus: z.literal('presented').optional(),
     bibliographyStatus: z.literal('final-metadata-pending').optional(),

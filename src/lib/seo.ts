@@ -27,13 +27,14 @@ function postalAddress(pi: Content['pi']) {
   return { '@type': 'PostalAddress', streetAddress: `${pi.office}, ${street}`, addressLocality: locality, addressRegion: region, postalCode, addressCountry: 'KR' };
 }
 
-const doi = (publication: Publication) => publication.bibtex?.match(/\bdoi\s*=\s*\{([^}]+)\}/i)?.[1];
+const doi = (publication: Publication) => publication.bibtex?.match(/\bdoi\s*=\s*\{([^}]+)\}/i)?.[1]?.replace(/\\_/g, '_');
 
 // only a bibliographic date is a publication date. A canonical date
 // is used as is; a CV presentation month is never emitted, and falls back to
 // an explicit canonical BibTeX year when one exists.
 function publicationDate(publication: Publication) {
   if (publication.status !== 'published') return undefined;
+  if (publication.publishedOnline) return publication.publishedOnline;
   if (publication.dateType === 'publication') return publication.date;
   return publication.bibtex?.match(/\byear\s*=\s*\{?(\d{4})\}?/i)?.[1];
 }
@@ -41,13 +42,14 @@ function publicationDate(publication: Publication) {
 function article(publication: Publication, pi: Content['pi']) {
   const identifier = doi(publication);
   const published = publicationDate(publication);
+  const bookChapter = publication.type === 'Book chapter';
   return {
-    '@type': 'ScholarlyArticle',
+    '@type': bookChapter ? 'Chapter' : 'ScholarlyArticle',
     '@id': url(`/publications/#${publication.id}`),
     headline: publication.title,
     name: publication.title,
     author: publication.authors.map(name => name === pi.name ? { '@id': ids.pi } : { '@type': 'Person', name }),
-    isPartOf: { '@type': publication.category === 'journal' ? 'Periodical' : 'CreativeWork', name: publication.venueName, alternateName: publication.venue },
+    isPartOf: { '@type': bookChapter ? 'Book' : publication.category === 'journal' ? 'Periodical' : 'CreativeWork', name: publication.venueName, alternateName: publication.venue },
     ...(published ? { datePublished: published } : {}),
     url: publication.url,
     ...(identifier ? { sameAs: `https://doi.org/${identifier}` } : {}),
@@ -74,7 +76,7 @@ function course(entry: Content['courses'][number]) {
 // One JSON-LD graph per page. It restates facts that the site already shows
 // (no telephone number, no names absent from the pages).
 export function structuredData(kind: PageKind, page: { path: string; title: string; description: string }, content: Content, image?: string) {
-  const { pi, programs, publications, courses } = content;
+  const { pi, programs, publications, courses, recognition } = content;
   // The prospective-student card is a page placeholder, not a person.
   const members = content.members.filter(member => !member.placeholder);
   const memberRef = (id: string) => ({ '@id': url(`/people/#member-${id}`) });
@@ -126,7 +128,7 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
         worksFor: [{ '@id': ids.lab }, { '@id': ids.university }],
         affiliation: { '@id': ids.school },
         alumniOf: [...new Set(pi.education.map(entry => entry.where))].map(name => ({ '@type': 'CollegeOrUniversity', name })),
-        award: [...pi.honors, ...pi.awards].map(item => `${item.title}, ${item.organizer}, ${item.year}`),
+        award: recognition.map(item => `${item.title}, ${item.organizer}, ${item.month} ${item.year}`),
         knowsAbout: topics,
         sameAs: getPersonProfileUrls(),
         ...(image ? { image } : {}),

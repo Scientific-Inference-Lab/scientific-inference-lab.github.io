@@ -591,7 +591,7 @@ test('search metadata and structured data restate the visible site', async () =>
     assert.equal(item.name, record.title, `${id}: title`);
     // a CV presentation month is not a publication date.
     const bibtexYear = record.bibtex?.match(/\byear\s*=\s*\{?(\d{4})\}?/i)?.[1];
-    const expected = record.status !== 'published' ? undefined : record.dateType === 'publication' ? record.date : bibtexYear;
+    const expected = record.status !== 'published' ? undefined : record.publishedOnline ?? (record.dateType === 'publication' ? record.date : bibtexYear);
     assert.equal(item.datePublished, expected, `${id}: datePublished must come from a bibliographic source`);
     if (record.dateType === 'presentation' && record.date) assert.notEqual(item.datePublished, record.date, `${id}: presentation month emitted as publication date`);
   }

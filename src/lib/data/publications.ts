@@ -9,6 +9,7 @@ export interface Publication {
   year: number;
   date?: string;
   dateType?: 'publication' | 'presentation';
+  publishedOnline?: string;
   order: number;
   category: 'conference' | 'journal';
   status: 'accepted' | 'published';

@@ -140,7 +140,7 @@
         "sponsor": "Korea Health Industry Development Institute (KHIDI)",
         "year": 2023,
         "period": "Sep 2023–Aug 2024",
-        "role": "Researcher & Trainee",
+        "role": "Visiting Postdoctoral Researcher",
         "description": "Selective program supporting collaborative research between UNIST and the UCLA David Geffen School of Medicine."
       },
       {
@@ -148,7 +148,7 @@
         "sponsor": "Institute for Information & Communication Technology Planning & Evaluation (IITP)",
         "year": 2020,
         "period": "Jan–Jul 2020",
-        "role": "Researcher & Trainee",
+        "role": "Trainee",
         "description": "Competitive, fully funded program for intensive training at Carnegie Mellon University (CMU)."
       }
     ],
@@ -178,6 +178,12 @@
             "number": "10-2024-0033382",
             "status": "applied",
             "date": "March 8, 2024"
+          },
+          {
+            "office": "KR",
+            "number": "10-2932931",
+            "status": "granted",
+            "date": "February 25, 2026"
           }
         ]
       },
@@ -283,7 +289,7 @@
       },
       {
         "period": "Jan–Jul 2020",
-        "role": "Intensive AI Program (High-Potential Individuals Global Training Program)",
+        "role": "Visiting Student and Researcher",
         "where": "Carnegie Mellon University"
       },
       {

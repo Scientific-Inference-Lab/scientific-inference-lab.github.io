@@ -1,6 +1,6 @@
 ---
 import { ArrowRight } from '@lucide/svelte';
-import type { loadContent } from '../lib/content';
+import { monthOrder, type loadContent } from '../lib/content';
 
 interface RecognitionItem { id: string; venue: string; year: number; label: string; }
 interface Props {
@@ -9,8 +9,6 @@ interface Props {
   awardLinks: Record<string, string>;
 }
 const { pi, recognition, awardLinks } = Astro.props;
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-const monthOrder = ({ year, month }: { year: number; month: string }) => year * 12 + months.indexOf(month);
 const newestHonor = Math.max(...pi.honors.map(monthOrder));
 const displayedAwards = pi.awards.filter(award => monthOrder(award) > newestHonor);
 const displayedDistinctions = [

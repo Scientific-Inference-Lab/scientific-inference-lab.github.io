@@ -6,7 +6,7 @@ import { loadContent } from '../lib/content';
 // Plain-text site summary for language-model retrieval (llmstxt.org format),
 // generated from the same records as the pages.
 export const GET: APIRoute = async () => {
-  const { pi, programs, publications, courses } = await loadContent();
+  const { pi, programs, publications, courses, recognition } = await loadContent();
   const url = (path: string) => new URL(path, site.url).href;
   const lines = [
     `# ${site.name}`,
@@ -44,7 +44,7 @@ export const GET: APIRoute = async () => {
     '',
     '## Recognition',
     '',
-    ...[...pi.honors, ...pi.awards].map(item => `- ${item.title}, ${item.organizer}, ${item.month} ${item.year}.`),
+    ...recognition.map(item => `- ${item.title}, ${item.organizer}, ${item.month} ${item.year}.`),
     '',
     '## Patents',
     '',
