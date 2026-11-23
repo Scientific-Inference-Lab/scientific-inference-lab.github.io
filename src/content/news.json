@@ -4,18 +4,14 @@
     "date": "2026-12",
     "category": "Award",
     "title": "YongKyung Oh to receive the Wooheon early-career researcher award",
-    "text": "The Korean Institute of Industrial Engineers (KIIE) selected YongKyung Oh in November 2026 and is scheduled to present the award in December 2026."
+    "text": "The Korean Institute of Industrial Engineers (KIIE) will present the award."
   },
   {
     "id": "kisti-hangang-allocation",
     "date": "2026-11",
     "category": "Computing support",
     "title": "Lab awarded computing time on KISTI’s HANGANG supercomputer",
-    "text": "KISTI selected a project led by YongKyung Oh at Pusan National University for the Exploratory Research track of its R&D Innovation Program. The allocation runs from December 2026 through March 2027.",
-    "source": {
-      "label": "KISTI HANGANG user guide",
-      "url": "https://docs-ksc.gitbook.io/hangang-user-guide/system/hangang-system-overview-and-configuration"
-    }
+    "text": "KISTI selected a project led by YongKyung Oh at Pusan National University for the Exploratory Research track of its R&D Innovation Program. The allocation runs from December 2026 through March 2027."
   },
   {
     "id": "google-tpu-research-cloud",

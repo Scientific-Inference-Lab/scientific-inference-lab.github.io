@@ -9,18 +9,33 @@ interface Props {
   awardLinks: Record<string, string>;
 }
 const { pi, recognition, awardLinks } = Astro.props;
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const monthOrder = ({ year, month }: { year: number; month: string }) => year * 12 + months.indexOf(month);
+const newestHonor = Math.max(...pi.honors.map(monthOrder));
+const displayedAwards = pi.awards.filter(award => monthOrder(award) > newestHonor);
+const displayedDistinctions = [
+  ...pi.honors.map(honor => ({ ...honor, isAward: false, paper: undefined, note: undefined })),
+  ...displayedAwards.map(award => ({ ...award, isAward: true, detail: undefined })),
+].sort((a, b) => monthOrder(b) - monthOrder(a));
+const remainingAwards = pi.awards.filter(award => !displayedAwards.includes(award));
 ---
 <section class="bg-canvas py-12 sm:py-16" aria-labelledby="recognition-heading">
   <div class="wrap recognition-container">
     <h2 id="recognition-heading" class="recognition-title-main font-bold">Recognition</h2>
     <div class="recognition-items">
       <section class="recognition-group" aria-labelledby="honors-heading">
-        <h3 id="honors-heading" class="recognition-group-title">Honors</h3>
+        <h3 id="honors-heading" class="recognition-group-title">Honors and recent awards</h3>
         <ul class="line-list">
-          {pi.honors.map(honor => (
-            <li class="line-row" data-honor>
-              <span class="recognition-meta">{honor.month.slice(0, 3)} {honor.year}</span>
-              <span class="line-main"><strong class="line-title">{honor.title}</strong><span class="recognition-source"> · {honor.detail ? `${honor.detail}, ` : ''}{honor.organizer}</span></span>
+          {displayedDistinctions.map(entry => (
+            <li class="line-row" data-honor={entry.isAward ? undefined : true} data-award={entry.isAward ? true : undefined}>
+              <span class="recognition-meta">{entry.month.slice(0, 3)} {entry.year}</span>
+              <span class="line-main">
+                <strong class="line-title">{entry.title}</strong><span class="recognition-source"> · {entry.detail ? `${entry.detail}, ` : ''}{entry.organizer}</span>
+                {entry.paper && <span class="recognition-detail block">{awardLinks[entry.paper]
+                  ? <a href={`/publications/#${awardLinks[entry.paper]}`} class="recognition-link">{entry.paper}<ArrowRight size={17} aria-hidden="true" /></a>
+                  : entry.paper}</span>}
+                {entry.note && <span class="recognition-detail block">{entry.note}</span>}
+              </span>
             </li>
           ))}
         </ul>
@@ -62,7 +77,7 @@ const { pi, recognition, awardLinks } = Astro.props;
       <details class="recognition-details" data-recognition-details="awards">
         <summary>Research awards</summary>
         <ul class="recognition-list">
-          {pi.awards.map(award => (
+          {remainingAwards.map(award => (
             <li class="recognition-row" data-award>
               <p class="recognition-meta">{award.month.slice(0, 3)} {award.year}</p>
               <div class="min-w-0">

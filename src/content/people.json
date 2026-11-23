@@ -24,8 +24,7 @@
         "title": "Wooheon early-career researcher award",
         "organizer": "Korean Institute of Industrial Engineers (KIIE)",
         "month": "December",
-        "year": 2026,
-        "note": "Selected in November 2026. The award is scheduled to be presented in December 2026."
+        "year": 2026
       },
       {
         "title": "Energy Analytics Challenge Finalist",
@@ -100,6 +99,14 @@
       }
     ],
     "grants": [
+      {
+        "title": "KISTI HANGANG Supercomputing Allocation",
+        "sponsor": "Korea Institute of Science and Technology Information (KISTI)",
+        "year": 2026,
+        "period": "Dec 2026–Mar 2027",
+        "role": "Principal Investigator",
+        "description": "In-kind computing support through the R&D Innovation Program (Exploratory Research)."
+      },
       {
         "title": "Google TPU Research Cloud",
         "sponsor": "Google",
