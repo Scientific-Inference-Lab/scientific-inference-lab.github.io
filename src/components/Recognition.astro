@@ -19,7 +19,7 @@ const { pi, recognition, awardLinks } = Astro.props;
         <ul class="line-list">
           {pi.honors.map(honor => (
             <li class="line-row" data-honor>
-              <span class="recognition-meta">{honor.month} {honor.year}</span>
+              <span class="recognition-meta">{honor.month.slice(0, 3)} {honor.year}</span>
               <span class="line-main"><strong class="line-title">{honor.title}</strong><span class="recognition-source"> · {honor.detail ? `${honor.detail}, ` : ''}{honor.organizer}</span></span>
             </li>
           ))}
@@ -64,7 +64,7 @@ const { pi, recognition, awardLinks } = Astro.props;
         <ul class="recognition-list">
           {pi.awards.map(award => (
             <li class="recognition-row" data-award>
-              <p class="recognition-meta">{award.month} {award.year}</p>
+              <p class="recognition-meta">{award.month.slice(0, 3)} {award.year}</p>
               <div class="min-w-0">
                 <h4 class="recognition-title">{award.title}</h4>
                 {award.paper && (awardLinks[award.paper]
@@ -83,7 +83,7 @@ const { pi, recognition, awardLinks } = Astro.props;
         <ul class="recognition-list">
           {pi.patents.map(patent => (
             <li class="recognition-row" data-patent>
-              <p class="recognition-meta">{patent.filings[0].date.slice(-4)}</p>
+              <p class="recognition-meta">{Math.max(...patent.filings.map(({ date }) => Number(date.slice(-4))))}</p>
               <div class="min-w-0">
                 <h4 class="recognition-title">{patent.title}</h4>
                 {patent.filings.map(filing => <p class="recognition-detail">{filing.office} {filing.number}, {filing.status} {filing.date}</p>)}

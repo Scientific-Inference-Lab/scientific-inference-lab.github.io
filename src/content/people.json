@@ -44,7 +44,7 @@
         "title": "Best Paper Competition Finalist",
         "paper": "Multi-scale Transformer for Long-term Time Series Forecasting",
         "organizer": "Data Analytics and Information Systems (DAIS) Division, IISE Annual Conference & Expo",
-        "month": "May",
+        "month": "June",
         "year": 2025,
         "note": "Recognized as a finalist for three consecutive years: 2023, 2024, and 2025."
       },
@@ -103,7 +103,7 @@
         "title": "Google TPU Research Cloud",
         "sponsor": "Google",
         "year": 2026,
-        "period": "November 2026–May 2027 (expected end)",
+        "period": "Nov 2026–May 2027 (expected end)",
         "role": "Principal Investigator",
         "description": "In-kind access to Cloud TPUs."
       },
@@ -114,14 +114,14 @@
         "role": "Lead Scientist on the project team",
         "project": "Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework",
         "principalInvestigator": "Alex A. T. Bui, UCLA",
-        "period": "July–December 2026",
+        "period": "Jul–Dec 2026",
         "projectLabel": "Project"
       },
       {
         "title": "Postdoctoral Fellowship for Overseas Research (Nurturing Next-generation Researchers)",
         "sponsor": "National Research Foundation of Korea (NRF)",
         "year": 2024,
-        "period": "2024-2025",
+        "period": "Sep 2024–Aug 2025",
         "role": "Principal Investigator",
         "project": "Approach to Detect Distribution Shifts Over Time and Evaluate Model Trustworthy with Retraining in Longitudinal Medical Data",
         "context": "Postdoctoral fellowship held at UCLA before joining Pusan National University",
@@ -131,7 +131,7 @@
         "title": "Biomedical UniStar Training Program",
         "sponsor": "Korea Health Industry Development Institute (KHIDI)",
         "year": 2023,
-        "period": "2023-2024",
+        "period": "Sep 2023–Aug 2024",
         "role": "Researcher & Trainee",
         "description": "Selective program supporting collaborative research between UNIST and the UCLA David Geffen School of Medicine."
       },
@@ -139,7 +139,7 @@
         "title": "Intensive Program in Artificial Intelligence (High-Potential Individuals Global Training Program)",
         "sponsor": "Institute for Information & Communication Technology Planning & Evaluation (IITP)",
         "year": 2020,
-        "period": "2020",
+        "period": "Jan–Jul 2020",
         "role": "Researcher & Trainee",
         "description": "Competitive, fully funded program for intensive training at Carnegie Mellon University (CMU)."
       }
@@ -247,39 +247,39 @@
     "bio": "YongKyung Oh directs the Scientific Inference Lab, which develops machine learning methods for modeling, inference, and decision-making in scientific and engineering systems. Before joining Pusan National University, he was a postdoctoral researcher in the Medical and Imaging Informatics group at the David Geffen School of Medicine, University of California, Los Angeles (UCLA), where he developed machine learning methods for healthcare. He also conducted postdoctoral research at the Ulsan National Institute of Science and Technology (UNIST).",
     "education": [
       {
-        "period": "2017-2023",
+        "period": "Feb 2023",
         "degree": "Doctor of Philosophy in Industrial Engineering",
         "where": "Ulsan National Institute of Science and Technology"
       },
       {
-        "period": "2015-2017",
+        "period": "Feb 2017",
         "degree": "Master in Technology and Innovation Management",
         "where": "Ulsan National Institute of Science and Technology"
       },
       {
-        "period": "2011-2015",
+        "period": "Feb 2015",
         "degree": "Bachelor of Science in Physics",
         "where": "Ulsan National Institute of Science and Technology"
       }
     ],
     "appointments": [
       {
-        "period": "September 2023–August 2026",
+        "period": "Sep 2023–Aug 2026",
         "role": "Postdoctoral Researcher",
         "where": "Medical and Imaging Informatics, David Geffen School of Medicine, University of California, Los Angeles"
       },
       {
-        "period": "2023-2024",
+        "period": "Mar 2023–Nov 2024",
         "role": "Postdoctoral Researcher",
         "where": "Industry Intelligentization Institute, Ulsan National Institute of Science and Technology"
       },
       {
-        "period": "2020",
+        "period": "Jan–Jul 2020",
         "role": "Intensive AI Program (High-Potential Individuals Global Training Program)",
         "where": "Carnegie Mellon University"
       },
       {
-        "period": "2017",
+        "period": "Feb–Aug 2017",
         "role": "Visiting Scientist",
         "where": "General Motors Global Research and Development Center"
       }
