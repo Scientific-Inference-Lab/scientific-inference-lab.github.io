@@ -21,10 +21,11 @@
     ],
     "awards": [
       {
-        "title": "Selected for the Wooheon early-career researcher award",
+        "title": "Wooheon early-career researcher award",
         "organizer": "Korean Institute of Industrial Engineers (KIIE)",
-        "month": "November",
-        "year": 2026
+        "month": "December",
+        "year": 2026,
+        "note": "Selected in November 2026. The award is scheduled to be presented in December 2026."
       },
       {
         "title": "Energy Analytics Challenge Finalist",
@@ -103,7 +104,7 @@
         "title": "Google TPU Research Cloud",
         "sponsor": "Google",
         "year": 2026,
-        "period": "Nov 2026–May 2027 (expected end)",
+        "period": "Nov 2026–May 2027",
         "role": "Principal Investigator",
         "description": "In-kind access to Cloud TPUs."
       },
