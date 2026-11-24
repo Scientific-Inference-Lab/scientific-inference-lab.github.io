@@ -9,6 +9,11 @@ interface Props {
   awardLinks: Record<string, string>;
 }
 const { pi, recognition, awardLinks } = Astro.props;
+const supportGroups = [
+  { id: 'pnu', title: 'During the Pusan National University appointment' },
+  { id: 'postdoctoral', title: 'UCLA and UNIST postdoctoral support' },
+  { id: 'training', title: 'Earlier research training' },
+];
 const newestHonor = Math.max(...pi.honors.map(monthOrder));
 const displayedAwards = pi.awards.filter(award => monthOrder(award) > newestHonor);
 const displayedDistinctions = [
@@ -53,25 +58,27 @@ const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
         </ul>
       </section>
 
-      {/* grants and fellowships are shown in full, not folded. */}
-      <section class="recognition-group" aria-labelledby="grant-recognition-heading">
-        <h3 id="grant-recognition-heading" class="recognition-group-title">Grants and fellowships</h3>
-        <ul class="recognition-list">
-          {pi.grants.map(grant => (
-            <li class="recognition-row" data-grant>
-              <p class="recognition-meta">{grant.period}</p>
-              <div class="min-w-0">
-                <h4 class="recognition-title">{grant.title}</h4>
-                <p class="recognition-detail recognition-source">{grant.sponsor}</p>
-                <p class="recognition-detail">Role: {grant.role}</p>
-                {grant.project && <p class="recognition-detail">{grant.projectLabel}: {grant.project}</p>}
-                {grant.principalInvestigator && <p class="recognition-detail">Principal Investigator: {grant.principalInvestigator}</p>}
-                {grant.description && <p class="recognition-detail">{grant.description}</p>}
-                {grant.context && <p class="recognition-detail">{grant.context}</p>}
-              </div>
-            </li>
-          ))}
-        </ul>
+      <section class="recognition-group" id="research-support" aria-labelledby="grant-recognition-heading">
+        <h3 id="grant-recognition-heading" class="recognition-group-title">Research support &amp; training</h3>
+        {supportGroups.map(group => (
+          <div class="support-group">
+            <h4 class="support-heading">{group.title}</h4>
+            <ul class="recognition-list">
+              {pi.grants.filter(grant => grant.group === group.id).map(grant => (
+                <li class="recognition-row" id={grant.id} data-grant>
+                  <div class="min-w-0">
+                    <h5 class="recognition-title"><strong>{grant.sponsor}</strong> · {grant.title}</h5>
+                    <p class="recognition-detail">{grant.role}{grant.recipient && ` · ${grant.recipient}`}</p>
+                    {grant.project && <p class="recognition-detail">{grant.projectLabel}: {grant.project}</p>}
+                    {grant.principalInvestigator && <p class="recognition-detail">Principal Investigator: {grant.principalInvestigator}</p>}
+                    {grant.description && <p class="recognition-detail">{grant.description}</p>}
+                  </div>
+                  <p class="recognition-meta">{grant.period}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </section>
 
       <div class="recognition-folds">
@@ -152,11 +159,18 @@ const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
 
   .recognition-list { display: grid; gap: 1.25rem; padding: 0; margin: 0; list-style: none; }
   .recognition-row { display: grid; grid-template-columns: minmax(0,1fr); gap: .5rem; min-width: 0; }
+  .support-group + .support-group { margin-top: 1.5rem; }
+  .support-heading { margin-block: .75rem; font-size: .9375rem; color: var(--color-muted); }
+  .support-group .recognition-title { font-weight: 500; }
+  .support-group .recognition-title strong { font-weight: 700; }
+  .support-group .recognition-row { gap: .25rem; }
   .recognition-link { display: inline-block; min-height: 44px; padding-block: .5rem; color: var(--color-action); }
   .line-main .recognition-link { min-height: 44px; padding-block: .625rem; }
   .recognition-link:hover { text-decoration: underline; text-underline-offset: 4px; }
   .recognition-link :global(svg) { display: inline-block; width: .9em; height: .9em; margin-left: .375rem; vertical-align: -.1em; }
   @container recognition-items (min-width: 34rem) {
     .recognition-row { grid-template-columns: 11rem minmax(0,1fr); column-gap: 1.5rem; align-items: baseline; }
+    .support-group .recognition-row { grid-template-columns: minmax(0,1fr) 11rem; column-gap: 1.5rem; }
+    .support-group .recognition-meta { text-align: right; }
   }
 </style>

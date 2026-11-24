@@ -6,6 +6,7 @@
 
   type Entry = Program & {
     papers: (Pick<Publication, 'id' | 'title' | 'venue' | 'year' | 'recognition'> & { context: string })[];
+    support?: string[];
   };
   let { programs }: { programs: Entry[] } = $props();
 </script>
@@ -63,7 +64,12 @@
               <ul>{#each program.agenda ?? [] as topic}<li>{topic}</li>{/each}</ul>
             </section>
           </div>
-
+          {#if program.support}
+            <div class="research-support">
+              <h3>Research support</h3>
+              {#each program.support as statement}<p>{statement}</p>{/each}
+            </div>
+          {/if}
         </section>
       {/each}
       <p class="research-inquiry">
@@ -108,6 +114,9 @@
   .research-agenda ul { display: grid; gap: .625rem; margin: .875rem 0 0; padding-left: 1.125rem; list-style: disc; }
   .research-agenda li { padding-left: .125rem; color: var(--color-body); font-size: .9375rem; line-height: 1.55; }
   .research-agenda li::marker { color: var(--color-muted); }
+  .research-support { max-width: var(--measure-prose); margin-top: 1.5rem; }
+  .research-support h3 { font-size: 1rem; }
+  .research-support p { margin-top: .5rem; color: var(--color-body); line-height: 1.6; }
   .research-inquiry { margin-top: 2rem; }
   .research-inquiry .text-link { font-size: .875rem; }
   @container research-layout (min-width: 65rem) {

@@ -4,13 +4,19 @@ import PageHeader from '../components/PageHeader.astro';
 import { pageDescriptions } from '../lib/data/page-copy';
 import ResearchExplorer from '../components/ResearchExplorer.svelte';
 import { loadContent } from '../lib/content';
-const { programs, publications } = await loadContent();
+const { programs, publications, pi } = await loadContent();
+const kisti = pi.grants.find(grant => grant.id === 'kisti-hangang')!;
+const google = pi.grants.find(grant => grant.id === 'google-tpu')!;
 const entries = programs.map(program => ({
   ...program,
   papers: program.related.map(r => {
     const paper = publications.find(p => p.id === r.id)!;
     return { id: paper.id, title: paper.title, venue: paper.venue, year: paper.year, recognition: paper.recognition, context: r.label };
   }),
+  support: program.id === 'continuous-time-modeling' ? [
+    `KISTI awarded computing time on HANGANG (${kisti.period}) to a Pusan National University project led by YongKyung Oh on the robustness of neural differential equations to missing observations and irregular sampling.`,
+    `Google’s ${google.title} provides Cloud TPU access for the lab (${google.period}).`,
+  ] : undefined,
 }));
 ---
 <SiteLayout title="Research" description={pageDescriptions.research}>

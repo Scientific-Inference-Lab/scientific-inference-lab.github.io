@@ -12,7 +12,10 @@ const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'num
 ---
 
 <div class="news-list">
-  {items.map(item => (
+  {items.map(item => {
+    const href = item.tutorialId ? `/teaching/#${item.tutorialId}`
+      : item.publicationId ? `/publications/#${item.publicationId}` : undefined;
+    return (
     <article class="news-item" id={`news-${item.id}`}>
       <div class="news-meta">
         <time datetime={item.date}>{monthLabel.format(new Date(`${item.date}-01T00:00:00Z`))}</time>
@@ -20,15 +23,14 @@ const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'num
       </div>
       <div>
         <Heading>
-          {item.publicationId
-            ? <a href={`/publications/#${item.publicationId}`}>{item.title}<ArrowRight size={17} aria-hidden="true" /></a>
-            : item.title}
+          {href ? <a href={href}>{item.title}<ArrowRight size={17} aria-hidden="true" /></a> : item.title}
         </Heading>
         <p>{item.text}</p>
         {item.source && <a class="text-link news-source" href={item.source.url}>{item.source.label}</a>}
       </div>
     </article>
-  ))}
+    );
+  })}
 </div>
 
 <style>

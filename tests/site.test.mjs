@@ -332,7 +332,8 @@ test('people profiles render their public records and working destinations', asy
       assert(content(rows[position]).includes(record.title), `${attribute}: title`);
       if (record.organizer) assert(content(rows[position]).includes(record.organizer), `${attribute}: organizer`);
       if (record.sponsor) assert(content(rows[position]).includes(record.sponsor), `${attribute}: sponsor`);
-      if (record.role) assert(content(rows[position]).includes(`Role: ${record.role}`), `${attribute}: role`);
+      if (record.role) assert(content(rows[position]).includes(record.role), `${attribute}: role`);
+      if (record.recipient) assert(content(rows[position]).includes(record.recipient), `${attribute}: recipient`);
       for (const filing of record.filings ?? []) assert(content(rows[position]).includes(`${filing.office} ${filing.number}, ${filing.status} ${filing.date}`), `${attribute}: filing`);
     }
   }

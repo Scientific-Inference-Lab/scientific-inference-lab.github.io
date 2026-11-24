@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { file } from 'astro/loaders';
 import papers from './content/publications.json';
 import programRows from './content/programs.json';
+import { tutorialIds } from './lib/data/tutorials';
 
 const text = z.string().min(1);
 const url = z.url();
@@ -47,7 +48,12 @@ const people = defineCollection({
     patents: z.array(z.object({ title: text,
       filings: z.array(z.object({ office: z.enum(['KR', 'JP', 'US']), number: text, status: z.enum(['granted', 'applied']), date: text })).min(1),
       jointApplicants: text.optional() })),
-    grants: z.array(z.object({ title: text, sponsor: text, year: z.number().int(), period: text, role: text, projectLabel: z.enum(['Project', 'Research title']).optional(), project: text.optional(), principalInvestigator: text.optional(), description: text.optional(), context: text.optional() })),
+    grants: z.array(z.object({
+      id: text, group: z.enum(['pnu', 'postdoctoral', 'training']), title: text, sponsor: text,
+      year: z.number().int(), period: text, role: text, recipient: text.optional(),
+      projectLabel: z.enum(['Project', 'Research title']).optional(), project: text.optional(),
+      principalInvestigator: text.optional(), description: text.optional(),
+    })),
     address: text, links: z.object({ orcid: url, scholar: url, github: url, linkedin: url, personal: url }),
     education: z.array(z.object({ period: text, degree: text, where: text })),
     appointments: z.array(z.object({ period: text, role: text, where: text })) }),
@@ -71,6 +77,7 @@ const news = defineCollection({
   loader: file('src/content/news.json'),
   schema: z.object({ date: z.string().regex(/^\d{4}-\d{2}$/), title: text,
     text, category: z.enum(['Lab', 'Grant', 'Computing support', 'Publication', 'Award', 'Talk', 'Patent']), publicationId: paperId.optional(),
+    tutorialId: z.enum(tutorialIds).optional(),
     source: z.object({ label: text, url: url.refine(value => value.startsWith('https://'), 'News sources use HTTPS') }).optional() }),
 });
 

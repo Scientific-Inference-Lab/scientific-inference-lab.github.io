@@ -100,56 +100,80 @@
     ],
     "grants": [
       {
-        "title": "KISTI HANGANG Supercomputing Allocation",
+        "id": "kisti-hangang",
+        "group": "pnu",
+        "title": "HANGANG R&D Innovation Program (Exploratory Research)",
         "sponsor": "Korea Institute of Science and Technology Information (KISTI)",
         "year": 2026,
         "period": "Dec 2026–Mar 2027",
         "role": "Principal Investigator",
-        "description": "In-kind computing support through the R&D Innovation Program (Exploratory Research)."
+        "recipient": "Pusan National University",
+        "description": "In-kind computing support on HANGANG."
       },
       {
-        "title": "Google TPU Research Cloud",
+        "id": "google-tpu",
+        "group": "pnu",
+        "title": "TPU Research Cloud",
         "sponsor": "Google",
         "year": 2026,
         "period": "Nov 2026–May 2027",
         "role": "Principal Investigator",
+        "recipient": "Pusan National University",
         "description": "In-kind access to Cloud TPUs."
       },
       {
-        "title": "NVIDIA Academic Grant Program",
+        "id": "openai-academic-researchers",
+        "group": "pnu",
+        "title": "ChatGPT for Academic Researchers",
+        "sponsor": "OpenAI",
+        "year": 2026,
+        "period": "Nov 2026",
+        "role": "Individual research tool access approved for YongKyung Oh"
+      },
+      {
+        "id": "nvidia",
+        "group": "postdoctoral",
+        "title": "Academic Grant Program",
         "sponsor": "NVIDIA",
         "year": 2026,
         "role": "Lead Scientist on the project team",
+        "recipient": "UCLA project",
         "project": "Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework",
         "principalInvestigator": "Alex A. T. Bui, UCLA",
         "period": "Jul–Dec 2026",
         "projectLabel": "Project"
       },
       {
-        "title": "Postdoctoral Fellowship for Overseas Research (Nurturing Next-generation Researchers)",
+        "id": "nrf",
+        "group": "postdoctoral",
+        "title": "Postdoctoral Fellowship for Overseas Research",
         "sponsor": "National Research Foundation of Korea (NRF)",
         "year": 2024,
         "period": "Sep 2024–Aug 2025",
         "role": "Principal Investigator",
+        "recipient": "Hosted at UCLA",
         "project": "Approach to Detect Distribution Shifts Over Time and Evaluate Model Trustworthy with Retraining in Longitudinal Medical Data",
-        "context": "Postdoctoral fellowship held at UCLA before joining Pusan National University",
         "projectLabel": "Research title"
       },
       {
+        "id": "khidi",
+        "group": "postdoctoral",
         "title": "Biomedical UniStar Training Program",
         "sponsor": "Korea Health Industry Development Institute (KHIDI)",
         "year": 2023,
         "period": "Sep 2023–Aug 2024",
         "role": "Visiting Postdoctoral Researcher",
-        "description": "Selective program supporting collaborative research between UNIST and the UCLA David Geffen School of Medicine."
+        "recipient": "UNIST–UCLA"
       },
       {
+        "id": "iitp",
+        "group": "training",
         "title": "Intensive Program in Artificial Intelligence (High-Potential Individuals Global Training Program)",
         "sponsor": "Institute for Information & Communication Technology Planning & Evaluation (IITP)",
         "year": 2020,
         "period": "Jan–Jul 2020",
         "role": "Trainee",
-        "description": "Competitive, fully funded program for intensive training at Carnegie Mellon University (CMU)."
+        "recipient": "Carnegie Mellon University"
       }
     ],
     "patents": [

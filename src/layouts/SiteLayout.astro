@@ -67,6 +67,7 @@ const graph = kind ? structuredData(kind, { path: Astro.url.pathname, title: doc
           <div class="footer-identity">
             <a href="/" class="wordmark"><span class="wordmark-text">Scientific Inference Lab</span></a>
             <p class="footer-affiliation">{site.footerAffiliation}</p>
+            <a href="/news/" class="text-link footer-news">News</a>
           </div>
           <div class="footer-contact">
             <p class="footer-person"><strong>{pi.name}</strong><span>Principal Investigator</span></p>
@@ -90,6 +91,7 @@ const graph = kind ? structuredData(kind, { path: Astro.url.pathname, title: doc
   .footer-grid { display: grid; grid-template-columns: minmax(0,1fr); gap: 2rem; align-items: start; }
   .footer-identity,.footer-contact { min-width: 0; }
   .footer-affiliation { margin-top: .75rem; font-size: .875rem; line-height: 1.5; }
+  .footer-news { margin-top: .25rem; }
   .footer-person { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem .75rem; padding-top: .625rem; }
   .footer-person strong { font-size: 1rem; font-weight: 600; color: var(--color-ink); }
   .footer-person > span { font-size: .875rem; color: var(--color-muted); }

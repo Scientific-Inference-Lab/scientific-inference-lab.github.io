@@ -7,10 +7,18 @@
     "text": "The Korean Institute of Industrial Engineers (KIIE) will present the award."
   },
   {
+    "id": "neural-differential-equations-ksc-2026",
+    "date": "2026-12",
+    "category": "Talk",
+    "title": "Neural differential equations tutorial at KSC 2026",
+    "text": "YongKyung Oh will present A Practical Guide to Neural Differential Equations on December 23. The conference program also lists his talk on learning reliable dynamics from imperfect observations and a presentation on DualDynamics.",
+    "tutorialId": "ksc-2026"
+  },
+  {
     "id": "kisti-hangang-allocation",
     "date": "2026-11",
     "category": "Computing support",
-    "title": "Lab awarded computing time on KISTI’s HANGANG supercomputer",
+    "title": "KISTI awards HANGANG computing time to a Pusan National University project",
     "text": "KISTI selected a project led by YongKyung Oh at Pusan National University for the Exploratory Research track of its R&D Innovation Program. The allocation runs from December 2026 through March 2027."
   },
   {
@@ -18,7 +26,7 @@
     "date": "2026-11",
     "category": "Grant",
     "title": "Google TPU Research Cloud provides computing support",
-    "text": "Google’s TPU Research Cloud provided in-kind access to Cloud TPUs for the lab, with YongKyung Oh as principal investigator. Access was confirmed in November 2026."
+    "text": "Google’s TPU Research Cloud provides in-kind access to Cloud TPUs for the lab from November 2026 through May 2027, with YongKyung Oh as principal investigator."
   },
   {
     "id": "us-time-series-image-encoding-patent",
@@ -58,8 +66,8 @@
     "id": "nvidia-academic-grant",
     "date": "2026-06",
     "category": "Grant",
-    "title": "Selected for the NVIDIA Academic Grant Program",
-    "text": "The Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework project, with Alex Bui at UCLA Medical Imaging Informatics, was selected for the NVIDIA Academic Grant Program."
+    "title": "UCLA project selected for the NVIDIA Academic Grant Program",
+    "text": "NVIDIA selected UCLA’s Neural SDE-Augmented GPU-Accelerated Pharmacokinetic Simulation Framework project. Alex A. T. Bui is the principal investigator and YongKyung Oh is a lead scientist on the project team."
   },
   {
     "id": "flowpath-aaai-2026-publication",
@@ -71,6 +79,14 @@
       "label": "AAAI proceedings paper",
       "url": "https://doi.org/10.1609/aaai.v40i29.39643"
     }
+  },
+  {
+    "id": "neural-differential-equations-cikm-2025-tutorial",
+    "date": "2025-11",
+    "category": "Talk",
+    "title": "Neural differential equations tutorial at CIKM 2025",
+    "text": "YongKyung Oh, Dong-Young Lim, and Sungil Kim gave a tutorial on modeling irregular time series with neural differential equations, including exercises on interpolation and classification.",
+    "tutorialId": "cikm-2025"
   },
   {
     "id": "chil-2025-best-paper-award",

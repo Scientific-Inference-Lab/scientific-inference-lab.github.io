@@ -4,10 +4,12 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import { pageDescriptions } from '../lib/data/page-copy';
 import { loadContent } from '../lib/content';
+import { tutorials } from '../lib/data/tutorials';
 const { courses } = await loadContent();
 ---
 <SiteLayout title="Teaching" description={pageDescriptions.teaching}>
   <PageHeader title="Teaching" description={pageDescriptions.teaching} />
+  <div class="wrap teaching-links"><a href="#conference-tutorials" class="text-link">Conference tutorials</a></div>
   <section class="wrap teaching" aria-label="Courses">
     <ul class="course-list">
       {courses.map(course => (
@@ -18,6 +20,23 @@ const { courses } = await loadContent();
           <a href={course.url} hreflang="ko" class="text-link course-link" data-course-link={course.id}>
             <span>Course materials (in Korean)</span><ArrowUpRight size={16} aria-hidden="true" />
           </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+  <section class="wrap tutorials" aria-labelledby="conference-tutorials">
+    <h2 id="conference-tutorials">Conference tutorials</h2>
+    <ul class="course-list">
+      {tutorials.map(tutorial => (
+        <li class="course" id={tutorial.id}>
+          <p class="tutorial-meta">{tutorial.venue} · {tutorial.date}</p>
+          <h3>{tutorial.title}</h3>
+          <p class="course-description">{tutorial.detail}</p>
+          <div class="tutorial-links">
+            {tutorial.links.map(link => (
+              <a class="text-link course-link" href={link.url}>{link.label}<ArrowUpRight size={16} aria-hidden="true" /></a>
+            ))}
+          </div>
         </li>
       ))}
     </ul>
@@ -36,5 +55,11 @@ const { courses } = await loadContent();
      arbitrary character width or balancing into short lines. */
   .course-description { margin-top: .75rem; font-size: 1.125rem; line-height: 1.6; color: var(--color-body); }
   .course-link { min-height: 44px; margin-top: .75rem; gap: .5rem; font-size: 1rem; }
+  .teaching-links { margin-top: .5rem; }
+  .tutorials { padding-top: 2rem; }
+  .tutorials h2 { margin-bottom: 1.25rem; font-size: 1.75rem; }
+  .tutorials h3 { font-size: 1.25rem; }
+  .tutorial-meta { margin-bottom: .25rem; color: var(--color-muted); }
+  .tutorial-links { display: flex; flex-wrap: wrap; column-gap: 1.5rem; }
   @container teaching (max-width: 14rem) { .course h2 { font-size: 1.375rem; } }
 </style>
