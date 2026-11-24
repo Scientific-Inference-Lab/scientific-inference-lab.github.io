@@ -128,7 +128,8 @@ export function structuredData(kind: PageKind, page: { path: string; title: stri
         worksFor: [{ '@id': ids.lab }, { '@id': ids.university }],
         affiliation: { '@id': ids.school },
         alumniOf: [...new Set(pi.education.map(entry => entry.where))].map(name => ({ '@type': 'CollegeOrUniversity', name })),
-        award: recognition.map(item => `${item.title}, ${item.organizer}, ${item.month} ${item.year}`),
+        award: recognition.filter(item => !('scheduled' in item && item.scheduled))
+          .map(item => `${item.title}, ${item.organizer}, ${item.month} ${item.year}`),
         knowsAbout: topics,
         sameAs: getPersonProfileUrls(),
         ...(image ? { image } : {}),

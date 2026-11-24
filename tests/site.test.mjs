@@ -217,9 +217,15 @@ test('Home shows the three latest news items and links to the complete archive',
   assert.deepEqual(news.map(item => item.date), [...news].map(item => item.date).sort().reverse(), 'News must be newest first');
   const home = byAttr(documents.get('/'), 'data-home-news')[0];
   const archive = documents.get('/news/');
+  const upcoming = byAttr(archive, 'aria-labelledby', 'upcoming-heading')[0];
+  const published = [...news.filter(item => item.featured && !item.upcoming), ...news.filter(item => !item.featured && !item.upcoming)];
+  const upcomingEntries = upcoming ? byTag(upcoming, 'article') : [];
   assert(byTag(home, 'a').some(link => attr(link, 'href') === '/news/' && content(link) === 'More news'));
-  for (const [page, items, heading] of [[home, news.slice(0, 3), 'h3'], [archive, news, 'h2']]) {
-    const entries = byTag(page, 'article');
+  for (const [entries, items, heading] of [
+    [byTag(home, 'article'), published.slice(0, 3), 'h3'],
+    [byTag(archive, 'article').filter(node => !upcomingEntries.includes(node)), published, 'h2'],
+    [upcomingEntries, news.filter(item => item.upcoming), 'h3'],
+  ]) {
     assert.deepEqual(entries.map(node => attr(node, 'id')), items.map(item => `news-${item.id}`));
     for (const [index, item] of items.entries()) {
       assert.equal(content(byTag(entries[index], heading)[0]), item.title);
@@ -576,7 +582,9 @@ test('search metadata and structured data restate the visible site', async () =>
   const profilePerson = profile.find(item => item['@type'] === 'Person');
   assert.equal(profilePerson['@id'], `${origin}/people/#pi`, 'The PI @id stays stable for the course sites');
   assert.equal(profilePerson.url, `${origin}${profileRoute}`, 'Person url is the profile page');
-  assert.equal(profilePerson.award.length, piRecord.honors.length + piRecord.awards.length, 'Person JSON-LD lists each honor and research award');
+  const scheduledAwards = piRecord.awards.filter(award => award.scheduled);
+  assert.equal(profilePerson.award.length, piRecord.honors.length + piRecord.awards.length - scheduledAwards.length, 'Person JSON-LD lists each honor and research award already presented');
+  for (const award of scheduledAwards) assert(!profilePerson.award.some(item => item.startsWith(award.title)), 'Scheduled presentations are omitted from the award property');
   assert.equal(profilePerson.image, meta(documents.get(profileRoute), 'og:image')[0], 'Profile image must be the visible portrait');
   const indexGraph = graphOf('/people/');
   assert.equal(indexGraph.at(-1)['@type'], 'CollectionPage');

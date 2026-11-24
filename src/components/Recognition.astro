@@ -17,7 +17,7 @@ const supportGroups = [
 const newestHonor = Math.max(...pi.honors.map(monthOrder));
 const displayedAwards = pi.awards.filter(award => monthOrder(award) > newestHonor);
 const displayedDistinctions = [
-  ...pi.honors.map(honor => ({ ...honor, isAward: false, paper: undefined, note: undefined })),
+  ...pi.honors.map(honor => ({ ...honor, isAward: false, paper: undefined, note: undefined, scheduled: undefined })),
   ...displayedAwards.map(award => ({ ...award, isAward: true, detail: undefined })),
 ].sort((a, b) => monthOrder(b) - monthOrder(a));
 const remainingAwards = pi.awards.filter(award => !displayedAwards.includes(award));
@@ -36,7 +36,7 @@ const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
             <li class="line-row" data-honor={entry.isAward ? undefined : true} data-award={entry.isAward ? true : undefined}>
               <span class="recognition-meta">{entry.month.slice(0, 3)} {entry.year}</span>
               <span class="line-main">
-                <strong class="line-title">{entry.title}</strong><span class="recognition-source"> · {entry.detail ? `${entry.detail}, ` : ''}{entry.organizer}</span>
+                <strong class="line-title">{entry.title}</strong><span class="recognition-source"> · {entry.detail ? `${entry.detail}, ` : ''}{entry.organizer}{entry.scheduled && ' · Presentation scheduled'}</span>
                 {entry.paper && <span class="recognition-detail block">{awardLinks[entry.paper]
                   ? <a href={`/publications/#${awardLinks[entry.paper]}`} class="recognition-link">{entry.paper}<ArrowRight size={17} aria-hidden="true" /></a>
                   : entry.paper}</span>}
@@ -94,6 +94,7 @@ const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
                   ? <p class="recognition-detail"><a href={`/publications/#${awardLinks[award.paper]}`} class="recognition-link">{award.paper}<ArrowRight size={17} aria-hidden="true" /></a></p>
                   : <p class="recognition-detail">{award.paper}</p>)}
                 <p class="recognition-detail recognition-source">{award.organizer}</p>
+                {award.scheduled && <p class="recognition-detail">Presentation scheduled</p>}
                 {award.note && <p class="recognition-detail">{award.note}</p>}
               </div>
             </li>

@@ -6,15 +6,24 @@ import { loadContent } from '../lib/content';
 import { pageDescriptions } from '../lib/data/page-copy';
 
 const { news } = await loadContent();
+const upcoming = news.filter(item => item.upcoming);
 ---
 
 <SiteLayout title="News" description={pageDescriptions.news}>
   <PageHeader title="News" />
   <div class="wrap news-archive">
-    <NewsList items={news} heading="h2" />
+    <NewsList items={news.filter(item => !item.upcoming)} heading="h2" />
+    {upcoming.length > 0 && (
+      <section class="upcoming" aria-labelledby="upcoming-heading">
+        <h2 id="upcoming-heading">Upcoming talks</h2>
+        <NewsList items={upcoming} heading="h3" />
+      </section>
+    )}
   </div>
 </SiteLayout>
 
 <style>
   .news-archive { padding-top: 2rem; }
+  .upcoming { margin-top: 2.5rem; }
+  .upcoming > h2 { margin-bottom: 1.25rem; }
 </style>

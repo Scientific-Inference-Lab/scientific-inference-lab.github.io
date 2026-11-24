@@ -18,7 +18,8 @@ export async function loadContent() {
   };
   const news = (await getCollection('news'))
     .map(n => ({ id: n.id, ...n.data, publicationId: n.data.publicationId ? resolve(n.data.publicationId) : undefined }))
-    .sort((a, b) => b.date.localeCompare(a.date)
+    .sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured))
+      || b.date.localeCompare(a.date)
       || (newsOrder.get(a.id) ?? newsRows.length) - (newsOrder.get(b.id) ?? newsRows.length));
   return {
     pi: { id: person.id, ...person.data },

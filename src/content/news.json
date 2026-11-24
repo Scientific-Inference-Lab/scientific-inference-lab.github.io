@@ -1,32 +1,45 @@
 [
   {
+    "id": "neural-differential-equations-ksc-2026",
+    "date": "2026-12-23",
+    "category": "Talk",
+    "title": "Neural differential equations tutorial at KSC 2026",
+    "text": "YongKyung Oh will present A Practical Guide to Neural Differential Equations on December 23. The conference program also lists his talk on learning reliable dynamics from imperfect observations and a presentation on DualDynamics.",
+    "tutorialId": "ksc-2026",
+    "upcoming": true
+  },
+  {
     "id": "kiie-wooheon-selection",
     "date": "2026-12",
     "category": "Award",
+    "featured": true,
     "title": "YongKyung Oh to receive the Wooheon early-career researcher award",
     "text": "The Korean Institute of Industrial Engineers (KIIE) will present the award."
   },
   {
-    "id": "neural-differential-equations-ksc-2026",
-    "date": "2026-12",
-    "category": "Talk",
-    "title": "Neural differential equations tutorial at KSC 2026",
-    "text": "YongKyung Oh will present A Practical Guide to Neural Differential Equations on December 23. The conference program also lists his talk on learning reliable dynamics from imperfect observations and a presentation on DualDynamics.",
-    "tutorialId": "ksc-2026"
+    "id": "openai-academic-researchers",
+    "date": "2026-11-24",
+    "category": "Research support",
+    "title": "OpenAI approves ChatGPT research access for YongKyung Oh",
+    "text": "YongKyung Oh was approved for 12 months of individual access through ChatGPT for Academic Researchers.",
+    "source": {
+      "label": "OpenAI program",
+      "url": "https://openai.com/index/expanding-chatgpt-for-academic-researchers/"
+    }
   },
   {
     "id": "kisti-hangang-allocation",
-    "date": "2026-11",
+    "date": "2026-11-23",
     "category": "Computing support",
     "title": "KISTI awards HANGANG computing time to a Pusan National University project",
-    "text": "KISTI selected a project led by YongKyung Oh at Pusan National University for the Exploratory Research track of its R&D Innovation Program. The allocation runs from December 2026 through March 2027."
+    "text": "KISTI selected a project led by YongKyung Oh at Pusan National University for the Exploratory Research track of its R&D Innovation Program. The allocation runs from December 14, 2026, to March 31, 2027."
   },
   {
     "id": "google-tpu-research-cloud",
-    "date": "2026-11",
-    "category": "Grant",
+    "date": "2026-11-17",
+    "category": "Computing support",
     "title": "Google TPU Research Cloud provides computing support",
-    "text": "Google’s TPU Research Cloud provides in-kind access to Cloud TPUs for the lab from November 2026 through May 2027, with YongKyung Oh as principal investigator."
+    "text": "Google’s TPU Research Cloud confirmed 180 days of in-kind access to Cloud TPUs for the lab on November 17, with YongKyung Oh as principal investigator."
   },
   {
     "id": "us-time-series-image-encoding-patent",

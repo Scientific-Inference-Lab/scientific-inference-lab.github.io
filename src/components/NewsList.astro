@@ -18,7 +18,7 @@ const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'num
     return (
     <article class="news-item" id={`news-${item.id}`}>
       <div class="news-meta">
-        <time datetime={item.date}>{monthLabel.format(new Date(`${item.date}-01T00:00:00Z`))}</time>
+        <time datetime={item.date}>{monthLabel.format(new Date(`${item.date.slice(0, 7)}-01T00:00:00Z`))}</time>
         <span>{item.category}</span>
       </div>
       <div>

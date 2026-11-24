@@ -44,7 +44,7 @@ const people = defineCollection({
   schema: z.object({ name: text, role: text, affiliation: text, photoAlt: text,
     shortBio: text, bio: text, email: z.email(), phone: text, office: text,
     honors: z.array(z.object({ title: text, organizer: text, month: text, year: z.number().int(), detail: text.optional() })),
-    awards: z.array(z.object({ title: text, paper: text.optional(), organizer: text, month: text, year: z.number().int(), note: text.optional() })),
+    awards: z.array(z.object({ title: text, paper: text.optional(), organizer: text, month: text, year: z.number().int(), note: text.optional(), scheduled: z.boolean().optional() })),
     patents: z.array(z.object({ title: text,
       filings: z.array(z.object({ office: z.enum(['KR', 'JP', 'US']), number: text, status: z.enum(['granted', 'applied']), date: text })).min(1),
       jointApplicants: text.optional() })),
@@ -75,9 +75,9 @@ const programs = defineCollection({
 });
 const news = defineCollection({
   loader: file('src/content/news.json'),
-  schema: z.object({ date: z.string().regex(/^\d{4}-\d{2}$/), title: text,
-    text, category: z.enum(['Lab', 'Grant', 'Computing support', 'Publication', 'Award', 'Talk', 'Patent']), publicationId: paperId.optional(),
-    tutorialId: z.enum(tutorialIds).optional(),
+  schema: z.object({ date: z.union([z.iso.date(), z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/)]), title: text,
+    text, category: z.enum(['Lab', 'Grant', 'Computing support', 'Research support', 'Publication', 'Award', 'Talk', 'Patent']), publicationId: paperId.optional(),
+    tutorialId: z.enum(tutorialIds).optional(), upcoming: z.boolean().optional(), featured: z.boolean().optional(),
     source: z.object({ label: text, url: url.refine(value => value.startsWith('https://'), 'News sources use HTTPS') }).optional() }),
 });
 

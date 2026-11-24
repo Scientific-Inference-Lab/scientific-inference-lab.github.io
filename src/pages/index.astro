@@ -28,7 +28,7 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
     <div class="wrap news-layout">
       <div class="news-heading"><h2 id="news-heading">Latest news</h2></div>
       <div class="news-content">
-        <NewsList items={news.slice(0, 3)} heading="h3" />
+        <NewsList items={news.filter(item => !item.upcoming).slice(0, 3)} heading="h3" />
         <a class="text-link more-news" href="/news/">More news <ArrowRight size={17} aria-hidden="true" /></a>
       </div>
     </div>

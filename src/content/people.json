@@ -24,7 +24,8 @@
         "title": "Wooheon early-career researcher award",
         "organizer": "Korean Institute of Industrial Engineers (KIIE)",
         "month": "December",
-        "year": 2026
+        "year": 2026,
+        "scheduled": true
       },
       {
         "title": "Energy Analytics Challenge Finalist",
@@ -116,7 +117,7 @@
         "title": "TPU Research Cloud",
         "sponsor": "Google",
         "year": 2026,
-        "period": "Nov 2026–May 2027",
+        "period": "Nov 2026 · 180 days",
         "role": "Principal Investigator",
         "recipient": "Pusan National University",
         "description": "In-kind access to Cloud TPUs."
@@ -127,7 +128,7 @@
         "title": "ChatGPT for Academic Researchers",
         "sponsor": "OpenAI",
         "year": 2026,
-        "period": "Nov 2026",
+        "period": "Nov 2026 · 12 months",
         "role": "Individual research tool access approved for YongKyung Oh"
       },
       {

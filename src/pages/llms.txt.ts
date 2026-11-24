@@ -44,7 +44,7 @@ export const GET: APIRoute = async () => {
     '',
     '## Recognition',
     '',
-    ...recognition.map(item => `- ${item.title}, ${item.organizer}, ${item.month} ${item.year}.`),
+    ...recognition.map(item => `- ${item.title}, ${item.organizer}, ${item.month} ${item.year}${'scheduled' in item && item.scheduled ? ' (presentation scheduled)' : ''}.`),
     '',
     '## Patents',
     '',
