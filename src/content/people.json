@@ -25,7 +25,8 @@
         "organizer": "Korean Institute of Industrial Engineers (KIIE)",
         "month": "December",
         "year": 2026,
-        "scheduled": true
+        "scheduled": true,
+        "date": "2026-12-03"
       },
       {
         "title": "Energy Analytics Challenge Finalist",
@@ -112,6 +113,15 @@
         "description": "In-kind computing support on HANGANG."
       },
       {
+        "id": "openai-academic-researchers",
+        "group": "pnu",
+        "title": "ChatGPT for Academic Researchers",
+        "sponsor": "OpenAI",
+        "year": 2026,
+        "period": "Nov 2026 · 12 months",
+        "role": "Individual research tool access approved for YongKyung Oh"
+      },
+      {
         "id": "google-tpu",
         "group": "pnu",
         "title": "TPU Research Cloud",
@@ -121,15 +131,6 @@
         "role": "Principal Investigator",
         "recipient": "Pusan National University",
         "description": "In-kind access to Cloud TPUs."
-      },
-      {
-        "id": "openai-academic-researchers",
-        "group": "pnu",
-        "title": "ChatGPT for Academic Researchers",
-        "sponsor": "OpenAI",
-        "year": 2026,
-        "period": "Nov 2026 · 12 months",
-        "role": "Individual research tool access approved for YongKyung Oh"
       },
       {
         "id": "nvidia",

@@ -1,6 +1,6 @@
 ---
 import { ArrowRight } from '@lucide/svelte';
-import { monthOrder, type loadContent } from '../lib/content';
+import { monthOrder, recognitionDate, type loadContent } from '../lib/content';
 
 interface RecognitionItem { id: string; venue: string; year: number; label: string; }
 interface Props {
@@ -34,7 +34,7 @@ const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
         <ul class="line-list">
           {displayedDistinctions.map(entry => (
             <li class="line-row" data-honor={entry.isAward ? undefined : true} data-award={entry.isAward ? true : undefined}>
-              <span class="recognition-meta">{entry.month.slice(0, 3)} {entry.year}</span>
+              <span class="recognition-meta">{recognitionDate(entry)}</span>
               <span class="line-main">
                 <strong class="line-title">{entry.title}</strong><span class="recognition-source"> · {entry.detail ? `${entry.detail}, ` : ''}{entry.organizer}{entry.scheduled && ' · Presentation scheduled'}</span>
                 {entry.paper && <span class="recognition-detail block">{awardLinks[entry.paper]
@@ -87,7 +87,7 @@ const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
         <ul class="recognition-list">
           {remainingAwards.map(award => (
             <li class="recognition-row" data-award>
-              <p class="recognition-meta">{award.month.slice(0, 3)} {award.year}</p>
+              <p class="recognition-meta">{recognitionDate(award)}</p>
               <div class="min-w-0">
                 <h4 class="recognition-title">{award.title}</h4>
                 {award.paper && (awardLinks[award.paper]

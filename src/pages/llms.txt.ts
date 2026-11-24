@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getProfileLinks, site } from '../lib/data/lab';
 import { pageDescriptions } from '../lib/data/page-copy';
-import { loadContent } from '../lib/content';
+import { loadContent, recognitionDate } from '../lib/content';
 
 // Plain-text site summary for language-model retrieval (llmstxt.org format),
 // generated from the same records as the pages.
@@ -44,7 +44,7 @@ export const GET: APIRoute = async () => {
     '',
     '## Recognition',
     '',
-    ...recognition.map(item => `- ${item.title}, ${item.organizer}, ${item.month} ${item.year}${'scheduled' in item && item.scheduled ? ' (presentation scheduled)' : ''}.`),
+    ...recognition.map(item => `- ${item.title}, ${item.organizer}, ${recognitionDate(item)}${'scheduled' in item && item.scheduled ? ' (presentation scheduled)' : ''}.`),
     '',
     '## Patents',
     '',

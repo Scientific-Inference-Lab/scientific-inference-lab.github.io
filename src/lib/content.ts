@@ -6,6 +6,18 @@ const newsOrder = new Map(newsRows.map(({ id }, index) => [id, index] as const))
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const monthOrder = ({ year, month }: { year: number; month: string }) => year * 12 + months.indexOf(month);
 
+const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const dayLabel = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+
+export function formatDate(date: string) {
+  if (date.length === 7) return monthLabel.format(new Date(date + '-01T00:00:00Z'));
+  return dayLabel.format(new Date(date + 'T00:00:00Z'));
+}
+
+export function recognitionDate(item: { month: string; year: number; date?: string }) {
+  return item.date ? formatDate(item.date) : `${item.month.slice(0, 3)} ${item.year}`;
+}
+
 export async function loadContent() {
   const person = await getEntry('people', 'yongkyung-oh');
   if (!person) throw new Error('Principal investigator record is required');
@@ -18,8 +30,7 @@ export async function loadContent() {
   };
   const news = (await getCollection('news'))
     .map(n => ({ id: n.id, ...n.data, publicationId: n.data.publicationId ? resolve(n.data.publicationId) : undefined }))
-    .sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured))
-      || b.date.localeCompare(a.date)
+    .sort((a, b) => b.date.localeCompare(a.date)
       || (newsOrder.get(a.id) ?? newsRows.length) - (newsOrder.get(b.id) ?? newsRows.length));
   return {
     pi: { id: person.id, ...person.data },

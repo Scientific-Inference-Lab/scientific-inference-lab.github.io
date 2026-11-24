@@ -28,7 +28,7 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
     <div class="wrap news-layout">
       <div class="news-heading"><h2 id="news-heading">Latest news</h2></div>
       <div class="news-content">
-        <NewsList items={news.filter(item => !item.upcoming).slice(0, 3)} heading="h3" />
+        <NewsList items={news.slice(0, 3)} heading="h3" />
         <a class="text-link more-news" href="/news/">More news <ArrowRight size={17} aria-hidden="true" /></a>
       </div>
     </div>
@@ -41,29 +41,6 @@ const topics = programs.map(({ id, title, summary }) => ({ id, title, summary })
     </div>
   </section>
 </SiteLayout>
-<script>
-  const calendar = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-  });
-
-  function updateRecentNews() {
-    const parts = calendar.formatToParts(new Date());
-    const year = Number(parts.find(part => part.type === 'year')?.value);
-    const month = Number(parts.find(part => part.type === 'month')?.value);
-    const currentMonth = year * 12 + month;
-
-    for (const time of document.querySelectorAll<HTMLTimeElement>('[data-home-news] time[datetime]')) {
-      const [itemYear, itemMonth] = time.dateTime.split('-').map(Number);
-      const age = currentMonth - (itemYear * 12 + itemMonth);
-      time.toggleAttribute('data-recent', age === 0 || age === 1);
-    }
-  }
-
-  updateRecentNews();
-  window.addEventListener('pageshow', updateRecentNews);
-</script>
 <style>
   .home-intro { container: home-intro / inline-size; padding-block: 2.75rem 0; }
   .intro-layout { display: grid; grid-template-columns: minmax(0,1fr); align-items: start; gap: 2rem; }

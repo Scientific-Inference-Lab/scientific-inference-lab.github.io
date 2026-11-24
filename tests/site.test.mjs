@@ -217,14 +217,10 @@ test('Home shows the three latest news items and links to the complete archive',
   assert.deepEqual(news.map(item => item.date), [...news].map(item => item.date).sort().reverse(), 'News must be newest first');
   const home = byAttr(documents.get('/'), 'data-home-news')[0];
   const archive = documents.get('/news/');
-  const upcoming = byAttr(archive, 'aria-labelledby', 'upcoming-heading')[0];
-  const published = [...news.filter(item => item.featured && !item.upcoming), ...news.filter(item => !item.featured && !item.upcoming)];
-  const upcomingEntries = upcoming ? byTag(upcoming, 'article') : [];
   assert(byTag(home, 'a').some(link => attr(link, 'href') === '/news/' && content(link) === 'More news'));
   for (const [entries, items, heading] of [
-    [byTag(home, 'article'), published.slice(0, 3), 'h3'],
-    [byTag(archive, 'article').filter(node => !upcomingEntries.includes(node)), published, 'h2'],
-    [upcomingEntries, news.filter(item => item.upcoming), 'h3'],
+    [byTag(home, 'article'), news.slice(0, 3), 'h3'],
+    [byTag(archive, 'article'), news, 'h2'],
   ]) {
     assert.deepEqual(entries.map(node => attr(node, 'id')), items.map(item => `news-${item.id}`));
     for (const [index, item] of items.entries()) {

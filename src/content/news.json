@@ -4,15 +4,13 @@
     "date": "2026-12-23",
     "category": "Talk",
     "title": "Neural differential equations tutorial at KSC 2026",
-    "text": "YongKyung Oh will present A Practical Guide to Neural Differential Equations on December 23. The conference program also lists his talk on learning reliable dynamics from imperfect observations and a presentation on DualDynamics.",
-    "tutorialId": "ksc-2026",
-    "upcoming": true
+    "text": "YongKyung Oh will present A Practical Guide to Neural Differential Equations. The conference program also lists his talk on learning reliable dynamics from imperfect observations and a presentation on DualDynamics.",
+    "tutorialId": "ksc-2026"
   },
   {
     "id": "kiie-wooheon-selection",
-    "date": "2026-12",
+    "date": "2026-12-03",
     "category": "Award",
-    "featured": true,
     "title": "YongKyung Oh to receive the Wooheon early-career researcher award",
     "text": "The Korean Institute of Industrial Engineers (KIIE) will present the award."
   },
@@ -39,7 +37,7 @@
     "date": "2026-11-17",
     "category": "Computing support",
     "title": "Google TPU Research Cloud provides computing support",
-    "text": "Google’s TPU Research Cloud confirmed 180 days of in-kind access to Cloud TPUs for the lab on November 17, with YongKyung Oh as principal investigator."
+    "text": "Google’s TPU Research Cloud confirmed 180 days of in-kind access to Cloud TPUs for the lab, with YongKyung Oh as principal investigator."
   },
   {
     "id": "us-time-series-image-encoding-patent",
@@ -95,7 +93,7 @@
   },
   {
     "id": "neural-differential-equations-cikm-2025-tutorial",
-    "date": "2025-11",
+    "date": "2025-11-10",
     "category": "Talk",
     "title": "Neural differential equations tutorial at CIKM 2025",
     "text": "YongKyung Oh, Dong-Young Lim, and Sungil Kim gave a tutorial on modeling irregular time series with neural differential equations, including exercises on interpolation and classification.",

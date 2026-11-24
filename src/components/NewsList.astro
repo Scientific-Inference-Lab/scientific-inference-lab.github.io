@@ -1,6 +1,6 @@
 ---
 import { ArrowRight } from '@lucide/svelte';
-import type { loadContent } from '../lib/content';
+import { formatDate, type loadContent } from '../lib/content';
 
 interface Props {
   items: Awaited<ReturnType<typeof loadContent>>['news'];
@@ -8,7 +8,6 @@ interface Props {
 }
 
 const { items, heading: Heading } = Astro.props;
-const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 ---
 
 <div class="news-list">
@@ -16,45 +15,54 @@ const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'num
     const href = item.tutorialId ? `/teaching/#${item.tutorialId}`
       : item.publicationId ? `/publications/#${item.publicationId}` : undefined;
     return (
-    <article class="news-item" id={`news-${item.id}`}>
-      <div class="news-meta">
-        <time datetime={item.date}>{monthLabel.format(new Date(`${item.date.slice(0, 7)}-01T00:00:00Z`))}</time>
-        <span>{item.category}</span>
-      </div>
-      <div>
+      <article class="news-item" id={`news-${item.id}`}>
+        <p class="news-meta"><time datetime={item.date}>{formatDate(item.date)}</time> · {item.category}</p>
         <Heading>
           {href ? <a href={href}>{item.title}<ArrowRight size={17} aria-hidden="true" /></a> : item.title}
         </Heading>
-        <p>{item.text}</p>
+        <p class="news-description">{item.text}</p>
         {item.source && <a class="text-link news-source" href={item.source.url}>{item.source.label}</a>}
-      </div>
-    </article>
+      </article>
     );
   })}
 </div>
 
+<script>
+  const calendar = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+  });
+
+  function updateRecentNews() {
+    const parts = calendar.formatToParts(new Date());
+    const year = Number(parts.find(part => part.type === 'year')?.value);
+    const month = Number(parts.find(part => part.type === 'month')?.value);
+    const currentMonth = year * 12 + month;
+
+    for (const time of document.querySelectorAll<HTMLTimeElement>('.news-list time[datetime]')) {
+      const [itemYear, itemMonth] = time.dateTime.split('-').map(Number);
+      const age = currentMonth - (itemYear * 12 + itemMonth);
+      time.toggleAttribute('data-recent', age === 0 || age === 1);
+    }
+  }
+
+  updateRecentNews();
+  window.addEventListener('pageshow', updateRecentNews);
+</script>
+
 <style>
   .news-item {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: .625rem;
     padding-block: 1.25rem;
     border-bottom: 1px solid var(--color-line);
   }
   .news-item:first-child { padding-top: 0; }
-  .news-meta { display: flex; flex-wrap: wrap; gap: .375rem .75rem; font-size: .8125rem; color: var(--color-muted); }
-  .news-meta span { font-weight: 600; }
+  .news-meta { margin-bottom: .25rem; font-size: .875rem; color: var(--color-muted); }
   .news-meta time[data-recent] { color: var(--color-action); font-weight: 700; }
   .news-item :is(h2, h3) { font-size: 1.125rem; line-height: 1.4; }
-  .news-item a { display: block; min-height: 44px; padding-block: .375rem; }
+  .news-item :is(h2, h3) a { display: block; min-height: 44px; padding-block: .375rem; }
   .news-item a :global(svg) { display: inline-block; vertical-align: middle; margin-inline-start: .35rem; color: var(--color-action); }
   .news-item a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .2em; }
-  .news-item p { margin-top: .375rem; max-width: var(--measure-prose); line-height: 1.65; }
+  .news-description { margin-top: .375rem; line-height: 1.6; }
   .news-item a.news-source { display: inline-flex; font-size: .875rem; text-decoration: underline; text-underline-offset: .22em; }
-  @media (min-width: 60rem) {
-    .news-item { grid-template-columns: 7rem minmax(0, 1fr); gap: 1.5rem; }
-    .news-meta { display: block; padding-top: .25rem; }
-    .news-meta time, .news-meta span { display: block; }
-    .news-meta span { margin-top: .25rem; }
-  }
 </style>
