@@ -1,6 +1,6 @@
 ---
 import { ArrowRight } from '@lucide/svelte';
-import { monthOrder, recognitionDate, type loadContent } from '../lib/content';
+import { formatDate, monthOrder, recognitionDate, type loadContent } from '../lib/content';
 
 interface RecognitionItem { id: string; venue: string; year: number; label: string; }
 interface Props {
@@ -72,8 +72,9 @@ const latestPatentDate = (filings: Props['pi']['patents'][number]['filings']) =>
                     {grant.project && <p class="recognition-detail">{grant.projectLabel}: {grant.project}</p>}
                     {grant.principalInvestigator && <p class="recognition-detail">Principal Investigator: {grant.principalInvestigator}</p>}
                     {grant.description && <p class="recognition-detail">{grant.description}</p>}
+                    {grant.selectionDate && <p class="recognition-detail">Allocation {grant.period}.</p>}
                   </div>
-                  <p class="recognition-meta">{grant.period}</p>
+                  <p class="recognition-meta">{grant.selectionDate ? `Selected ${formatDate(grant.selectionDate)}` : grant.period}</p>
                 </li>
               ))}
             </ul>

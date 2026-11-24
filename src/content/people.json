@@ -29,7 +29,7 @@
         "date": "2026-12-03"
       },
       {
-        "title": "Energy Analytics Challenge Finalist",
+        "title": "Energy Data Competition Finalist",
         "paper": "Transform-First Forecasting for County-Level Power Outages",
         "organizer": "Energy Systems Division (ESD), Institute of Industrial and Systems Engineers (IISE) Annual Conference & Expo",
         "month": "May",
@@ -51,7 +51,7 @@
         "note": "Recognized as a finalist for three consecutive years: 2023, 2024, and 2025."
       },
       {
-        "title": "Best Paper Competition Finalist",
+        "title": "Best Track Paper Competition Finalist",
         "paper": "Integrating Neural Controlled Differential Equations and Neural Flow for Comprehensive Irregularly-sampled Time Series Analysis",
         "organizer": "Data Analytics and Information Systems (DAIS) Division, IISE Annual Conference & Expo",
         "month": "May",
@@ -102,24 +102,25 @@
     ],
     "grants": [
       {
-        "id": "kisti-hangang",
-        "group": "pnu",
-        "title": "HANGANG R&D Innovation Program (Exploratory Research)",
-        "sponsor": "Korea Institute of Science and Technology Information (KISTI)",
-        "year": 2026,
-        "period": "Dec 2026–Mar 2027",
-        "role": "Principal Investigator",
-        "recipient": "Pusan National University",
-        "description": "In-kind computing support on HANGANG."
-      },
-      {
         "id": "openai-academic-researchers",
         "group": "pnu",
         "title": "ChatGPT for Academic Researchers",
         "sponsor": "OpenAI",
         "year": 2026,
-        "period": "Nov 2026 · 12 months",
+        "period": "Nov 24, 2026 · 12 months",
         "role": "Individual research tool access approved for YongKyung Oh"
+      },
+      {
+        "id": "kisti-hangang",
+        "group": "pnu",
+        "title": "HANGANG R&D Innovation Program (Exploratory Research)",
+        "sponsor": "Korea Institute of Science and Technology Information (KISTI)",
+        "year": 2026,
+        "period": "Dec 14, 2026–Mar 31, 2027",
+        "selectionDate": "2026-11-23",
+        "role": "Principal Investigator",
+        "recipient": "Pusan National University",
+        "description": "In-kind computing support on HANGANG."
       },
       {
         "id": "google-tpu",
@@ -127,7 +128,7 @@
         "title": "TPU Research Cloud",
         "sponsor": "Google",
         "year": 2026,
-        "period": "Nov 2026 · 180 days",
+        "period": "Nov 17, 2026 · 180 days",
         "role": "Principal Investigator",
         "recipient": "Pusan National University",
         "description": "In-kind access to Cloud TPUs."

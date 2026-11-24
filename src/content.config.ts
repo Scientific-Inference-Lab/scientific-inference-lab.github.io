@@ -50,7 +50,7 @@ const people = defineCollection({
       jointApplicants: text.optional() })),
     grants: z.array(z.object({
       id: text, group: z.enum(['pnu', 'postdoctoral', 'training']), title: text, sponsor: text,
-      year: z.number().int(), period: text, role: text, recipient: text.optional(),
+      year: z.number().int(), period: text, selectionDate: z.iso.date().optional(), role: text, recipient: text.optional(),
       projectLabel: z.enum(['Project', 'Research title']).optional(), project: text.optional(),
       principalInvestigator: text.optional(), description: text.optional(),
     })),
