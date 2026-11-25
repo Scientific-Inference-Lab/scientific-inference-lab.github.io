@@ -3,7 +3,7 @@
 export const pageDescriptions = {
   research: 'Research questions and methods for scientific discovery and informed decisions.',
   publications: 'Research publications by members of Scientific Inference Lab.',
-  teaching: 'Teaching and learning resources at Pusan National University.',
+  teaching: 'Pusan National University course materials and conference tutorials.',
   contact: 'Research inquiries and collaboration with Scientific Inference Lab.',
   news: 'Lab milestones, research awards, funding and recent publications.',
 } as const;

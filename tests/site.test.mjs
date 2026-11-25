@@ -609,7 +609,7 @@ test('Teaching lists the PNU courses with official English names and links to th
   const rows = byAttr(main, 'data-course');
   assert.deepEqual(rows.map(row => attr(row, 'data-course')), ['machine-learning', 'data-structure']);
 
-  assert.deepEqual(rows.map(row => content(byTag(row, 'h2')[0])), ['Machine Learning', 'Data Structure']);
+  assert.deepEqual(rows.map(row => content(byTag(row, 'h3')[0])), ['Machine Learning', 'Data Structure']);
   assert(!/Introduction to Machine Learning|Data Structures\b/.test(content(main)), 'Use the official English course names');
   for (const [index, row] of rows.entries()) {
     const korean = byAttr(row, 'lang', 'ko').find(node => node.tagName === 'p');

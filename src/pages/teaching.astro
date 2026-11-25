@@ -1,65 +1,101 @@
 ---
-import { ArrowUpRight } from '@lucide/svelte';
+import { ArrowDown, ArrowUpRight } from '@lucide/svelte';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import { pageDescriptions } from '../lib/data/page-copy';
 import { loadContent } from '../lib/content';
 import { tutorials } from '../lib/data/tutorials';
+
 const { courses } = await loadContent();
+const tutorialDate = new Intl.DateTimeFormat('en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
 ---
 <SiteLayout title="Teaching" description={pageDescriptions.teaching}>
   <PageHeader title="Teaching" description={pageDescriptions.teaching} />
-  <div class="wrap teaching-links"><a href="#conference-tutorials" class="text-link">Conference tutorials</a></div>
-  <section class="wrap teaching" aria-label="Courses">
-    <ul class="course-list">
-      {courses.map(course => (
-        <li class="course" data-course={course.id}>
-          <h2 id={course.id}>{course.title}</h2>
-          <p class="course-korean" lang="ko">{course.koreanTitle}</p>
-          <p class="course-description">{course.description}</p>
-          <a href={course.url} hreflang="ko" class="text-link course-link" data-course-link={course.id}>
-            <span>Course materials (in Korean)</span><ArrowUpRight size={16} aria-hidden="true" />
-          </a>
-        </li>
-      ))}
-    </ul>
-  </section>
-  <section class="wrap tutorials" aria-labelledby="conference-tutorials">
-    <h2 id="conference-tutorials">Conference tutorials</h2>
-    <ul class="course-list">
-      {tutorials.map(tutorial => (
-        <li class="course" id={tutorial.id}>
-          <p class="tutorial-meta">{tutorial.venue} · {tutorial.date}</p>
-          <h3>{tutorial.title}</h3>
-          <p class="course-description">{tutorial.detail}</p>
-          <div class="tutorial-links">
-            {tutorial.links.map(link => (
-              <a class="text-link course-link" href={link.url}>{link.label}<ArrowUpRight size={16} aria-hidden="true" /></a>
-            ))}
-          </div>
-        </li>
-      ))}
-    </ul>
-  </section>
+
+  <div class="wrap">
+    <div class="teaching-catalogue">
+      <nav class="teaching-index" aria-label="Teaching sections">
+        <a class="text-link" href="#university-courses">University courses<ArrowDown size={16} aria-hidden="true" /></a>
+        <a class="text-link" href="#conference-tutorials">Conference tutorials<ArrowDown size={16} aria-hidden="true" /></a>
+      </nav>
+
+      <section class="teaching-section" aria-labelledby="university-courses">
+        <h2 id="university-courses" tabindex="-1">University courses</h2>
+        <ul class="teaching-list">
+          {courses.map(course => (
+            <li class="teaching-entry" data-course={course.id}>
+              <h3 id={course.id}>{course.title}</h3>
+              <p class="entry-meta korean-title" lang="ko">{course.koreanTitle}</p>
+              <p class="entry-description">{course.description}</p>
+              <div class="entry-links">
+                <a href={course.url} hreflang="ko" class="text-link" data-course-link={course.id}>
+                  <span>Course materials (in Korean)</span><ArrowUpRight size={16} aria-hidden="true" />
+                </a>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="teaching-section" aria-labelledby="conference-tutorials">
+        <h2 id="conference-tutorials" tabindex="-1">Conference tutorials</h2>
+        <ul class="teaching-list">
+          {tutorials.map(tutorial => (
+            <li class="teaching-entry" id={tutorial.id}>
+              <h3>{tutorial.title}</h3>
+              <p class="entry-meta">{tutorial.venue} · <time datetime={tutorial.date}>{tutorialDate.format(new Date(tutorial.date))}</time></p>
+              <p class="entry-description">{tutorial.detail}</p>
+              <div class="entry-links">
+                {tutorial.links.map(link => (
+                  <a class="text-link" href={link.url}><span>{link.label}</span><ArrowUpRight size={16} aria-hidden="true" /></a>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  </div>
 </SiteLayout>
 
 <style>
-  .teaching { container: teaching / inline-size; padding-block: 2.5rem 1rem; }
-  .course-list { max-width: var(--measure-section); display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
-  .course { min-width: 0; padding-block: 2rem; border-bottom: 1px solid var(--color-line); }
-  .course:first-child { padding-top: 0; }
-  .course h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.25; color: var(--color-ink); }
-  .course-korean { margin-top: .25rem; font-size: 1.125rem; font-weight: 500; color: var(--color-muted); }
-  /* Short one-sentence scope: the list shares the page-header description's
-     section measure and the text fills to its edge, rather than cutting at an
-     arbitrary character width or balancing into short lines. */
-  .course-description { margin-top: .75rem; font-size: 1.125rem; line-height: 1.6; color: var(--color-body); }
-  .course-link { min-height: 44px; margin-top: .75rem; gap: .5rem; font-size: 1rem; }
-  .teaching-links { margin-top: .5rem; }
-  .tutorials { padding-top: 2rem; }
-  .tutorials h2 { margin-bottom: 1.25rem; font-size: 1.75rem; }
-  .tutorials h3 { font-size: 1.25rem; }
-  .tutorial-meta { margin-bottom: .25rem; color: var(--color-muted); }
-  .tutorial-links { display: flex; flex-wrap: wrap; column-gap: 1.5rem; }
-  @container teaching (max-width: 14rem) { .course h2 { font-size: 1.375rem; } }
+  .teaching-catalogue {
+    max-width: var(--measure-section);
+    padding-block: .75rem 2.5rem;
+  }
+  .teaching-index, .entry-links {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.5rem;
+  }
+  .teaching-index {
+    padding-bottom: .75rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .teaching-section { margin-top: 2rem; }
+  .teaching-section + .teaching-section {
+    margin-top: 1.5rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .teaching-section h2 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  }
+  .teaching-list { margin: 0; padding: 0; list-style: none; }
+  .teaching-entry + .teaching-entry {
+    margin-top: .75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+  }
+  .teaching-entry h3 { font-size: clamp(1.25rem, 1.1rem + .5vw, 1.5rem); }
+  .entry-meta { margin-top: .375rem; color: var(--color-muted); }
+  .korean-title { font-weight: var(--font-weight-medium); }
+  .entry-description { margin-top: .5rem; font-size: var(--type-page-lead); }
+  .entry-links { margin-top: .25rem; }
 </style>
