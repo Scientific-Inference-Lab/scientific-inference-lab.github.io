@@ -92,6 +92,17 @@
     }
   },
   {
+    "id": "neural-differential-equations-aaai-2026",
+    "date": "2026-01",
+    "category": "Publication",
+    "title": "FlowPath and Continuum Dropout at AAAI 2026",
+    "text": "The AAAI 2026 poster program in Singapore listed FlowPath on January 24 and Continuum Dropout for Neural Differential Equations on January 25.",
+    "source": {
+      "label": "AAAI poster program",
+      "url": "https://aaai.org/2026-main-track-posters/"
+    }
+  },
+  {
     "id": "neural-differential-equations-cikm-2025-tutorial",
     "date": "2025-11-10",
     "category": "Talk",
