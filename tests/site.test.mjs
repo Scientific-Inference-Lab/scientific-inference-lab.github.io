@@ -212,6 +212,7 @@ test('Discovery metadata stays concise, canonical and consistent with sharing me
 });
 
 test('Home shows the three latest news items and links to the complete archive', () => {
+  const monthLabel = new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
   assert(news.length > 0, 'News must have published entries');
   assert.equal(new Set(news.map(item => item.id)).size, news.length, 'News IDs must be unique');
   assert.deepEqual(news.map(item => item.date), [...news].map(item => item.date).sort().reverse(), 'News must be newest first');
@@ -225,7 +226,10 @@ test('Home shows the three latest news items and links to the complete archive',
     assert.deepEqual(entries.map(node => attr(node, 'id')), items.map(item => `news-${item.id}`));
     for (const [index, item] of items.entries()) {
       assert.equal(content(byTag(entries[index], heading)[0]), item.title);
-      assert.equal(attr(byTag(entries[index], 'time')[0], 'datetime'), item.date);
+      const time = byTag(entries[index], 'time')[0];
+      const [year, month] = item.date.split('-').map(Number);
+      assert.equal(attr(time, 'datetime'), item.date);
+      assert.equal(content(time), monthLabel.format(new Date(Date.UTC(year, month - 1))));
       assert(content(entries[index]).includes(item.category));
       if (item.source) {
         const sourceLink = byAttr(entries[index], 'href', item.source.url);

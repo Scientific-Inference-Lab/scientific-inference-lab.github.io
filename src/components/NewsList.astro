@@ -16,7 +16,7 @@ const { items, heading: Heading } = Astro.props;
       : item.publicationId ? `/publications/#${item.publicationId}` : undefined;
     return (
       <article class="news-item" id={`news-${item.id}`}>
-        <p class="news-meta"><time datetime={item.date}>{formatDate(item.date)}</time> · {item.category}</p>
+        <p class="news-meta"><time datetime={item.date}>{formatDate(item.date.slice(0, 7))}</time> · {item.category}</p>
         <Heading>
           {href ? <a href={href}>{item.title}<ArrowRight size={17} aria-hidden="true" /></a> : item.title}
         </Heading>
