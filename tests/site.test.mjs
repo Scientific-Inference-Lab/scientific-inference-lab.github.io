@@ -231,10 +231,17 @@ test('Home shows the three latest news items and links to the complete archive',
       assert.equal(attr(time, 'datetime'), item.date);
       assert.equal(content(time), monthLabel.format(new Date(Date.UTC(year, month - 1))));
       assert(content(entries[index]).includes(item.category));
-      if (item.source) {
-        const sourceLink = byAttr(entries[index], 'href', item.source.url);
+      const sources = Array.isArray(item.source) ? item.source : item.source ? [item.source] : [];
+      for (const source of sources) {
+        const sourceLink = byAttr(entries[index], 'href', source.url);
         assert.equal(sourceLink.length, 1);
-        assert.equal(content(sourceLink[0]), item.source.label);
+        assert.equal(content(sourceLink[0]), source.label);
+      }
+      if (item.tutorialId) {
+        const materials = `https://nde-for-ts.github.io/${item.tutorialId}/`;
+        const tutorial = byAttr(documents.get('/teaching/'), 'id', item.tutorialId)[0];
+        assert.equal(byAttr(tutorial, 'href', materials).length, 1);
+        assert.equal(byAttr(entries[index], 'href', materials).length, 1);
       }
     }
   }

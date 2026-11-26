@@ -73,12 +73,17 @@ const programs = defineCollection({
   schema: z.object({ title: text, shortTitle: text, aliases: z.array(text).optional(), order: z.number().int(), question: text,
     summary: text, description: text, agenda: z.array(text).optional(), related: z.array(z.object({ id: paperId, label: text })) }),
 });
+const newsSource = z.object({
+  label: text,
+  url: url.refine(value => value.startsWith('https://'), 'News sources use HTTPS'),
+});
 const news = defineCollection({
   loader: file('src/content/news.json'),
   schema: z.object({ date: z.union([z.iso.date(), z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/)]), title: text,
     text, category: z.enum(['Lab', 'Grant', 'Computing support', 'Research support', 'Publication', 'Award', 'Talk', 'Patent']), publicationId: paperId.optional(),
     tutorialId: z.enum(tutorialIds).optional(),
-    source: z.object({ label: text, url: url.refine(value => value.startsWith('https://'), 'News sources use HTTPS') }).optional() }),
+    source: z.union([newsSource, z.array(newsSource).min(1)]).optional()
+      .transform(source => Array.isArray(source) ? source : source ? [source] : []) }),
 });
 
 // English titles follow the syllabus Course Title; course sites live under the lab origin.

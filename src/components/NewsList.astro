@@ -1,6 +1,7 @@
 ---
 import { ArrowRight } from '@lucide/svelte';
 import { formatDate, type loadContent } from '../lib/content';
+import { tutorials } from '../lib/data/tutorials';
 
 interface Props {
   items: Awaited<ReturnType<typeof loadContent>>['news'];
@@ -14,6 +15,8 @@ const { items, heading: Heading } = Astro.props;
   {items.map(item => {
     const href = item.tutorialId ? `/teaching/#${item.tutorialId}`
       : item.publicationId ? `/publications/#${item.publicationId}` : undefined;
+    const tutorial = tutorials.find(({ id }) => id === item.tutorialId);
+    const sources = [...(tutorial?.links ?? []), ...item.source];
     return (
       <article class="news-item" id={`news-${item.id}`}>
         <p class="news-meta"><time datetime={item.date}>{formatDate(item.date.slice(0, 7))}</time> · {item.category}</p>
@@ -21,7 +24,11 @@ const { items, heading: Heading } = Astro.props;
           {href ? <a href={href}>{item.title}<ArrowRight size={17} aria-hidden="true" /></a> : item.title}
         </Heading>
         <p class="news-description">{item.text}</p>
-        {item.source && <a class="text-link news-source" href={item.source.url}>{item.source.label}</a>}
+        {sources.length > 0 && (
+          <div class="news-sources">
+            {sources.map(source => <a class="text-link news-source" href={source.url}>{source.label}</a>)}
+          </div>
+        )}
       </article>
     );
   })}
@@ -64,5 +71,6 @@ const { items, heading: Heading } = Astro.props;
   .news-item a :global(svg) { display: inline-block; vertical-align: middle; margin-inline-start: .35rem; color: var(--color-action); }
   .news-item a:hover { color: var(--color-action); text-decoration: underline; text-underline-offset: .2em; }
   .news-description { margin-top: .375rem; line-height: 1.6; }
+  .news-sources { display: flex; flex-wrap: wrap; column-gap: 1.25rem; }
   .news-item a.news-source { display: inline-flex; font-size: .875rem; text-decoration: underline; text-underline-offset: .22em; }
 </style>
